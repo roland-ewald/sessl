@@ -5,70 +5,69 @@ import java.io.File
 import org.junit.Assert._
 import org.junit.Test
 
-import alesia.util.Misc
 import james.core.util.StopWatch
 import sessl.james.ExperimentOn
 import sessl.util.CreatableFromVariables
+import sessl.util.MiscUtils
 import sessl.Experiment
 import tests.sessl.TestCounter
 
 import tests.sessl.james.TestJamesExperiments._
 
-/**
- * Some simple tests for sessl.
+/** Some simple tests for sessl.
  *
- * LOG/ROADMAP
+ *  LOG/ROADMAP
  *
- * v0.1: Is it possible?
- * - Basic constructs: parameter scan, mix-in composition: OK
+ *  v0.1: Is it possible?
+ *  - Basic constructs: parameter scan, mix-in composition: OK
  *
- * v0.2: Could it be nice to use?
- * - Support for event handling (run/expDone): OK
- * - Support for result extraction: OK
- * - Support for instrumentation: OK
- * - JamesII-Instrumentation for SR: OK (-> needs to be generalized for other formalisms / use general system by Tobias and Johannes?)
+ *  v0.2: Could it be nice to use?
+ *  - Support for event handling (run/expDone): OK
+ *  - Support for result extraction: OK
+ *  - Support for instrumentation: OK
+ *  - JamesII-Instrumentation for SR: OK (-> needs to be generalized for other formalisms / use general system by Tobias and Johannes?)
  *
- * v0.3: Can we do what we did in the Briefings'10-Paper?
- * [Stubs as a reference implementation, to check whether experiment specifications are (syntactically) sim-system independent?]: OK
- * - Support setting a random seed: OK
- * - Support for defining fixed model parameters: OK
- * - Support for afterReplications event handler: OK
- * - Support for aggregated results (aggregated by assignment, ie. all replications grouped together) / result.having(varName ==> value) for expresults: OK
- * - Support for optimization: OK
- * - Simple support for specifying simulation algorithm(s): OK
+ *  v0.3: Can we do what we did in the Briefings'10-Paper?
+ *  [Stubs as a reference implementation, to check whether experiment specifications are (syntactically) sim-system independent?]: OK
+ *  - Support setting a random seed: OK
+ *  - Support for defining fixed model parameters: OK
+ *  - Support for afterReplications event handler: OK
+ *  - Support for aggregated results (aggregated by assignment, ie. all replications grouped together) / result.having(varName ==> value) for expresults: OK
+ *  - Support for optimization: OK
+ *  - Simple support for specifying simulation algorithm(s): OK
  *
- * v0.4: Can we generate reports?: OK
- * - Support for histogram, lineplot, boxplot, scatterplot: OK
- * - Support for *reporting* statistical tests, tables: OK
+ *  v0.4: Can we generate reports?: OK
+ *  - Support for histogram, lineplot, boxplot, scatterplot: OK
+ *  - Support for *reporting* statistical tests, tables: OK
  *
- * v0.5: Can we do what FullExploration does?
- * - Support for stop conditions in Experiment + James II: OK
- * - Support for replication conditions in Experiment: OK
- * - Support for replication conditions in James II?: OK (problems in James II)
- * - Support for defining *sets* of algorithm setups: OK
- * - Support for translating the defined algorithm sets to James II parameter blocks: OK
- * - [how to switch to the adaptive runner?: create an execution mode field in parallel execution!]: OK
- * - use each simulator in case a set of simulation configurations is given: OK
- * ===================TODO:
- * - Generalize the way results on the different levels are handled/processed/received 
- * - trait PerformanceRecording
- * - Support for some (simple) Metrics (run time, accuracy => maybe as an example for recording *custom* metrics! that would be quite nice :)
- * - Support for configuring performance data sink
+ *  v0.5: Can we do what FullExploration does?
+ *  - Support for stop conditions in Experiment + James II: OK
+ *  - Support for replication conditions in Experiment: OK
+ *  - Support for replication conditions in James II?: OK (problems in James II)
+ *  - Support for defining *sets* of algorithm setups: OK
+ *  - Support for translating the defined algorithm sets to James II parameter blocks: OK
+ *  - [how to switch to the adaptive runner?: create an execution mode field in parallel execution!]: OK
+ *  - use each simulator in case a set of simulation configurations is given: OK
+ *  ===================TODO:
+ *  - Generalize the way results on the different levels are handled/processed/received
+ *  - trait PerformanceRecording
+ *  - Support for some (simple) Metrics (run time, accuracy => maybe as an example for recording *custom* metrics! that would be quite nice :)
+ *  - Support for configuring performance data sink
  *
- * v0.6: Can we integrate other simulation software to some extent?
- * - Integrate BioPEPA: at least parameter scan + instrumentation should work...
- * - Set up cross-validation experiment with SSAs in James II
- * - Support for SED-ML in the form of an export function, i.e. toSEDML(exp1) (just to pinpoint the differences, and to show that we can do this :)
+ *  v0.6: Can we integrate other simulation software to some extent?
+ *  - Integrate BioPEPA: at least parameter scan + instrumentation should work...
+ *  - Set up cross-validation experiment with SSAs in James II
+ *  - Support for SED-ML in the form of an export function, i.e. toSEDML(exp1) (just to pinpoint the differences, and to show that we can do this :)
  *
- * v0.7: Additional features for ALeSiA
- * - Support for hypothesis testing
- * - Support for (partial) 'experiment plans' => directed graphs of experiments and hypothesis checks...
- * - Start building up a 'library' of custom performance experiments
- * - Clean up, refactoring, manual
+ *  v0.7: Additional features for ALeSiA
+ *  - Support for hypothesis testing
+ *  - Support for (partial) 'experiment plans' => directed graphs of experiments and hypothesis checks...
+ *  - Start building up a 'library' of custom performance experiments
+ *  - Clean up, refactoring, manual
  *
- * ==> Then move to J2 repo / bitbucket - let's see...
+ *  ==> Then move to J2 repo / bitbucket - let's see...
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  */
 @Test class TestJamesExperiments {
 
@@ -203,7 +202,7 @@ import tests.sessl.james.TestJamesExperiments._
     val exp = new ExperimentOn(testModel) with Instrumentation with DataSink {
 
       stopTime = 0.1
-      dataSink = MySQLDataSink(schema="test")
+      dataSink = MySQLDataSink(schema = "test")
     }
     execute(exp)
   }
@@ -235,7 +234,7 @@ import tests.sessl.james.TestJamesExperiments._
       observeAtTimes(10000, 20000, 99900) {} //<- diff: 100000 is stop time, but sim end hook is not yet used...
 
       //Data storage (diff: using DB instead of file-based, as it is already released - which is slightly more complicated to set up)
-      dataSink = MySQLDataSink(schema="test2")
+      dataSink = MySQLDataSink(schema = "test2")
 
       //Execution
       simulator = DirectMethod
@@ -287,7 +286,7 @@ import tests.sessl.james.TestJamesExperiments._
     }
 
     //Best-effort deletion, don't check result (some open programs like R may prevent the deletion of ALL files...)
-    Misc.deleteRecursively(exp.reportName)
+    MiscUtils.deleteRecursively(exp.reportName)
     val rawDataDir = new File(exp.reportName + "/raw")
     assertFalse("Directory containing raw data should have been deleted.", rawDataDir.exists)
 

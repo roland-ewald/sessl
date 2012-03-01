@@ -267,7 +267,7 @@ class ExperimentOn(modelURI: URI) extends Experiment {
    *            the values
    *  @return true, if all values have the same type
    */
-  def typesAreEqual(values: Seq[Any]): Boolean = alesia.util.Misc.typesAreEqual(values) {
+  def typesAreEqual(values: Seq[Any]): Boolean = sessl.util.MiscUtils.typesAreEqual(values) {
     x: Any => report(Level.SEVERE, "Type of '" + x + "' (" + x.getClass() + ") does not match type of first element: " + values.head.getClass())
   }
 

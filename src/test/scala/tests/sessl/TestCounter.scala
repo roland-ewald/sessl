@@ -1,12 +1,11 @@
 package tests.sessl
 
-import alesia.util.JavaToScala._
+import sessl.util.JavaToScala._
 import scala.collection.mutable.ListBuffer
 
-/**
- * Simple counter of executed parameter setups to check correctness of experiment implementations.
+/** Simple counter of executed parameter setups to check correctness of experiment implementations.
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  *
  */
 object TestCounter {

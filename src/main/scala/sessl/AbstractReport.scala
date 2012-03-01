@@ -1,7 +1,8 @@
 package sessl
 
 import scala.collection.mutable.ListBuffer
-import alesia.util.Misc._
+
+import sessl.util.MiscUtils._
 
 /** General support for result reports. It lets the user construct a hierarchy of section/dataview elements,
  *  which are then displayed in this order.
