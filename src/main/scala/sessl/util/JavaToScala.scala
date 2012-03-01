@@ -6,6 +6,7 @@ package sessl.util
  */
 object JavaToScala {
 
+  /** Converts a Java map to a Scala map. */
   def toScala[K, V](input: java.util.Map[K, V]): Map[K, V] = {
     var output = Map[K, V]()
     val it = input.entrySet().iterator()

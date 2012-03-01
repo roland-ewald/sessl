@@ -2,10 +2,9 @@ package sessl.util
 
 import sessl.Trajectory
 
-/**
- * Provides support for some basic operations on result data.
+/** Provides support for some basic operations on result data.
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  */
 trait ResultOperations {
 
@@ -41,16 +40,15 @@ trait ResultOperations {
     aggregate(name, 0, (x, y) => { x + scala.math.pow(y - m, 2) / denominator })
   }
 
-  /**
-   * Aggregates variable values by a given function.
+  /** Aggregates variable values by a given function.
    *
-   * @param name
+   *  @param name
    *          the name
-   * @param startVal
+   *  @param startVal
    *          the start value
-   * @param aggregator
-   *          the aggregator function (applied in a left fold)
-   * @return the aggregated result
+   *  @param aggregator
+   *          the aggregation function (applied in a left fold)
+   *  @return the aggregated result
    */
   private def aggregate(name: String, startVal: Double, aggregator: (Double, Double) => Double): Double = {
     val vals = getValuesFor(name)
