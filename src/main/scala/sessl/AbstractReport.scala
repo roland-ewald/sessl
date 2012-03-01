@@ -11,7 +11,7 @@ import sessl.util.MiscUtils._
  *
  */
 trait AbstractReport extends ExperimentConfiguration {
-  this: Experiment with AbstractInstrumentation =>
+  this: AbstractExperiment with AbstractInstrumentation =>
 
   /** The name of the report. */
   var reportName = "Untitled Report"

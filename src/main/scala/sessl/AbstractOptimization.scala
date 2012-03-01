@@ -10,7 +10,7 @@ import sessl.util.Duration
  *
  */
 trait AbstractOptimization extends ExperimentConfiguration {
-  this: Experiment with AbstractInstrumentation =>
+  this: AbstractExperiment with AbstractInstrumentation =>
 
   /** The type of the objective function to be used. */
   type ObjectiveFunction = InstrumentationRunResultsAspect => Number

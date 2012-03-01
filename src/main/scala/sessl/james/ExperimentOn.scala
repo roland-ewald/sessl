@@ -47,7 +47,7 @@ import sessl.util.AlgorithmSet
  *
  *  @author Roland Ewald
  */
-class ExperimentOn(modelURI: URI) extends Experiment {
+class ExperimentOn(modelURI: URI) extends AbstractExperiment {
 
   /** Encapsulated base experiment. */
   val exp = new BaseExperiment

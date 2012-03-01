@@ -68,6 +68,6 @@ package object sessl {
    * Execute experiments sequentially.
    * @param exps the experiments to be executed
    */
-  def execute(exps: Experiment*) = Experiment.execute(exps: _*)
+  def execute(exps: AbstractExperiment*) = AbstractExperiment.execute(exps: _*)
 
 }

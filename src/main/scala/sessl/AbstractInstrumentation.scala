@@ -10,7 +10,7 @@ import scala.collection.mutable.Set
  *
  */
 abstract trait AbstractInstrumentation extends ExperimentConfiguration {
-  this: Experiment =>
+  this: AbstractExperiment =>
 
   /** The exact times at which the state shall be observed.*/
   private[this] var times: Option[List[Double]] = None

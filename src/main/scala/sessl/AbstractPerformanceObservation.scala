@@ -4,7 +4,7 @@ package sessl
  *  @author Roland Ewald
  */
 trait AbstractPerformanceObservation extends ExperimentConfiguration {
-  this: Experiment with SupportSimulatorConfiguration =>
+  this: AbstractExperiment with SupportSimulatorConfiguration =>
 
   private[this] var performanceDataSinkSpec: Option[PerformanceDataSinkSpecification] = None
   

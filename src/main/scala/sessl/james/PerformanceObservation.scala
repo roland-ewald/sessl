@@ -1,7 +1,7 @@
 package sessl.james
 
 import sessl.AbstractPerformanceObservation
-import sessl.Experiment
+import sessl.AbstractExperiment
 import sessl.SupportSimulatorConfiguration
 
 /**
@@ -9,5 +9,5 @@ import sessl.SupportSimulatorConfiguration
  * @author Roland Ewald
  */
 trait PerformanceObservation extends AbstractPerformanceObservation {
-  this: Experiment with SupportSimulatorConfiguration =>
+  this: AbstractExperiment with SupportSimulatorConfiguration =>
 }

@@ -14,7 +14,7 @@ import sessl.AbstractInstrumentation
 import sessl.AbstractReport
 import sessl.BoxPlotView
 import sessl.DataView
-import sessl.Experiment
+import sessl.AbstractExperiment
 import sessl.ExperimentResults
 import sessl.HistogramView
 import sessl.LinePlotView
@@ -33,7 +33,7 @@ import sessl.TableView
  *
  */
 trait Report extends AbstractReport {
-  this: Experiment with AbstractInstrumentation =>
+  this: AbstractExperiment with AbstractInstrumentation =>
 
   /** The result data views used in James II. */
   private type JDataView[D] = james.resultreport.dataview.ResultDataView[D]

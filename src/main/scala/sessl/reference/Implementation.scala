@@ -1,7 +1,7 @@
 package sessl.reference
 
 import sessl.AbstractInstrumentation
-import sessl.Experiment
+import sessl.AbstractExperiment
 import sessl.AbstractDataSink
 import sessl.AbstractHypothesis
 import sessl.AbstractReport
@@ -25,12 +25,12 @@ import sessl.util.SimpleInstrumentation
  */
 
 //Central entities
-class EmptyExperiment extends Experiment with SimpleInstrumentation { def execute() = {}; def basicConfiguration = {} }
+class EmptyExperiment extends AbstractExperiment with SimpleInstrumentation { def execute() = {}; def basicConfiguration = {} }
 class ExperimentOn(modelURI: String) extends EmptyExperiment
 
 //Instrumentation
 trait Instrumentation extends AbstractInstrumentation {
-  this: Experiment =>
+  this: AbstractExperiment =>
 }
 
 //Data sinks
@@ -40,7 +40,7 @@ trait DataSink extends AbstractDataSink {
 
 //Optimization
 trait Optimization extends AbstractOptimization {
-  this: Experiment with AbstractInstrumentation =>
+  this: AbstractExperiment with AbstractInstrumentation =>
 }
 
 //Parallel execution
@@ -55,7 +55,7 @@ trait Hypothesis extends AbstractHypothesis {
 
 //Reporting
 trait Report extends AbstractReport {
-  this: Experiment with Instrumentation =>
+  this: AbstractExperiment with Instrumentation =>
   override def generateReport(results: ExperimentResults) = {}
 }
 

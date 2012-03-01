@@ -3,7 +3,7 @@ package sessl.util
 import sessl.AbstractInstrumentation
 import sessl.VariableAssignment
 import sessl.TimeStampedData
-import sessl.Experiment
+import sessl.AbstractExperiment
 import sessl.BasicExperimentConfiguration
 import sessl.ExperimentConfiguration
 
@@ -69,8 +69,8 @@ trait SimpleObserverHelper[I <: SimpleInstrumentation] extends ObserverHelper[I]
   }
 }
 
-class ExperimentObserver extends ObserverHelper[Experiment] {
+class ExperimentObserver extends ObserverHelper[AbstractExperiment] {
   def registerAssignment() {
-    sesslInstrConfig.asInstanceOf[Experiment].addAssignmentForRun(sesslRunID, variableAssignmentID, variableAssignment)
+    sesslInstrConfig.asInstanceOf[AbstractExperiment].addAssignmentForRun(sesslRunID, variableAssignmentID, variableAssignment)
   }  
 }

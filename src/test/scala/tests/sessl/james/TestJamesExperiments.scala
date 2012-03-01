@@ -9,7 +9,7 @@ import james.core.util.StopWatch
 import sessl.james.ExperimentOn
 import sessl.util.CreatableFromVariables
 import sessl.util.MiscUtils
-import sessl.Experiment
+import sessl.AbstractExperiment
 import tests.sessl.TestCounter
 
 import tests.sessl.james.TestJamesExperiments._
@@ -323,10 +323,10 @@ import tests.sessl.james.TestJamesExperiments._
   }
 
   /** Measures execution time of an experiment. */
-  def measureExecTime(exp: Experiment) = {
+  def measureExecTime(exp: AbstractExperiment) = {
     val sw = new StopWatch()
     sw.start();
-    Experiment.execute(exp);
+    AbstractExperiment.execute(exp);
     sw.stop();
     sw.elapsedMilliseconds()
   }

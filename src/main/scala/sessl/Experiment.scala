@@ -8,7 +8,7 @@ import sessl.util.ExperimentObserver
  *  It handles the execution of the event handlers and checks whether other traits that may be mixed in by the user have properly called their super methods.
  *  @author Roland Ewald
  */
-abstract class Experiment extends BasicExperimentConfiguration with SupportModelConfiguration
+abstract class AbstractExperiment extends BasicExperimentConfiguration with SupportModelConfiguration
   with SupportSimulatorConfiguration with SupportRNGSetup with SupportReplicationConditions with SupportStoppingConditions {
 
   /** This flag checks whether the stacked configuration traits have properly called their super methods.
@@ -37,14 +37,14 @@ abstract class Experiment extends BasicExperimentConfiguration with SupportModel
 }
 
 /** Methods that operate on the specified experiments. */
-object Experiment {
+object AbstractExperiment {
 
   /** Execute experiments sequentially.
    *
    *  @param experiments
    *            the experiments
    */
-  def execute(exps: Experiment*) = for (exp <- exps) {
+  def execute(exps: AbstractExperiment*) = for (exp <- exps) {
     exp.prepare()
     exp.execute()
     require(exp.isDone, "The experiment seems to have finished incomplete.")
