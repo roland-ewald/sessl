@@ -4,9 +4,8 @@ import sessl.util.CreatableFromVariables
 import org.junit.Test
 import org.junit.Assert._
 
-/**
- * Some tests for performance experiments.
- * @author Roland Ewald
+/** Some tests for performance experiments.
+ *  @author Roland Ewald
  */
 @Test class TestPerformanceExperiments {
 
@@ -14,12 +13,10 @@ import org.junit.Assert._
   case class TestAlgo2(x1: Int = 1, x2: Int = 2, x3: Int = 3, x4: Int = 4) extends CreatableFromVariables[TestAlgo2]
   case class TestAlgo3(x1: Int = 0, subAlgo: TestAlgo2 = TestAlgo2(), x45: Int = 17) extends CreatableFromVariables[TestAlgo3]
 
-  /**
-   * Tests construction of simulator sets.
+  /** Tests construction of simulator sets.
    */
   @Test def testSimulatorSets() = {
 
-    
     import sessl._
 
     //Testing corner case and simple cases
@@ -80,16 +77,14 @@ import org.junit.Assert._
     import sessl.james._
 
     var counter = 0
-    //TODO: Make this independent of instrumentation mix-in!
-    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution /*with PerformanceObservation*/ {
+    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation {
 
       stopTime = 1.5
       replications = 10
 
-      //TODO: Finish event handling:
-      /*performanceAfterRun { r => println(r) }
-      performanceAfterReplications(r => println(r))
-      performanceAfterExperiment { r => println(r) }*/
+      withRunPerformance { r => println(r) }
+      withReplicationsPerformance(r => println(r))
+      withExperimentPerformance { r => println(r) }
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
 
       simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue)) }

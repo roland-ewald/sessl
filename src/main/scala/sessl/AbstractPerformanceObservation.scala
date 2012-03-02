@@ -6,21 +6,24 @@ package sessl
 trait AbstractPerformanceObservation extends ExperimentConfiguration {
   this: AbstractExperiment with SupportSimulatorConfiguration =>
 
+  /** Specifies where to store the data. */
   private[this] var performanceDataSinkSpec: Option[PerformanceDataSinkSpecification] = None
   
   val experimentPerformances = new ExperimentPerformance()
 
-  def performanceAfterRun(f: RunPerformance => Unit) = afterRun(_ => f(new RunPerformance()))
+  def withRunPerformance(f: RunPerformance => Unit) = afterRun(_ => f(new RunPerformance()))
 
-  def performanceAfterReplications(f: ReplicationsPerformance => Unit) = afterReplications(_ => f(new ReplicationsPerformance()))
+  def withReplicationsPerformance(f: ReplicationsPerformance => Unit) = afterReplications(_ => f(new ReplicationsPerformance()))
 
-  def performanceAfterExperiment(f: ExperimentPerformance => Unit) = afterExperiment(_ => f(experimentPerformances))
+  def withExperimentPerformance(f: ExperimentPerformance => Unit) = afterExperiment(_ => f(experimentPerformances))
 
 }
 
 trait PerformanceDataSinkSpecification
 
-case class DatabasePerformanceSink()
+trait DatabasePerformanceSink {
+  
+}
 
 trait PerformanceDomain
 
