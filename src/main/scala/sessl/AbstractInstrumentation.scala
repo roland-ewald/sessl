@@ -2,8 +2,8 @@ package sessl
 
 import scala.collection.mutable.Set
 import scala.collection.mutable.Map
-
 import sessl.util.ResultOperations
+import sessl.util.MiscUtils
 
 /** Support for instrumentation. The instrumentation trait is also concerned with managing the observed data in simple way,
  *  ie. it has to provide read-access to be used across other traits (mixed-in later).
@@ -46,21 +46,21 @@ abstract trait AbstractInstrumentation extends ExperimentConfiguration {
   /** Add event handler that processes observed model output from a single run. */
   def withRunResult(f: InstrumentationRunResultsAspect => Unit) = {
     afterRun {
-      r => f.apply(r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationRunResultsAspect])
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationRunResultsAspect])
     }
   }
 
   /** Add event handler that processes observed model output from a set of replications. */
   def withReplicationsResult(f: InstrumentationReplicationsResultsAspect => Unit) = {
     afterReplications {
-      r => f.apply(r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationReplicationsResultsAspect])
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationReplicationsResultsAspect])
     }
   }
 
   /** Add event handler that processes observed model output from the whole experiment. */
   def withExperimentResult(f: InstrumentationExperimentResultsAspect => Unit) = {
     afterExperiment {
-      r => f.apply(r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationExperimentResultsAspect])
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationExperimentResultsAspect])
     }
   }
 
