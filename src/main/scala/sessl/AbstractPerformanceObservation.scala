@@ -82,7 +82,7 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
 }
 
 /** The performance aspects of a single simulation run. */
-class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Int) extends RunResultsAspect(classOf[AbstractPerformanceObservation])
+class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Double) extends RunResultsAspect(classOf[AbstractPerformanceObservation])
 
 /** The performance aspects of a set of simulation runs, all computing the same variable assignment. */
 class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractPerformanceObservation])
