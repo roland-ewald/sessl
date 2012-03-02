@@ -58,7 +58,7 @@ import org.junit.Assert._
 
     //TODO: Make this independent of instrumentation mix-in!
     var counter = 0
-    val exp = new ExperimentOn(TestJamesExperiments.testModel) with ParallelExecution /*with PerformanceObservation*/ {
+    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution /*with PerformanceObservation*/ {
 
       stopTime = 1.5
       replications = 200
@@ -81,7 +81,7 @@ import org.junit.Assert._
 
     var counter = 0
     //TODO: Make this independent of instrumentation mix-in!
-    val exp = new ExperimentOn(TestJamesExperiments.testModel) with ParallelExecution /*with PerformanceObservation*/ {
+    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution /*with PerformanceObservation*/ {
 
       stopTime = 1.5
       replications = 10

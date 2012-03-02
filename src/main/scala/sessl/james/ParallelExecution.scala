@@ -16,7 +16,7 @@ import sessl.util.AlgorithmSet
  *
  */
 trait ParallelExecution extends AbstractParallelExecution {
-  this: ExperimentOn =>
+  this: Experiment =>
 
   /** Flag to signal the usage of the adaptive task runner. */
   private[this] var useAdaptiveRunner = false

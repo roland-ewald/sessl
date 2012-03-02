@@ -31,7 +31,7 @@ import sessl._
  *
  */
 trait Optimization extends AbstractOptimization {
-  this: ExperimentOn with Instrumentation =>
+  this: Experiment with Instrumentation =>
 
   /** The type used in James II  to specify start configurations. */
   type JamesParamConfig = _root_.james.core.experiments.optimization.parameter.Configuration

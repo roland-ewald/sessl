@@ -6,7 +6,7 @@ import org.junit.Assert._
 import org.junit.Test
 
 import james.core.util.StopWatch
-import sessl.james.ExperimentOn
+import sessl.james.Experiment
 import sessl.util.CreatableFromVariables
 import sessl.util.MiscUtils
 import sessl.AbstractExperiment
@@ -84,7 +84,7 @@ import tests.sessl.james.TestJamesExperiments._
     var expDoneCounter = 0
 
     TestCounter.reset()
-    val exp = new ExperimentOn(testCounterModel) with Instrumentation /*with ParallelExecution*/ {
+    val exp = new Experiment(testCounterModel) with Instrumentation with ParallelExecution {
 
       stopTime = 1.0
       replications = 2
@@ -130,7 +130,7 @@ import tests.sessl.james.TestJamesExperiments._
       // Note that system-specific configuration is ALWAYS possible, too! 
       exp.getFixedModelParameters.put("theAnswer", new java.lang.Integer(42))
 
-      //parallelThreads = -1 //Leave one core idle... TODO: uncomment!
+      parallelThreads = -1 //Leave one core idle... 
       // Simple configuration tasks are done by case classes...
       simulator = DirectMethod
     }
@@ -149,7 +149,7 @@ import tests.sessl.james.TestJamesExperiments._
     import sessl._
     import sessl.james._
 
-    val exp = new ExperimentOn(testModel) with Instrumentation with Optimization {
+    val exp = new Experiment(testModel) with Instrumentation with Optimization {
 
       stopTime = 20.5
       replications = 2
@@ -181,12 +181,12 @@ import tests.sessl.james.TestJamesExperiments._
       assertEquals("The correct seed shall be used as the initial seed.", testSeed, SimSystem.getRNGGenerator.getInitialSeed())
     }
 
-    val exp1 = new ExperimentOn(testModel) {
+    val exp1 = new Experiment(testModel) {
       stopTime = .01
       rng = LCG(testSeed)
       afterExperiment(testFunction(classOf[_root_.james.core.math.random.generators.lcg.LCG].getName))
     }
-    val exp2 = new ExperimentOn(testModel) {
+    val exp2 = new Experiment(testModel) {
       stopTime = .01
       rng = MersenneTwister(testSeed)
       afterExperiment(testFunction(classOf[_root_.james.core.math.random.generators.mersennetwister.MersenneTwister].getName))
@@ -199,7 +199,7 @@ import tests.sessl.james.TestJamesExperiments._
     import sessl._
     import sessl.james._
 
-    val exp = new ExperimentOn(testModel) with Instrumentation with DataSink {
+    val exp = new Experiment(testModel) with Instrumentation with DataSink {
 
       stopTime = 0.1
       dataSink = MySQLDataSink(schema = "test")
@@ -212,7 +212,7 @@ import tests.sessl.james.TestJamesExperiments._
     import sessl._
     import sessl.james._
 
-    val exp = new ExperimentOn("file-sr:/./SimpleModel.sr") with Instrumentation with ParallelExecution with DataSink with Optimization {
+    val exp = new Experiment("file-sr:/./SimpleModel.sr") with Instrumentation with ParallelExecution with DataSink with Optimization {
 
       //Basic setup
       stopTime = 100000
@@ -247,7 +247,7 @@ import tests.sessl.james.TestJamesExperiments._
     import sessl._
     import sessl.james._
 
-    val exp = new ExperimentOn(testModel) with Instrumentation with Report with ParallelExecution {
+    val exp = new Experiment(testModel) with Instrumentation with Report with ParallelExecution {
 
       stopTime = 0.5
       replications = 10
@@ -305,7 +305,7 @@ import tests.sessl.james.TestJamesExperiments._
     import sessl.james._
 
     //How to re-use experiment definitions: as normal classes...
-    class DefaultExperiment extends ExperimentOn(testModel) with ParallelExecution {
+    class DefaultExperiment extends Experiment(testModel) with ParallelExecution {
       replications = 2
     }
 
@@ -341,7 +341,7 @@ import tests.sessl.james.TestJamesExperiments._
     var numberOfReps = -1
 
     // Combine replication conditions via 'and'
-    val expAnd = new ExperimentOn(testModel) with Instrumentation with ParallelExecution {
+    val expAnd = new Experiment(testModel) with Instrumentation with ParallelExecution {
       stopTime = 1.5
       observeAtTimes(0.45) { bind("x" ~ "S3") }
       //TODO: Jan wg. CI-replication criteria und dataID/attrib fragen...
@@ -353,7 +353,7 @@ import tests.sessl.james.TestJamesExperiments._
     assertEquals("The number of replications should match", manyReps, numberOfReps)
 
     // Combine replication conditions via 'or'
-    val expOr = new ExperimentOn(testModel) with Instrumentation with ParallelExecution {
+    val expOr = new Experiment(testModel) with Instrumentation with ParallelExecution {
       stopTime = 0.5
       observeAtTimes(0.45) { bind("x" ~ "S3") }
       replicationCondition = FixedNumber(1) or FixedNumber(manyReps)

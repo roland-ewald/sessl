@@ -47,7 +47,7 @@ import sessl.util.AlgorithmSet
  *
  *  @author Roland Ewald
  */
-class ExperimentOn(modelURI: URI) extends AbstractExperiment {
+class Experiment(modelURI: URI) extends AbstractExperiment {
 
   /** Encapsulated base experiment. */
   val exp = new BaseExperiment
@@ -55,7 +55,7 @@ class ExperimentOn(modelURI: URI) extends AbstractExperiment {
   exp.setBackupEnabled(false)
 
   /** Allows alternative experimentation with a model class. */
-  def this(modelClass: Class[_ <: IModel]) = this(new URI(ExperimentOn.URI_PREFIX_IMPL_MODELS + modelClass.getCanonicalName))
+  def this(modelClass: Class[_ <: IModel]) = this(new URI(Experiment.URI_PREFIX_IMPL_MODELS + modelClass.getCanonicalName))
 
   /** Allows alternative experimentation with a string containing a model URI. */
   def this(modelURI: String) = this(new URI(modelURI))
@@ -188,7 +188,7 @@ class ExperimentOn(modelURI: URI) extends AbstractExperiment {
     exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
       override def simulationInitialized(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation) = {
-        val configSetup = ExperimentOn.taskConfigToAssignment(crti.getComputationTask.getConfig)
+        val configSetup = Experiment.taskConfigToAssignment(crti.getComputationTask.getConfig)
         addAssignmentForRun(crti.getComputationTaskID.toString.hashCode, configSetup._1, configSetup._2)
       }
       override def simulationExecuted(taskRunner: ITaskRunner,
@@ -304,7 +304,7 @@ class ExperimentOn(modelURI: URI) extends AbstractExperiment {
 
 }
 
-object ExperimentOn {
+object Experiment {
 
   /** The prefix for URIs that point to implemented models. */
   private val URI_PREFIX_IMPL_MODELS = "java://"

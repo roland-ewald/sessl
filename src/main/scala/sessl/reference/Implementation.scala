@@ -26,7 +26,7 @@ import sessl.util.SimpleInstrumentation
 
 //Central entities
 class EmptyExperiment extends AbstractExperiment with SimpleInstrumentation { def execute() = {}; def basicConfiguration = {} }
-class ExperimentOn(modelURI: String) extends EmptyExperiment
+class Experiment(modelURI: String) extends EmptyExperiment
 
 //Instrumentation
 trait Instrumentation extends AbstractInstrumentation {

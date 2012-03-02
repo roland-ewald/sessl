@@ -30,7 +30,7 @@ import sessl.util.SimpleInstrumentation
  *
  */
 trait Instrumentation extends SimpleInstrumentation {
-  this: ExperimentOn =>
+  this: Experiment =>
 
   abstract override def configure() {
     super.configure()
@@ -92,7 +92,7 @@ class SESSLInstrumenter(val instrConfig: SimpleInstrumentation) extends IRespons
 
       registerCompTask(computation)
 
-      val configSetup = ExperimentOn.taskConfigToAssignment(computation.getConfig())
+      val configSetup = Experiment.taskConfigToAssignment(computation.getConfig())
       setAssignmentID(configSetup._1)
       setAssignment(configSetup._2)
       setConfig(instrConfig)
