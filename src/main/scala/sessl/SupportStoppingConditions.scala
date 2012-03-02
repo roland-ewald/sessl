@@ -28,9 +28,12 @@ trait SupportStoppingConditions {
    *  @return the stopping condition to be used
    */
   protected[sessl] def checkAndGetStoppingCondition() = {
-    require(fixedStopTime.isDefined || stoppingCondition.isDefined, "No stopping condition is specified (use, e.g., stopTime= 1.0 or stopCondition=...).")
-    require(!(fixedStopTime.isDefined && stoppingCondition.isDefined), "Both a fixed stop time (" + fixedStopTime.get + ") and a stopping condition (" +
-      stoppingCondition.get + ") are set - only one is allowed. Use '" + AfterSimTime(fixedStopTime.get) + "' to add the fixed stop time condition to the conditions.")
+    require(fixedStopTime.isDefined || stoppingCondition.isDefined,
+      "No stopping condition is specified (use, e.g., stopTime= 1.0 or stopCondition=...).")
+    require(!(fixedStopTime.isDefined && stoppingCondition.isDefined),
+      "Both a fixed stop time (" + fixedStopTime.get + ") and a stopping condition (" +
+        stoppingCondition.get + ") are set - only one is allowed. Use '" + AfterSimTime(fixedStopTime.get) +
+        "' to add the fixed stop time condition to the conditions.")
     if (fixedStopTime.isDefined)
       AfterSimTime(fixedStopTime.get) else stoppingCondition.get
   }

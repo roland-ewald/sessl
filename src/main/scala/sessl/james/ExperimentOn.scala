@@ -71,17 +71,17 @@ class Experiment(modelURI: URI) extends AbstractExperiment {
   }
 
   /** Configure replications. */
-  def configureReplications() = exp.addReplicationCriterion(createReplicationCriterion(checkAndGetReplicationCriterion()))
+  def configureReplications() = exp.addReplicationCriterion(createReplicationCriterion(checkAndGetReplicationCondition()))
 
   /** Create replication criterion. */
-  def createReplicationCriterion(r: ReplicationCriterion): IReplicationCriterion = r match {
+  def createReplicationCriterion(r: ReplicationCondition): IReplicationCriterion = r match {
     case r: FixedNumber => new ReplicationNumberCriterion(r.replications)
-    case c: ConjunctiveReplicationCriterion => new IReplicationCriterion() {
+    case c: ConjunctiveReplicationCondition => new IReplicationCriterion() {
       val left = createReplicationCriterion(c.left)
       val right = createReplicationCriterion(c.right)
       override def sufficientReplications(ris: java.util.List[RunInformation]) = scala.math.max(left.sufficientReplications(ris), right.sufficientReplications(ris))
     }
-    case d: DisjunctiveReplicationCriterion => new IReplicationCriterion() {
+    case d: DisjunctiveReplicationCondition => new IReplicationCriterion() {
       val left = createReplicationCriterion(d.left)
       val right = createReplicationCriterion(d.right)
       override def sufficientReplications(ris: java.util.List[RunInformation]) = scala.math.min(left.sufficientReplications(ris), right.sufficientReplications(ris))

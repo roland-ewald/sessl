@@ -50,11 +50,11 @@ package object sessl {
    */
   implicit def stopConditionToCombinedCondition(s: StoppingCondition) = new CombinedStoppingCondition(s)
 
-  /** Support for combining replication criteria.
-   *  @param r the replication criterion
-   *  @return a 'combined' replication criterion with just the left-hand side defined
+  /** Support for combining replication conditions.
+   *  @param r the replication condition
+   *  @return a 'combined' replication condition with just the left-hand side defined
    */
-  implicit def replCriterionToCombinedCriterion(r: ReplicationCriterion) = new CombinedReplicationCriterion(r)
+  implicit def replConditionToCombinedCondition(r: ReplicationCondition) = new CombinedReplicationCondition(r)
 
   /** Execute experiments sequentially.
    *  @param exps the experiments to be executed

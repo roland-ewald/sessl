@@ -21,8 +21,7 @@ import org.junit.Assert._
     val expAnd = new Experiment(TestJamesExperiments.testModel) with Instrumentation with ParallelExecution {
       stopTime = 1.5
       observeAtTimes(0.45) { bind("x" ~ "S3") }
-      //TODO: Jan wg. CI-replication criteria und dataID/attrib fragen...
-      //replicationCondition = FixedNumber(1) and (FixedNumber(manyReps) or MeanConfidenceReached("x"))
+      //replicationCondition = FixedNumber(1) and (FixedNumber(manyReps) or MeanConfidenceReached("x")) TODO: implement this for James II...
       replicationCondition = FixedNumber(1) and FixedNumber(manyReps)
       withExperimentResult { r => numberOfReps = r("x").length }
     }
