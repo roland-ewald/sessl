@@ -1,7 +1,9 @@
 package sessl
 
-import scala.collection.mutable.Map
 import scala.collection.mutable.Set
+import scala.collection.mutable.Map
+
+import sessl.util.ResultOperations
 
 /** Support for instrumentation. The instrumentation trait is also concerned with managing the observed data in simple way,
  *  ie. it has to provide read-access to be used across other traits (mixed-in later).
@@ -147,7 +149,7 @@ sealed case class DataElemName(sesslName: String) {
  *  @param assignment the variable assignment that was used
  *  @param data the data recorded for a single run: variable name (in sessl) => trajectory.
  */
-class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends RunResultsAspect(classOf[AbstractInstrumentation]) {
+class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends RunResultsAspect(classOf[AbstractInstrumentation]) with ResultOperations {
 
   /** Auxiliary constructor to merge two result sets (e.g. recorded by different entities but for the same run).*/
   def this(aspects: (InstrumentationRunResultsAspect, InstrumentationRunResultsAspect)) = {
@@ -189,7 +191,7 @@ class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends
 }
 
 /** Replications results aspect for instrumentation. */
-class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractInstrumentation]) {
+class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractInstrumentation]) with ResultOperations {
 
   /** Get the *last* recorded value of the specified variable for all runs for which it has been observed. */
   def apply(name: String) = {
@@ -204,7 +206,7 @@ class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect
 }
 
 /** Experiment results aspect for instrumentation. */
-class InstrumentationExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractInstrumentation])
+class InstrumentationExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractInstrumentation]) with ResultOperations
   with PartialExperimentResults[InstrumentationExperimentResultsAspect] {
 
   /** Get the last sample for the given variable from all runs. */

@@ -8,7 +8,7 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
 
   /** Specifies where to store the data. */
   private[this] var performanceDataSinkSpec: Option[PerformanceDataSinkSpecification] = None
-  
+
   val experimentPerformances = new ExperimentPerformance()
 
   def withRunPerformance(f: RunPerformance => Unit) = afterRun(_ => f(new RunPerformance()))
@@ -22,7 +22,7 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
 trait PerformanceDataSinkSpecification
 
 trait DatabasePerformanceSink {
-  
+
 }
 
 trait PerformanceDomain
@@ -32,3 +32,7 @@ class RunPerformance
 class ReplicationsPerformance
 
 class ExperimentPerformance
+
+class PerformanceObservationRunResultsAspect extends RunResultsAspect(classOf[AbstractPerformanceObservation]) {
+
+}

@@ -28,7 +28,7 @@ trait ResultAspect[R <: Result] {
 }
 
 /** Super class for all run results aspects. */
-abstract class RunResultsAspect(myOwner: Result.Owner) extends ResultOperations with ResultAspect[RunResults] {
+abstract class RunResultsAspect(myOwner: Result.Owner) extends ResultAspect[RunResults] {
   /** The aspect id is the id of its run. */
   def id = results.id
 
@@ -37,7 +37,7 @@ abstract class RunResultsAspect(myOwner: Result.Owner) extends ResultOperations 
 }
 
 /** Super class for all replication results aspects. */
-abstract class ReplicationsResultsAspect(myOwner: Result.Owner) extends ResultOperations with ResultAspect[ReplicationsResults] {
+abstract class ReplicationsResultsAspect(myOwner: Result.Owner) extends ResultAspect[ReplicationsResults] {
 
   /** Stores all run result aspects of the same owner, to ease access when working with the results. */
   val runsResults = Map[Int, RunResultsAspect]()
@@ -52,7 +52,7 @@ abstract class ReplicationsResultsAspect(myOwner: Result.Owner) extends ResultOp
 }
 
 /** Super class for all experiment results aspects. */
-abstract class ExperimentResultsAspect(myOwner: Result.Owner) extends ResultOperations with ResultAspect[ExperimentResults] {
+abstract class ExperimentResultsAspect(myOwner: Result.Owner) extends ResultAspect[ExperimentResults] {
 
   /** Stores all run result aspects of the same owner, to ease access when working with the results. */
   val runsResults = Map[Int, RunResultsAspect]()
