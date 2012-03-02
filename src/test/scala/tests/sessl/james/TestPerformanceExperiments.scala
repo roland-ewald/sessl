@@ -13,8 +13,7 @@ import org.junit.Assert._
   case class TestAlgo2(x1: Int = 1, x2: Int = 2, x3: Int = 3, x4: Int = 4) extends CreatableFromVariables[TestAlgo2]
   case class TestAlgo3(x1: Int = 0, subAlgo: TestAlgo2 = TestAlgo2(), x45: Int = 17) extends CreatableFromVariables[TestAlgo3]
 
-  /** Tests construction of simulator sets.
-   */
+  /** Tests construction of simulator sets. */
   @Test def testSimulatorSets() = {
 
     import sessl._

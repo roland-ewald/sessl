@@ -92,5 +92,3 @@ class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf
 class PerfObsExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractPerformanceObservation])
   with AggregatedPerformanceOperations[PerfObsExperimentResultsAspect]
 
-
-

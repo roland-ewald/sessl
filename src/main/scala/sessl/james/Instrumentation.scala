@@ -40,7 +40,7 @@ trait Instrumentation extends SimpleInstrumentation {
 }
 
 object Instrumentation {
-  val INSTRUMENTATION_RESULTS = "$sessl$instrResults"
+  val instrumentationResults = "$sessl$instrResults"
 }
 
 //The James II code for the custom instrumentation plug-in
@@ -64,7 +64,7 @@ class SESSLInstrumenter(val instrConfig: SimpleInstrumentation) extends IRespons
   override def getObservedResponses(): java.util.Map[String, _ <: BaseVariable[_]] = {
     require(myRunID.isDefined, "The run ID should be defined...")
     val resultMap: java.util.Map[String, BaseVariable[_]] = new HashMap()
-    val baseVar = new BaseVariable[Any](Instrumentation.INSTRUMENTATION_RESULTS)
+    val baseVar = new BaseVariable[Any](Instrumentation.instrumentationResults)
     baseVar.setValue(instrConfig.collectResults(myRunID.get))
     resultMap.put(baseVar.getName, baseVar)
     resultMap
