@@ -49,6 +49,9 @@ abstract class ReplicationsResultsAspect(myOwner: Result.Owner) extends ResultAs
 
   /** Return the owner. */
   override def owner = myOwner
+
+  /** Convenience variable to use when collection is processed further. */
+  lazy val runsResultsMap = runsResults.toMap
 }
 
 /** Super class for all experiment results aspects. */
@@ -62,6 +65,9 @@ abstract class ExperimentResultsAspect(myOwner: Result.Owner) extends ResultAspe
 
   /** Return the owner. */
   override def owner = myOwner
+
+  /** Convenience variable to use when collection is processed further. */
+  lazy val runsResultsMap = runsResults.toMap
 
   /** Will only be called once, by {@link ExperimentResults}.*/
   private[sessl] def setResults(rResults: Map[Int, RunResultsAspect], repResults: Map[Int, ReplicationsResultsAspect]) {
