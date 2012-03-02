@@ -121,10 +121,11 @@ abstract trait AbstractInstrumentation extends ExperimentConfiguration {
     addExperimentResultsAspect(new InstrumentationExperimentResultsAspect())
   }
 
-  /** Collects the results of the indicated run. This function may only be called ONCE per runID,
-   *  afterwards the instrumentation sub-system may regard the data as read-out (and hence delete it).
+  /** Collects the results of the indicated run. If the removeData flag is set to true,
+   *  the instrumentation sub-system may regard the data as read-out (and hence delete it).
    *
    *  @param runID the ID of the run
+   *  @param removeData flag to signal that the data will not be required again (and can hence be dismissed)
    *  @return the result aspect of the run (w.r.t. instrumentation)
    */
   def collectResults(runID: Int, removeData: Boolean): InstrumentationRunResultsAspect
