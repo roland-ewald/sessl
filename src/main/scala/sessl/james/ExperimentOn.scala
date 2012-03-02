@@ -100,19 +100,19 @@ class Experiment(modelURI: URI) extends AbstractExperiment {
 
   /** Configure stopping. */
   def configureStopping() = {
-    exp.setComputationTaskStopFactory(createParamStopFactory(checkAndGetStoppingCriterion()))
+    exp.setComputationTaskStopFactory(createParamStopFactory(checkAndGetStoppingCondition()))
   }
 
   /** Create parameterized stop factory. */
-  def createParamStopFactory(s: StoppingCriterion): ParameterizedFactory[StopFactory] = s match {
+  def createParamStopFactory(s: StoppingCondition): ParameterizedFactory[StopFactory] = s match {
     case Never => new ParamFactory[StopFactory](new EmptyStopConditionStopPolicyFactory(), Param())
     case st: AfterSimTime => new ParamFactory[StopFactory](new SimTimeStopFactory(), Param() :/ (SimTimeStopFactory.SIMEND ~> st.time))
     case ssteps: AfterSimSteps => new ParamFactory[StopFactory](new StepCountStopFactory(), Param() :/ (StepCountStopFactory.TASKEND ~> ssteps.steps))
     case w: AfterWallClockTime => new ParamFactory[StopFactory](new WallClockTimeStopFactory(), Param() :/ (WallClockTimeStopFactory.SIMEND ~> w.toMilliSeconds))
-    case c: ConjunctiveStoppingCriterion =>
+    case c: ConjunctiveStoppingCondition =>
       new ParamFactory[StopFactory](new ConjunctiveSimRunStopPolicyFactory(), Param() :/
         (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~> listParamStopFactories(createParamStopFactory(c.left), createParamStopFactory(c.right))))
-    case d: DisjunctiveStoppingCriterion =>
+    case d: DisjunctiveStoppingCondition =>
       new ParamFactory[StopFactory](new DisjunctiveSimRunStopPolicyFactory(), Param() :/
         (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~> listParamStopFactories(createParamStopFactory(d.left), createParamStopFactory(d.right))))
     case x => throw new IllegalArgumentException("Stopping criterion '" + s + "' not supported.")
