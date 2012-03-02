@@ -32,6 +32,33 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
     }
   }
 
+  /** Before the run is done, add the performance data on this run to the experiment. */
+  override def collectRunResultsAspects(runId: Int) {
+    super.collectRunResultsAspects(runId)
+    addRunResultsAspect(runId, collectResults(runId, true))
+  }
+
+  /** Before the replications are done, add all results of this run to the experiment. */
+  override def collectReplicationsResultsAspects(assignId: Int) {
+    super.collectReplicationsResultsAspects(assignId)
+    addReplicationsResultsAspect(assignId, new PerfObsReplicationsResultsAspect())
+  }
+
+  /** Before the experiment is done, add result aspect for instrumentation. */
+  override def collectExperimentResultsAspects() {
+    super.collectExperimentResultsAspects()
+    addExperimentResultsAspect(new PerfObsExperimentResultsAspect())
+  }
+
+  /** Collects the performance results of the indicated run. If the removeData flag is set to true,
+   *  the performance observation sub-system may regard the data as read-out (and hence delete it).
+   *
+   *  @param runID the ID of the run
+   *  @param removeData flag to signal that the data will not be required again (and can hence be dismissed)
+   *  @return the result aspect of the run (w.r.t. performance)
+   */
+  def collectResults(runID: Int, removeData: Boolean): PerfObsRunResultsAspect
+
 }
 
 //TODO: define kinds of performance data sinks
