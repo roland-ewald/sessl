@@ -1,8 +1,9 @@
 package tests.sessl.james
 
-import sessl.util.CreatableFromVariables
-import org.junit.Test
 import org.junit.Assert._
+import org.junit.Test
+
+import sessl.util.CreatableFromVariables
 
 /** Some tests for performance experiments.
  *  @author Roland Ewald
@@ -76,14 +77,18 @@ import org.junit.Assert._
     import sessl.james._
 
     var counter = 0
-    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation {
+    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation with Report {
 
       stopTime = 1.5
       replications = 10
 
       withRunPerformance { r => println(r) }
       withReplicationsPerformance(r => println(r))
-      withExperimentPerformance { r => println(r) }
+      withExperimentPerformance { r =>
+        reportSection("Results") {
+        	scatterPlot(r.runtimes, r.runtimes)()
+        }
+      }
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
 
       simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue)) }

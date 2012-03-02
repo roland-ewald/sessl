@@ -79,18 +79,21 @@ class Experiment(modelURI: URI) extends AbstractExperiment {
     case c: ConjunctiveReplicationCondition => new IReplicationCriterion() {
       val left = createReplicationCriterion(c.left)
       val right = createReplicationCriterion(c.right)
-      override def sufficientReplications(ris: java.util.List[RunInformation]) = scala.math.max(left.sufficientReplications(ris), right.sufficientReplications(ris))
+      override def sufficientReplications(ris: java.util.List[RunInformation]) =
+        scala.math.max(left.sufficientReplications(ris), right.sufficientReplications(ris))
     }
     case d: DisjunctiveReplicationCondition => new IReplicationCriterion() {
       val left = createReplicationCriterion(d.left)
       val right = createReplicationCriterion(d.right)
-      override def sufficientReplications(ris: java.util.List[RunInformation]) = scala.math.min(left.sufficientReplications(ris), right.sufficientReplications(ris))
+      override def sufficientReplications(ris: java.util.List[RunInformation]) =
+        scala.math.min(left.sufficientReplications(ris), right.sufficientReplications(ris))
     }
     case ci: MeanConfidenceReached => {
-      require(this.isInstanceOf[AbstractInstrumentation],
-        "The replication criterion '" + ci + "' is specified, which works on observed data, but no instrumentation is defined. Use '... with Instrumentation'.")
+      require(this.isInstanceOf[AbstractInstrumentation], "The replication criterion '" + ci +
+        "' is specified, which works on observed data, but no instrumentation is defined. Use '... with Instrumentation'.")
       val self = this.asInstanceOf[AbstractInstrumentation]
-      require(self.reverseVariableBindings.contains(ci.varName), "The variable '" + ci.varName + "' has not been bound to a model variable yet.")
+      require(self.reverseVariableBindings.contains(ci.varName), "The variable '" + ci.varName +
+        "' has not been bound to a model variable yet.")
       val rv = new ConfidenceIntervalCriterion(ci.relativeHalfWidth, ci.confidence, Int.MaxValue, 1, 10, 12345L, //TODO: last two parameters, where are they from?
         self.reverseVariableBindings(ci.varName))
       throw new IllegalArgumentException("Mean confidence replication criterion not implemented yet.")

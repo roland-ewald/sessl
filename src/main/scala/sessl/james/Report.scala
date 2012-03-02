@@ -33,7 +33,7 @@ import sessl.TableView
  *
  */
 trait Report extends AbstractReport {
-  this: AbstractExperiment with AbstractInstrumentation =>
+  this: AbstractExperiment =>
 
   /** The result data views used in James II. */
   private type JDataView[D] = james.resultreport.dataview.ResultDataView[D]

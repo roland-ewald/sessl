@@ -14,21 +14,21 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
   /** Adds event handler to analyze the performance of a single run. */
   def withRunPerformance(f: PerfObsRunResultsAspect => Unit) = {
     afterRun {
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).asInstanceOf[PerfObsRunResultsAspect])
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).get.asInstanceOf[PerfObsRunResultsAspect])
     }
   }
 
   /** Adds event handler to analyze the performance for a set of replications. */
   def withReplicationsPerformance(f: PerfObsReplicationsResultsAspect => Unit) = {
     afterReplications {
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).asInstanceOf[PerfObsReplicationsResultsAspect])
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).get.asInstanceOf[PerfObsReplicationsResultsAspect])
     }
   }
 
   /** Adds event handler to analyze the performance for the whole experiment. */
   def withExperimentPerformance(f: PerfObsExperimentResultsAspect => Unit) = {
     afterExperiment {
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).asInstanceOf[PerfObsExperimentResultsAspect])
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).get.asInstanceOf[PerfObsExperimentResultsAspect])
     }
   }
 
