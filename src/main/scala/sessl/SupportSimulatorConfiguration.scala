@@ -2,15 +2,11 @@ package sessl
 import scala.collection.mutable.ListBuffer
 import sessl.util.AlgorithmSet
 
-/**
- * Support for configuring the simulators that shall be used.
- * @author Roland Ewald
+/** Support for configuring the simulators that shall be used.
+ *  @author Roland Ewald
  *
  */
 trait SupportSimulatorConfiguration {
-
-  /** Stored the fixed simulator setup to be used (if one is set). */
-  protected[sessl] var fixedSimulator: Option[Simulator] = None
 
   /** The user-defined set of simulation algorithms. */
   val simulatorSet = AlgorithmSet[Simulator]()
@@ -19,8 +15,12 @@ trait SupportSimulatorConfiguration {
   var simulatorExecutionMode: SimulatorExecutionOption = AnySimulator
 
   /** Getting/setting the simulator. */
-  def simulator_=(s: Simulator) = { fixedSimulator = Some(s) }
-  def simulator = { fixedSimulator.get }
+  def simulator_=(s: Simulator) = { simulatorSet.clear(); simulatorSet << Seq(s) }
+  def simulator = {
+//    require(simulatorSet.hasSingleElement,
+//      "Use simulatorSet instead of this simulator property, there is more than one algorithm in the set!")
+    simulatorSet.firstAlgorithm
+  }
 
 }
 

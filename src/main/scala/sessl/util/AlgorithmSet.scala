@@ -41,6 +41,15 @@ case class AlgorithmSet[T <: Algorithm](initialAlgos: Seq[T]) {
 
   /** Get the size. */
   def size = algorithmList.size
+
+  /** Clear the list. */
+  def clear() = algorithmList.clear()
+
+  /** Get the first algorithm. */
+  def firstAlgorithm = algorithmList.toList(0)
+
+  /** Checks whether the algorithm set consists only of a single element. */
+  def hasSingleElement = algorithmList.size == 1
 }
 
 object AlgorithmSet {

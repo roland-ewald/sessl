@@ -130,9 +130,7 @@ class Experiment(modelURI: URI) extends AbstractExperiment {
 
   /** Configure simulator. */
   def configureSimulator() = {
-    if (fixedSimulator.isDefined)
-      setProcessorParameters(new ParamBlock(fixedSimulator.getOrElse().asInstanceOf[BasicJamesIISimulator].factory.getClass.getName))
-    else if (simulatorSet.size == 1)
+    if (simulatorSet.size == 1)
       setProcessorParameters(ParamBlockGenerator.createParamBlock(simulatorSet.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
     else if (simulatorSet.size > 1)
       configureMultiSimulatorExperiment()
