@@ -58,7 +58,7 @@ import sessl.util.CreatableFromVariables
     val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution /*with PerformanceObservation*/ {
 
       stopTime = 1.5
-      replications = 200
+      replications = 20
 
       afterRun { r => { counter += 1 } }
 
@@ -92,7 +92,7 @@ import sessl.util.CreatableFromVariables
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
 
       simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue)) }
-      simulatorSet << { TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05)) }
+      //simulatorSet << { TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05)) }
 
       simulatorExecutionMode = AllSimulators
       parallelThreads = -1
