@@ -39,7 +39,7 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
         override def simulationExecuted(taskRunner: ITaskRunner,
           crti: ComputationTaskRuntimeInformation, jobDone: Boolean): Unit = {
           val representation = ParameterBlocks.toUniqueString(
-            ParameterBlock.getSubBlock(crti.getComputationTaskConfiguration().getExecParams(), classOf[ProcessorFactory].getName()))
+            ParameterBlock.getSubBlock(crti.getComputationTask().getConfig().getExecParams(), classOf[ProcessorFactory].getName()))
           if (setups.contains(representation)) {
             println("SUCCESS FOR:" + representation)
             runPerformances(crti.getComputationTaskID) =
