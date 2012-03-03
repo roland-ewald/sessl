@@ -15,8 +15,10 @@ import sessl.SupportSimulatorConfiguration
 trait PerformanceObservation extends AbstractPerformanceObservation {
   this: Experiment with SupportSimulatorConfiguration =>
 
+  /** The run performances, associated with their run ids.*/
   private[this] val runPerformances: Map[Int, PerfObsRunResultsAspect] = Map()
 
+  /** Fill the run performances map with actual data. */
   exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter() {
     override def simulationExecuted(taskRunner: ITaskRunner,
       crti: ComputationTaskRuntimeInformation, jobDone: Boolean): Unit = {
