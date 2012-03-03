@@ -6,8 +6,9 @@ import james.core.experiments.ComputationTaskRuntimeInformation
 import sessl.AbstractPerformanceObservation
 import sessl.PerfObsRunResultsAspect
 import sessl.PerfObsRunResultsAspect
-import sessl.SupportSimulatorConfiguration
 import sessl.Simulator
+import sessl.SupportSimulatorConfiguration
+import james.perfdb.util.ParameterBlocks
 
 /** Support for performance observation in James II.
  *  @author Roland Ewald
@@ -24,12 +25,17 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
   override def configure() {
     super.configure()
     // Read out all defined algorithm setups
+    simulatorSet.algorithms.foreach(algo => {
+      val representation = ParameterBlocks.toUniqueString(ParamBlockGenerator.createParamBlock(algo.asInstanceOf[JamesIIAlgo[Factory]]))
+      setups(representation) = algo
+    })
 
     // Fill the run performances map with actual data from the execution listener
     exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter() {
       override def simulationExecuted(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation, jobDone: Boolean): Unit = {
         //TODO: pick the right setup for storage
+        //        ParameterBlock crti.getComputationTaskConfiguration().getExecParams()
         runPerformances(crti.getComputationTaskID) =
           new PerfObsRunResultsAspect(NextReactionMethod(), crti.getRunInformation().getComputationTaskRunTime())
       }
