@@ -11,6 +11,8 @@ import sessl.SupportSimulatorConfiguration
 import james.perfdb.util.ParameterBlocks
 import james.core.parameters.ParameterBlock
 import james.core.processor.plugintype.ProcessorFactory
+import james.SimSystem
+import java.util.logging.Level
 
 /** Support for performance observation in James II.
  *  @author Roland Ewald
@@ -26,31 +28,28 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
 
   override def configure() {
     super.configure()
-    try {
-      // Read out all defined algorithm setups
-      simulatorSet.algorithms.foreach(algo => {
-        val representation = ParameterBlocks.toUniqueString(ParamBlockGenerator.createParamBlock(algo.asInstanceOf[JamesIIAlgo[Factory]]))
-        setups(representation) = algo
-      })
+    // Read out all defined algorithm setups
+    simulatorSet.algorithms.foreach(algo => {
+      val representation = ParameterBlocks.toUniqueString(ParamBlockGenerator.createParamBlock(algo.asInstanceOf[JamesIIAlgo[Factory]]))
+      setups(representation) = algo
+    })
 
-      // Fill the run performances map with actual data from the execution listener
-      exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter() {
-        
-        override def simulationExecuted(taskRunner: ITaskRunner,
-          crti: ComputationTaskRuntimeInformation, jobDone: Boolean): Unit = {
-          val representation = ParameterBlocks.toUniqueString(
-            ParameterBlock.getSubBlock(crti.getComputationTask().getConfig().getExecParams(), classOf[ProcessorFactory].getName()))
-          if (setups.contains(representation)) {
-            println("SUCCESS FOR:" + representation)
-            runPerformances(crti.getComputationTaskID) =
-              new PerfObsRunResultsAspect(setups(representation), crti.getRunInformation().getComputationTaskRunTime())
-          } else println("WARNING: no setup found for parameter block representation: " + representation)
-        }
-      })
+    // Fill the run performances map with actual data from the execution listener
+    exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter() {
+      override def simulationExecuted(taskRunner: ITaskRunner,
+        crti: ComputationTaskRuntimeInformation, jobDone: Boolean): Unit = {
+        //Get string representation for current setup...
+        val representation = ParameterBlocks.toUniqueString(
+          ParameterBlock.getSubBlock(crti.getComputationTask().getConfig().getExecParams(), classOf[ProcessorFactory].getName()))
 
-    } catch {
-      case ex => ex.printStackTrace()
-    }
+        //... and look it up in the setups map
+        require(setups.contains(representation), "No setup found for parameter block representation: " + representation)
+        runPerformances(crti.getComputationTaskID) =
+          new PerfObsRunResultsAspect(setups(representation), crti.getRunInformation().getComputationTaskRunTime())
+      }
+    })
+    
+    //TODO: Configure performance data sink
   }
 
   override def collectResults(runId: Int, removeData: Boolean): PerfObsRunResultsAspect = {
