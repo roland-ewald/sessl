@@ -36,6 +36,7 @@ import simspex.exploration.simple.SimpleSimSpaceExplorer
 import james.core.experiments.IComputationTaskConfiguration
 import james.core.experiments.SimulationRunConfiguration
 import james.core.model.variables.BaseVariable
+import james.core.parameters.ParameterBlock
 import scala.collection.mutable.ListBuffer
 import sessl._
 import sessl.james._
@@ -147,11 +148,18 @@ class Experiment(modelURI: URI) extends AbstractExperiment {
 
   /** Define an experiment steerer to iterate over all algorithms. */
   protected[james] def defineMultiAlgoExperimentAllSimulators() = {
+    
+    // Set up steerer variables
     val steererVars = new SteeredExperimentVariables(classOf[IExperimentSteerer])
     steererVars.setSubLevel(exp.getExperimentVariables())
-    val paramBlockList = new java.util.ArrayList[ParamBlock]()
     val steerers = new java.util.ArrayList[IExperimentSteerer]()
-    ParamBlockGenerator.createParamBlockSet(simulatorSet.asInstanceOf[AlgorithmSet[JamesIIAlgo[Factory]]]).foreach(p => paramBlockList.add(p))
+    
+    // Create parameter block list of all setups
+    val paramBlockList = new java.util.ArrayList[ParamBlock]()
+    ParamBlockGenerator.createParamBlockSet(simulatorSet.asInstanceOf[AlgorithmSet[JamesIIAlgo[Factory]]]).foreach(
+      p => paramBlockList.add(new ParamBlock().addSubBl(classOf[ProcessorFactory].getName(), p)))
+    
+    // Set up explorer
     val explorer = new SimpleSimSpaceExplorer(paramBlockList)
     explorer.setCalibrator(null)
     explorer.setMaxModelSpaceElems(1)
