@@ -73,22 +73,30 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
   def runtimes =
     retrieveRuntimes(runsResultsMap)
 
+  /** The set of all setups, each used by at least one run. */
+  lazy val allSetups = runsResultsMap.mapValues(_.asInstanceOf[PerfObsRunResultsAspect].setup).values.toSet
+
   /** Retrieves all run times for a set of results executed with certain setups. */
-  def runtimes(algorithms: Any*): Iterable[Double] = {
+  def runtimes(algorithms: Any): Iterable[Double] = {
     algorithms match {
-      case algo: Simulator => runtimesFor(new AlgorithmSet[Simulator](Seq(algo)))
+      case algo: Simulator => runtimesFor(AlgorithmSet[Simulator](algo))
       case algoSeq: Seq[_] => algoSeq.head match {
-        case s: Simulator => runtimesFor(new AlgorithmSet[Simulator](algoSeq.asInstanceOf[Seq[Simulator]]))
-        case x => throw new IllegalArgumentException("Object '" + x + "' in sequence ' + algorithms + ' not supported for run times lookup.")
+        case s: Simulator => runtimesFor(AlgorithmSet[Simulator](algoSeq.asInstanceOf[Seq[Simulator]]))
+        case x => throw new IllegalArgumentException("Object '" + algoSeq.head + "' in sequence '" + algoSeq + "' not supported for run times lookup.")
       }
       case x => throw new IllegalArgumentException("Object '" + algorithms + "' not supported for run times lookup.")
     }
-
   }
 
+  /** Retrieve the run times per setup. */
+  def runtimesAllSetups: Seq[(String, List[Double])] =
+    allSetups.map(setup => (setup.toString, runtimesFor(AlgorithmSet[Simulator](setup)).toList)).toSeq
+
+  /** Retrieve runtime results for all runs having used a setup that is contained in the given set. */
   private[this] def runtimesFor(setups: AlgorithmSet[Simulator]) =
     retrieveRuntimes(runsResultsMap.filter(entry => setups.algorithmSet(entry._2.asInstanceOf[PerfObsRunResultsAspect].setup)))
 
+  /** Retrieve the runtime results for a given number of runs, represented by a map run id => run result aspect. */
   private[this] def retrieveRuntimes(results: Map[Int, RunResultsAspect]) =
     results.values.map(_.asInstanceOf[PerfObsRunResultsAspect].runtime)
 }

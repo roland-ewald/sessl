@@ -11,15 +11,18 @@ import sessl.Algorithm
  */
 case class AlgorithmSet[T <: Algorithm](initialAlgos: Seq[T]) {
 
-  /** The list containing the algorithms.*/
+  /** The list containing the algorithms. */
   private val algorithmList = {
     val algos = ListBuffer[T]()
     algos ++= initialAlgos
     algos
   }
 
-  /** Empty constructor for convenience.*/
+  /** Empty constructor for convenience. */
   def this() = this(Seq())
+
+  /** Constructor for single-element sets. */
+  def this(algorithm: T) = this(Seq(algorithm))
 
   /** Adding elements to the set. */
   def <<(algos: Seq[T]) = { algorithmList ++= algos }
@@ -56,4 +59,7 @@ object AlgorithmSet {
 
   /** Simple static constructor. */
   def apply[T <: Algorithm](): AlgorithmSet[T] = new AlgorithmSet()
+
+  /** Constructor for single-element sets. */
+  def apply[T <: Algorithm](algorithm: T) = new AlgorithmSet(algorithm)
 }

@@ -56,7 +56,7 @@ import sessl.util.CreatableFromVariables
     //TODO: Make this independent of instrumentation mix-in!
     var counter = 0
     val tauLeapingAlgorithms = TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05))
-    val nrAlgorithms = NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue))
+    val nrAlgorithms = NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue, Heap, SortedList))
     val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation with Report {
 
       stopTime = 1.5
@@ -74,8 +74,9 @@ import sessl.util.CreatableFromVariables
         reportSection("Results") {
           histogram(r.runtimes)(title = "All run times")
           histogram(r.runtimes(tauLeapingAlgorithms))(title = "Run times for Tau Leaping")
-          histogram(r.runtimes(tauLeapingAlgorithms))(title = "Run times for Next Reaction Methods")
-          boxPlot(r.runtimes)(title = "Run time per setup")
+          histogram(r.runtimes(nrAlgorithms))(title = "Run times for Next Reaction Methods")
+          boxPlot(r.runtimesAllSetups: _*)(title = "Run time per setup")
+          boxPlot(("TL", r.runtimes(tauLeapingAlgorithms)), ("NRM", r.runtimes(nrAlgorithms)))(title = "Run time comparison for algorithm families")
         }
       }
     }
