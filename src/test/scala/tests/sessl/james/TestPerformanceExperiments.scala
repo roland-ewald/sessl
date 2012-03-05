@@ -55,17 +55,29 @@ import sessl.util.CreatableFromVariables
 
     //TODO: Make this independent of instrumentation mix-in!
     var counter = 0
-    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation {
+    val tauLeapingAlgorithms = TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05))
+    val nrAlgorithms = NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue))
+    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation with Report {
 
       stopTime = 1.5
       replications = 200
 
       afterRun { r => { counter += 1 } }
 
-      simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue)) }
-      simulatorSet << { TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05)) }
+      simulatorSet << (nrAlgorithms ++ tauLeapingAlgorithms)
 
       simulatorExecutionMode = AnySimulator
+
+      reportName = "Performance Report"
+
+      withExperimentPerformance { r =>
+        reportSection("Results") {
+          histogram(r.runtimes)(title = "All run times")
+          histogram(r.runtimes(tauLeapingAlgorithms))(title = "Run times for Tau Leaping")
+          histogram(r.runtimes(tauLeapingAlgorithms))(title = "Run times for Next Reaction Methods")
+          boxPlot(r.runtimes)(title = "Run time per setup")
+        }
+      }
     }
     execute(exp)
     assertEquals("There should be as many runs as replications were configured.", exp.replications, counter)
@@ -86,7 +98,7 @@ import sessl.util.CreatableFromVariables
       withReplicationsPerformance(r => println(r))
       withExperimentPerformance { r =>
         reportSection("Results") {
-        	scatterPlot(r.runtimes, r.runtimes)()
+          scatterPlot(r.runtimes, r.runtimes)()
         }
       }
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }

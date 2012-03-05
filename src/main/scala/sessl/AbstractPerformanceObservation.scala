@@ -74,7 +74,19 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
     retrieveRuntimes(runsResultsMap)
 
   /** Retrieves all run times for a set of results executed with certain setups. */
-  def runtimesFor(setups: AlgorithmSet[Simulator]) =
+  def runtimes(algorithms: Any*): Iterable[Double] = {
+    algorithms match {
+      case algo: Simulator => runtimesFor(new AlgorithmSet[Simulator](Seq(algo)))
+      case algoSeq: Seq[_] => algoSeq.head match {
+        case s: Simulator => runtimesFor(new AlgorithmSet[Simulator](algoSeq.asInstanceOf[Seq[Simulator]]))
+        case x => throw new IllegalArgumentException("Object '" + x + "' in sequence ' + algorithms + ' not supported for run times lookup.")
+      }
+      case x => throw new IllegalArgumentException("Object '" + algorithms + "' not supported for run times lookup.")
+    }
+
+  }
+
+  private[this] def runtimesFor(setups: AlgorithmSet[Simulator]) =
     retrieveRuntimes(runsResultsMap.filter(entry => setups.algorithmSet(entry._2.asInstanceOf[PerfObsRunResultsAspect].setup)))
 
   private[this] def retrieveRuntimes(results: Map[Int, RunResultsAspect]) =
