@@ -63,9 +63,12 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
 
 }
 
-//TODO: define kinds of performance data sinks
+/** Super type of all performance data sink specifications. */
 trait PerformanceDataSinkSpecification
-trait DatabasePerformanceSink
+
+/** Database performance data sinks. */
+case class PerformanceDatabaseDataSink(url: String = "not://specified", user: String = "username", password: String = "", driver: String = "unknown driver")
+  extends DataSinkSpecification
 
 /** Provides operations for aggregated performance results (collecting all run times, filtering by setups). */
 trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunResultsAspect] }] {
