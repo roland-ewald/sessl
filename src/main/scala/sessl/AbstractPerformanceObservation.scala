@@ -11,7 +11,11 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
   this: AbstractExperiment with SupportSimulatorConfiguration =>
 
   /** Specifies where to store the data. */
-  private[this] var performanceDataSinkSpec: Option[PerformanceDataSinkSpecification] = None
+  protected[sessl] var performanceDataSinkSpecication: Option[PerformanceDataSinkSpecification] = None
+
+  /** Getting/setting the performance data sink. */
+  def performanceDataSink_=(pds: PerformanceDataSinkSpecification) = { performanceDataSinkSpecication = Some(pds) }
+  def performanceDataSink: PerformanceDataSinkSpecification = { performanceDataSinkSpecication.get }
 
   /** Adds event handler to analyze the performance of a single run. */
   def withRunPerformance(f: PerfObsRunResultsAspect => Unit) = {

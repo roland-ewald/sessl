@@ -1,18 +1,23 @@
 package sessl.james
 
 import scala.collection.mutable.Map
+import james.core.data.DBConnectionData
 import james.core.experiments.taskrunner.ITaskRunner
 import james.core.experiments.ComputationTaskRuntimeInformation
+import james.core.parameters.ParameterBlock
+import james.core.processor.plugintype.ProcessorFactory
+import james.perfdb.util.ParameterBlocks
 import sessl.AbstractPerformanceObservation
 import sessl.PerfObsRunResultsAspect
 import sessl.PerfObsRunResultsAspect
+import sessl.PerformanceDataSinkSpecification
+import sessl.PerformanceDatabaseDataSink
 import sessl.Simulator
 import sessl.SupportSimulatorConfiguration
-import james.perfdb.util.ParameterBlocks
-import james.core.parameters.ParameterBlock
-import james.core.processor.plugintype.ProcessorFactory
-import james.SimSystem
-import java.util.logging.Level
+import simspex.gui.PerfDBRecorder
+import simspex.gui.SimSpExPerspective
+import james.perfdb.util.HibernateConnectionData
+import simspex.util.DBConfiguration
 
 /** Support for performance observation in James II.
  *  @author Roland Ewald
@@ -20,11 +25,14 @@ import java.util.logging.Level
 trait PerformanceObservation extends AbstractPerformanceObservation {
   this: Experiment with SupportSimulatorConfiguration =>
 
-  /** The run performances, associated with their run ids.*/
+  /** The run performances, associated with their run ids. */
   private[this] val runPerformances = Map[Int, PerfObsRunResultsAspect]()
 
   /** The parameter block string representations, mapped back to their corresponding setups. */
   private[this] val setups = Map[String, Simulator]()
+
+  /** Reference to the database recorder that is used (if any). */
+  private[this] var performanceRecorder: Option[PerfDBRecorder] = None
 
   override def configure() {
     super.configure()
@@ -48,8 +56,7 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
           new PerfObsRunResultsAspect(setups(representation), crti.getRunInformation().getComputationTaskRunTime())
       }
     })
-    
-    //TODO: Configure performance data sink
+    configurePerformanceDataSink()
   }
 
   override def collectResults(runId: Int, removeData: Boolean): PerfObsRunResultsAspect = {
@@ -63,4 +70,32 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
     }) //TODO: use logging here!
   }
 
+  /** Configures, instantiates and starts the performance recorder for the James II performance database. */
+  private[this] def configurePerformanceDataSink(): Unit = {
+    if (!performanceDataSinkSpecication.isDefined)
+      return
+    val dbConnectionData = createConnectionData(performanceDataSinkSpecication.get)
+    SimSpExPerspective.setDbConnectionData(dbConnectionData)
+    performanceRecorder = Some(new PerfDBRecorder())
+    exp.getExecutionController().addExecutionListener(performanceRecorder.get)
+    performanceRecorder.get.start()
+    afterExperiment { _ => performanceRecorder.get.stop() }
+  }
+
+  /** Creates performance database connection data. */
+  private[this] def createConnectionData(perfDataSinkSpec: PerformanceDataSinkSpecification): DBConnectionData = {
+    perfDataSinkSpec match {
+      case mysql: MySQLPerformanceDataSink => new HibernateConnectionData() //TODO
+      case file: FilePerformanceDataSink => new HibernateConnectionData(DBConfiguration.HSQL_DEFAULT_LOCATION_PREFIX + file.fileName, DBConfiguration.HSQL_DEFAULT_USER, DBConfiguration.HSQL_DEFAULT_PWD, DBConfiguration.HSQL_DRIVER,
+        DBConfiguration.HSQL_DIALECT)
+      case db: PerformanceDatabaseDataSink => null //TODO: Check whether driver = hsqldb || mysql, otherwise throw exception with explanation
+      case x => throw new IllegalArgumentException("Performance data sink '" + x + "' is not supported.")
+    }
+  }
 }
+
+/** Convenience class to avoid having to look up the correct driver/URI scheme for MySQL.*/
+case class MySQLPerformanceDataSink(host: String = "localhost", schema: String = "perf_db", user: String = "root", password: String = "root") extends PerformanceDataSinkSpecification
+
+/** Convenience class to avoid having to look up the correct driver/URI scheme for HSQLDB.*/
+case class FilePerformanceDataSink(fileName: String = "perf_db") extends PerformanceDataSinkSpecification
