@@ -91,18 +91,15 @@ trait Report extends AbstractReport {
       v.caption, v.title, Array[String](v.xLabel, v.yLabel))
     case v: HistogramView => new HistogramDataView(toJavaDoubleArray(v.data), v.caption, v.title, v.xLabel, v.yLabel)
     case v: BoxPlotView => new BoxPlotDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
-      v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => escapeVarName(x._1)): _*))
+      v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1): _*))
     case v: LinePlotView => new LineChartDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
-      v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => escapeVarName(x._1)).tail: _*))
+      v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1).tail: _*))
     case v: StatisticalTestView =>
       val dataPair = new james.core.util.misc.Pair[Array[java.lang.Double], Array[java.lang.Double]](toJavaDoubleArray(v.firstData._2), toJavaDoubleArray(v.secondData._2))
-      new StatisticalTestDataView(dataPair, v.caption, escapeVarName(v.firstData._1), escapeVarName(v.secondData._1), true, true, StatisticalTestDefinition.KOLMOGOROV_SMIRNOV)
+      new StatisticalTestDataView(dataPair, v.caption, v.firstData._1, v.secondData._1, true, true, StatisticalTestDefinition.KOLMOGOROV_SMIRNOV)
     case v: TableView => new TableDataView(to2DTransposedJavaStringArray(v.data: _*), v.caption)
     case _ => throw new IllegalArgumentException("Data view " + view + " not yet supported.")
   }
-
-  /** Escapes a variable name for R (puts it in quotation marks).*/
-  def escapeVarName(varName: String) = "\"" + varName + "\""
 
   /** Convert list to double array. */
   private def toJavaDoubleArray(values: List[Double]): Array[java.lang.Double] = values.map(_.asInstanceOf[java.lang.Double]).toArray
