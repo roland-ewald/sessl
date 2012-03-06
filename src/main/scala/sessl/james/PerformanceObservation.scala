@@ -17,7 +17,7 @@ import sessl.SupportSimulatorConfiguration
 import simspex.gui.PerfDBRecorder
 import simspex.gui.SimSpExPerspective
 import james.perfdb.util.HibernateConnectionData
-import simspex.util.DBConfiguration
+import simspex.util.DBConfiguration._
 
 /** Support for performance observation in James II.
  *  @author Roland Ewald
@@ -85,10 +85,19 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
   /** Creates performance database connection data. */
   private[this] def createConnectionData(perfDataSinkSpec: PerformanceDataSinkSpecification): DBConnectionData = {
     perfDataSinkSpec match {
-      case mysql: MySQLPerformanceDataSink => new HibernateConnectionData() //TODO
-      case file: FilePerformanceDataSink => new HibernateConnectionData(DBConfiguration.HSQL_DEFAULT_LOCATION_PREFIX + file.fileName, DBConfiguration.HSQL_DEFAULT_USER, DBConfiguration.HSQL_DEFAULT_PWD, DBConfiguration.HSQL_DRIVER,
-        DBConfiguration.HSQL_DIALECT)
-      case db: PerformanceDatabaseDataSink => null //TODO: Check whether driver = hsqldb || mysql, otherwise throw exception with explanation
+      case mysql: MySQLPerformanceDataSink =>
+        new HibernateConnectionData("jdbc:mysql://" + mysql.host + '/' + mysql.schema, mysql.user, mysql.password, MYSQL_DRIVER, MYSQL_DIALECT)
+      case file: FilePerformanceDataSink =>
+        new HibernateConnectionData(HSQL_DEFAULT_LOCATION_PREFIX + file.fileName, HSQL_DEFAULT_USER, HSQL_DEFAULT_PWD, HSQL_DRIVER, HSQL_DIALECT)
+      case db: PerformanceDatabaseDataSink => {
+        val dialect = db.driver match {
+          case MYSQL_DRIVER => MYSQL_DIALECT
+          case HSQL_DRIVER => HSQL_DIALECT
+          case _ => ""
+        }
+        require(!dialect.isEmpty(), "Only MySQL and HyperSQL are supported for now, so use '" + MYSQL_DRIVER + "' or '" + HSQL_DRIVER + "' as driver.")
+        new HibernateConnectionData(db.url, db.user, db.password, db.driver, dialect)
+      }
       case x => throw new IllegalArgumentException("Performance data sink '" + x + "' is not supported.")
     }
   }

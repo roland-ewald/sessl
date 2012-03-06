@@ -98,10 +98,13 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
   }
 
   /** Retrieve the run times for all setups, sorted alphabetically by the string representation of the setup. */
-  def runtimesAllSetups: Seq[(String, List[Double])] = runtimesSomeSetups(allSetups.toSeq)
+  def runtimesForAll: Seq[(String, List[Double])] = runtimesFor(allSetups.toSeq)
+
+  /** Retrieve runtimes for single setup.*/
+  def runtimesFor(algo: Simulator): Seq[(String, List[Double])] = runtimesFor(Seq(algo))
 
   /** Retrieve the run times for some setups, sorted alphabetically by the string representation of the setup. */
-  def runtimesSomeSetups(setups: Seq[Simulator]): Seq[(String, List[Double])] =
+  def runtimesFor(setups: Seq[Simulator]): Seq[(String, List[Double])] =
     setups.map(setup => (setup.toString, runtimesFor(AlgorithmSet[Simulator](setup)).toList)).toSeq.sortBy(_._1)
 
   /** Retrieve runtime results for all runs having used a setup that is contained in the given set. */

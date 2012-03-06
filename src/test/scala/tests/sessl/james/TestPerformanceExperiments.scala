@@ -68,15 +68,17 @@ import sessl.util.CreatableFromVariables
 
       simulatorExecutionMode = AnySimulator
 
+      performanceDataSink = FilePerformanceDataSink()
+
       reportName = "Performance Report"
 
       withExperimentPerformance { r =>
         reportSection("Results") {
           histogram(r.runtimes)(title = "All run times")
-          histogram(r.runtimes(tauLeapingAlgorithms))(title = "Run times for Tau Leaping")
+          histogram(("Runtimes of all tau-leaping methods.", r.runtimes(tauLeapingAlgorithms)))(title = "Run times for Tau Leaping")
           histogram(r.runtimes(nrAlgorithms))(title = "Run times for Next Reaction Methods")
-          boxPlot(r.runtimesAllSetups)(title = "Run time per setup")
-          boxPlot(r.runtimesSomeSetups(tauLeapingAlgorithms))(title = "Run time per setup, for a subset")
+          boxPlot(r.runtimesForAll)(title = "Run time per setup")
+          boxPlot(r.runtimesFor(tauLeapingAlgorithms))(title = "Run time per setup, for a subset")
           boxPlot(("TL", r.runtimes(tauLeapingAlgorithms)), ("NRM", r.runtimes(nrAlgorithms)))(title = "Run time comparison for algorithm families.")
         }
       }
@@ -100,7 +102,7 @@ import sessl.util.CreatableFromVariables
       withReplicationsPerformance(r => println(r))
       withExperimentPerformance { r =>
         reportSection("Results") {
-          scatterPlot(r.runtimes, r.runtimes)()
+          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = MList)), r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "A simple scatterplot.")
         }
       }
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
