@@ -37,8 +37,8 @@ trait AbstractReport extends ExperimentConfiguration {
 
   /** Define a scatter plot. */
   def scatterPlot(xData: Any, yData: Any)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "") = {
-    val namedXData = toNamedList(xData)
-    val namedYData = toNamedList(yData)
+    val namedXData = toNamedList(xData)(0)
+    val namedYData = toNamedList(yData)(0)
     if (dataAreNumeric(namedXData._2, namedYData._2)) {
       currentSection.childs += ScatterPlotView(toDoubleList(namedXData._2), toDoubleList(namedYData._2), title, caption,
         getOrEmpty(xLabel, namedXData._1), getOrEmpty(yLabel, namedYData._1), currentSection)
@@ -47,14 +47,14 @@ trait AbstractReport extends ExperimentConfiguration {
 
   /** Define a histogram plot. */
   def histogram(data: Any)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "Amount") = {
-    val namedData = toNamedList(data)
+    val namedData = toNamedList(data)(0)
     if (dataIsNumeric(namedData._2))
       currentSection.childs += HistogramView(toDoubleList(namedData._2), title, caption, getOrEmpty(xLabel, namedData._1), yLabel, currentSection)
   }
 
   /** Define a box plot with variable names. */
   def boxPlot(data: Any*)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "") = {
-    val namedData = data.map(toNamedList)
+    val namedData = data.flatMap(toNamedList)
     if (namedData.forall(x => dataIsNumeric(x._2)))
       currentSection.childs += BoxPlotView(namedData.toList.map(x => (x._1, toDoubleList(x._2))), title, caption, xLabel, yLabel, currentSection)
   }
@@ -62,9 +62,9 @@ trait AbstractReport extends ExperimentConfiguration {
   /** Define a line plot with variable names. The first value list defines the time points (if it is a trajectory, both values and times are taken from it). */
   def linePlot(data: Any*)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "") = {
     val convertedData = data.head match {
-      case tuple: (_, _) => ("Time", tuple._2.asInstanceOf[Trajectory].map(_._1)) :: data.toList.map(toNamedList)
-      case trajectory: List[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.map(toNamedList)
-      case _ => data.toList.map(toNamedList)
+      case tuple: (_, _) => ("Time", tuple._2.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
+      case trajectory: List[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
+      case _ => data.toList.flatMap(toNamedList)
     }
     if (convertedData.forall(x => dataIsNumeric(x._2)))
       currentSection.childs += LinePlotView(convertedData.map(x => (x._1, toDoubleList(x._2))), title, caption, xLabel, yLabel, currentSection)
@@ -72,8 +72,8 @@ trait AbstractReport extends ExperimentConfiguration {
 
   /** Define a report section that describes the outcomes of a statistical test. */
   def reportStatisticalTest(firstData: Any, secondData: Any)(caption: String = "", test: TwoPairedStatisticalTest = null) = {
-    val namedFirstData = toNamedList(firstData)
-    val namedSecondData = toNamedList(secondData)
+    val namedFirstData = toNamedList(firstData)(0)
+    val namedSecondData = toNamedList(secondData)(0)
     if (dataAreNumeric(namedFirstData._2, namedSecondData._2))
       currentSection.childs += StatisticalTestView((namedFirstData._1, toDoubleList(namedFirstData._2)),
         (namedSecondData._1, toDoubleList(namedSecondData._2)), caption, if (test == null) None else Some(test), currentSection)
@@ -81,22 +81,23 @@ trait AbstractReport extends ExperimentConfiguration {
 
   /** Define a report section that prints out data in a table format. */
   def reportTable(data: Any*)(caption: String = "") = {
-    val namedData = data.map(toNamedList)
+    val namedData = data.flatMap(toNamedList)
     val tableData = namedData.map(x => x._1 :: x._2.map(_.toString))
     currentSection.childs += TableView(tableData.toList, caption, currentSection)
   }
 
   /** Converts an object of a suitable type into a tuple (name, list of values)*/
-  private[this] def toNamedList(data: Any): (String, List[_]) = {
+  private[this] def toNamedList(data: Any): Seq[(String, List[_])] = {
     data match {
       //Because of type erasure, we have to match the types of the list content separately
       case tuple: (_, _) => tuple._2.asInstanceOf[List[_]].head match {
-        case t: (_, _) => (tuple._1.toString, tuple._2.asInstanceOf[Trajectory].map(_._2))
-        case _ => (tuple._1.toString, tuple._2.asInstanceOf[List[_]])
+        case t: (_, _) => Seq((tuple._1.toString, tuple._2.asInstanceOf[Trajectory].map(_._2)))
+        case _ => Seq((tuple._1.toString, tuple._2.asInstanceOf[List[_]]))
       }
-      case list: List[_] => list.head match {
-        case t: (_, _) => ("", list.asInstanceOf[List[(Double, _)]].map(_._2))
-        case _ => ("", list)
+      case seq: Seq[_] => seq.head match {
+        case t: (_, _) => seq.asInstanceOf[Seq[(_, List[Double])]].map(tuple => (tuple._1.toString, tuple._2))
+        case nestedSeq: Seq[_] => seq.asInstanceOf[Seq[Seq[Double]]].map(rawData => ("", rawData.toList))
+        case n: Number => Seq(("", seq.asInstanceOf[Seq[Number]].map(_.doubleValue()).toList))
       }
       case _ => throw new IllegalArgumentException("Entity '" + data + "' cannot be converted to a tuple (name, list of values).")
     }
