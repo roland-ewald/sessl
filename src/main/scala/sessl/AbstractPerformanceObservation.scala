@@ -1,5 +1,7 @@
 package sessl
-import util.AlgorithmSet
+import scala.annotation.implicitNotFound
+
+import sessl.util.AlgorithmSet
 import sessl.util.MiscUtils
 
 /** Support for performance observation and storage.
@@ -88,9 +90,12 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
     }
   }
 
-  /** Retrieve the run times per setup. */
-  def runtimesAllSetups: Seq[(String, List[Double])] =
-    allSetups.map(setup => (setup.toString, runtimesFor(AlgorithmSet[Simulator](setup)).toList)).toSeq
+  /** Retrieve the run times for all setups, sorted alphabetically by the string representation of the setup. */
+  def runtimesAllSetups: Seq[(String, List[Double])] = runtimesSomeSetups(allSetups.toSeq)
+
+  /** Retrieve the run times for some setups, sorted alphabetically by the string representation of the setup. */
+  def runtimesSomeSetups(setups: Seq[Simulator]): Seq[(String, List[Double])] =
+    setups.map(setup => (setup.toString, runtimesFor(AlgorithmSet[Simulator](setup)).toList)).toSeq.sortBy(_._1)
 
   /** Retrieve runtime results for all runs having used a setup that is contained in the given set. */
   private[this] def runtimesFor(setups: AlgorithmSet[Simulator]) =

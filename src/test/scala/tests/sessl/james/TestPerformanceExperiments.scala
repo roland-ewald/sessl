@@ -76,6 +76,7 @@ import sessl.util.CreatableFromVariables
           histogram(r.runtimes(tauLeapingAlgorithms))(title = "Run times for Tau Leaping")
           histogram(r.runtimes(nrAlgorithms))(title = "Run times for Next Reaction Methods")
           boxPlot(r.runtimesAllSetups)(title = "Run time per setup")
+          boxPlot(r.runtimesSomeSetups(tauLeapingAlgorithms))(title = "Run time per setup, for a subset")
           boxPlot(("TL", r.runtimes(tauLeapingAlgorithms)), ("NRM", r.runtimes(nrAlgorithms)))(title = "Run time comparison for algorithm families.")
         }
       }
