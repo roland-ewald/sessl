@@ -23,10 +23,9 @@ import sessl.RunResults
 import sessl.VariableAssignment
 import sessl.util.SimpleInstrumentation
 
-/**
- * Configuring James II for instrumentation.
+/** Configuring James II for instrumentation.
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  *
  */
 trait Instrumentation extends SimpleInstrumentation {
@@ -74,7 +73,11 @@ class SESSLInstrumenter(val instrConfig: SimpleInstrumentation) extends IRespons
   override def instrumentComputation(computation: IComputationTask): Unit = {
 
     observers.clear
-    val model: IModel = computation.getProcessorInfo().getLocal().getModel()
+
+    //TODO: This is currently FORMALISM-SPECIFIC (should be replaced by general instrumentation mechanism)
+    require(computation.getProcessorInfo().getLocal().getModel().isInstanceOf[ISRModel], "Only SR models are supported so far!")
+    
+    val model = computation.getProcessorInfo().getLocal().getModel().asInstanceOf[ISRModel]
 
     computation.getConfig().getParameters() //TODO: Manage parameters explicitly!
 
@@ -86,8 +89,6 @@ class SESSLInstrumenter(val instrConfig: SimpleInstrumentation) extends IRespons
     val bindings = instrConfig.variableBindings
     val varsToBeObserved = instrConfig.varsToBeObserved
 
-    //TODO: This is currently FORMALISM-SPECIFIC (should be replaced by general instrumentation mechanism)
-    require(model.isInstanceOf[ISRModel], "Only SR models are supported so far!")
     val observer = new SRSnapshotObserver(obsTimes, 1000) with SimpleObserverHelper[SimpleInstrumentation] {
 
       registerCompTask(computation)

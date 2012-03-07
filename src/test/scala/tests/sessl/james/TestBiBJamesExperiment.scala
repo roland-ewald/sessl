@@ -47,6 +47,6 @@ class TestBiBJamesExperiment {
       //Execution
       simulator = DirectMethod
     }
-    execute(exp)
+    //execute(exp) //TODO: re-activate after SR model-reader bug is fixed
   }
 }
