@@ -38,9 +38,14 @@ import james.core.experiments.SimulationRunConfiguration
 import james.core.model.variables.BaseVariable
 import james.core.parameters.ParameterBlock
 import scala.collection.mutable.ListBuffer
+import sessl.util.AlgorithmSet
+import james.core.experiments.taskrunner.parallel.ParallelComputationTaskRunnerFactory
+import james.core.experiments.taskrunner.plugintype.TaskRunnerFactory
+import simspex.adaptiverunner.AdaptiveTaskRunnerFactory
+import simspex.adaptiverunner.policies.EpsilonGreedyDecrInitFactory
+
 import sessl._
 import sessl.james._
-import sessl.util.AlgorithmSet
 
 /** Encapsulates the BaseExperiment.
  *
@@ -63,8 +68,8 @@ class Experiment extends AbstractExperiment {
   override def basicConfiguration() = {
     configureModelLocation()
     configureStopping()
-    configureReplications()
     configureSimulator()
+    configureReplications()
     configureRNG()
     createExperimentVariables()
     defineFixedModelVariables()
@@ -136,45 +141,54 @@ class Experiment extends AbstractExperiment {
   /** Configure simulator. */
   def configureSimulator() = {
     if (simulatorSet.size == 1)
-      setProcessorParameters(ParamBlockGenerator.createParamBlock(simulatorSet.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
+      useFirstSetupAsProcessor()
     else if (simulatorSet.size > 1)
       configureMultiSimulatorExperiment()
   }
 
   /** Configures experiment for multiple simulation algorithms. */
-  def configureMultiSimulatorExperiment() =
+  final def configureMultiSimulatorExperiment() = {
+    SimSystem.report(Level.INFO, "Configuring multi-simulator experiment with mode: " + simulatorExecutionMode)
     simulatorExecutionMode match {
-      case AllSimulators => defineMultiAlgoExperimentAllSimulators()
-      case AnySimulator =>
-        report(Level.WARNING, "Choosing any simulator from a set is not supported by basic setup (use mix-ins for this)." +
-          "Using first setup per default: ")
+      case AllSimulators => {
+        val repsPerSetup = fixedReplications.getOrElse(1)
+        exp.addReplicationCriterion(new ReplicationNumberCriterion(repsPerSetup * simulatorSet.size))
+        configureAdaptiveRunner(1, simulatorSet, repsPerSetup)
+      }
+      case AnySimulator => configureAdaptiveRunner(1, simulatorSet)
+      case x => throw new IllegalArgumentException("Execution mode '" + x + "' is not supported.")
     }
+  }
 
-  /** Define an experiment steerer to iterate over all algorithms. */
-  protected[james] def defineMultiAlgoExperimentAllSimulators() = {
+  /** Specifies the first given simulator setup as the processor to be used. */
+  def useFirstSetupAsProcessor() =
+    setProcessorParameters(ParamBlockGenerator.createParamBlock(simulatorSet.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
 
-    // Set up steerer variables
-    val steererVars = new SteeredExperimentVariables(classOf[IExperimentSteerer])
-    steererVars.setSubLevel(exp.getExperimentVariables())
-    val steerers = new java.util.ArrayList[IExperimentSteerer]()
-
-    // Create parameter block list of all setups
+  /** Configure experiment to use the adaptive task runner.
+   *
+   *  @param threads
+   *          the number of threads to be used
+   *  @param setups
+   *          the setups to be used
+   *  @param requiredInitialRounds
+   *          the required number of initial rounds
+   */
+  protected[james] def configureAdaptiveRunner(threads: Int, setups: AlgorithmSet[Simulator], requiredInitialRounds: Int = 1) = {
+    //Convert setups to list of parameter blocks
+    val parameterBlocks = ParamBlockGenerator.createParamBlockSet(setups.asInstanceOf[AlgorithmSet[JamesIIAlgo[Factory]]]).toList
     val paramBlockList = new java.util.ArrayList[ParamBlock]()
-    ParamBlockGenerator.createParamBlockSet(simulatorSet.asInstanceOf[AlgorithmSet[JamesIIAlgo[Factory]]]).foreach(
-      p => paramBlockList.add(new ParamBlock().addSubBl(classOf[ProcessorFactory].getName(), p)))
+    parameterBlocks.foreach(p => paramBlockList.add(p))
 
-    // Set up explorer
-    val explorer = new SimpleSimSpaceExplorer(paramBlockList)
-    explorer.setCalibrator(null)
-    explorer.setMaxModelSpaceElems(1)
-    explorer.setNumOfReplications(1)
-    steerers.add(explorer);
-    val newExpVars = new ExperimentVariables()
-    newExpVars.setSubLevel(steererVars)
-    newExpVars.addVariable(new ExperimentSteererVariable[IExperimentSteerer](
-      "SimSpExSteererVar", classOf[IExperimentSteerer], explorer,
-      new SequenceModifier[IExperimentSteerer](steerers)));
-    exp.setExperimentVariables(newExpVars)
+    //Define parameters of the task runner
+    var runnerParameters = Param() :/
+      (ParallelComputationTaskRunnerFactory.NUM_CORES ~> threads,
+        AdaptiveTaskRunnerFactory.PORTFOLIO ~> paramBlockList)
+    if (requiredInitialRounds > 1)
+      runnerParameters = runnerParameters :/ Param(AdaptiveTaskRunnerFactory.POLICY, classOf[EpsilonGreedyDecrInitFactory].getName,
+        Param(EpsilonGreedyDecrInitFactory.MIN_NUM_TRIALS, requiredInitialRounds))
+
+    //Set task runner
+    exp.setTaskRunnerFactory(new ParameterizedFactory[TaskRunnerFactory](new AdaptiveTaskRunnerFactory, runnerParameters))
   }
 
   /** Sets parameter block for processor factory. */
