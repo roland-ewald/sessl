@@ -100,11 +100,20 @@ import sessl.util.CreatableFromVariables
       stopTime = 1.5
       replications = 10
 
-      withRunPerformance { r => println(r) }
-      withReplicationsPerformance(r => println(r))
+      scan("numOfSpecies" ==> (10, 20))
+
+      withRunPerformance { r => println("Runtime:" + r.runtime) }
+      withReplicationsPerformance { r =>
+        reportSection("Results for assignment " + r.results.id) {
+          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = MList)),
+            r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "A scatterplot for a single assignment.")
+        }
+      }
+
       withExperimentPerformance { r =>
-        reportSection("Results") {
-          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = MList)), r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "A simple scatterplot.")
+        reportSection("Experiment-Wide Results") {
+          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = MList)),
+            r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "Showing data for the whole experiment.")
         }
       }
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
@@ -116,7 +125,7 @@ import sessl.util.CreatableFromVariables
       parallelThreads = -1
     }
     execute(exp)
-    assertEquals(exp.simulatorSet.size * exp.replications, counter)
+    assertEquals(exp.simulatorSet.size * exp.replications * 2, counter)
   }
 
 }
