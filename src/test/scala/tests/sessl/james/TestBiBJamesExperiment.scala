@@ -20,9 +20,10 @@ class TestBiBJamesExperiment {
     import sessl._
     import sessl.james._
 
-    val exp = new Experiment("file-sr:/./SimpleModel.sr") with Instrumentation with ParallelExecution with DataSink with Optimization {
+    val exp = new Experiment with Instrumentation with ParallelExecution with DataSink with Optimization {
 
       //Basic setup
+      model = "file-sr:/./SimpleModel.sr"
       stopTime = 100000
 
       //Experiment design

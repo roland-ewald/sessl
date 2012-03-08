@@ -1,11 +1,14 @@
 package sessl
 import scala.collection.mutable.ListBuffer
+import java.net.URI
 
-/**
- * Support for configuring the model. Supports to set fixed model parameters (via define(...)) as well as parameter scans (via scan(...)).
- * @author Roland Ewald
+/** Support for configuring the model. Supports to set fixed model parameters (via define(...)) as well as parameter scans (via scan(...)).
+ *  @author Roland Ewald
  */
 trait SupportModelConfiguration {
+
+  /** The model to be used. */
+  protected[this] var modelLocation: Option[String] = None
 
   /** List of experiment variables to be scanned. */
   private[this] val varsToScan = ListBuffer[Variable]()
@@ -32,5 +35,11 @@ trait SupportModelConfiguration {
 
   /** Get all defined variables that shall be fixed.*/
   protected def variablesToSet = varsToSet.toList
+
+  /** Allow to specify a model URI. */
+  def model_=(modelURI: URI) = { modelLocation = Some(modelURI.toString()) }
+  /** Default getters and setters. */
+  protected def model_=(modelString: String) = { modelLocation = Some(modelString) }
+  protected def model: String = modelLocation.get
 
 }

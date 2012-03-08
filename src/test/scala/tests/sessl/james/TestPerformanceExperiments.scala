@@ -57,8 +57,9 @@ import sessl.util.CreatableFromVariables
     var counter = 0
     val tauLeapingAlgorithms = TauLeaping() scan ("epsilon" ==> range(0.02, 0.01, 0.05))
     val nrAlgorithms = NextReactionMethod() scan ("eventQueue" ==> Seq(MList, CalendarQueue, Heap, SortedList))
-    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation with Report {
+    val exp = new Experiment with ParallelExecution with PerformanceObservation with Report {
 
+      model = TestJamesExperiments.testModel
       stopTime = 1.5
       replications = 200
 
@@ -93,8 +94,9 @@ import sessl.util.CreatableFromVariables
     import sessl.james._
 
     var counter = 0
-    val exp = new Experiment(TestJamesExperiments.testModel) with ParallelExecution with PerformanceObservation with Report {
+    val exp = new Experiment with ParallelExecution with PerformanceObservation with Report {
 
+      model = TestJamesExperiments.testModel
       stopTime = 1.5
       replications = 10
 

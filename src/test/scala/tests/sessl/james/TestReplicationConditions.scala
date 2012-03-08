@@ -18,7 +18,8 @@ import org.junit.Assert._
     var numberOfReps = -1
 
     // Combine replication conditions via 'and'
-    val expAnd = new Experiment(TestJamesExperiments.testModel) with Instrumentation with ParallelExecution {
+    val expAnd = new Experiment with Instrumentation with ParallelExecution {
+      model = TestJamesExperiments.testModel
       stopTime = 1.5
       observeAtTimes(0.45) { bind("x" ~ "S3") }
       //replicationCondition = FixedNumber(1) and (FixedNumber(manyReps) or MeanConfidenceReached("x")) TODO: implement this for James II...
@@ -29,7 +30,8 @@ import org.junit.Assert._
     assertEquals("The number of replications should match", manyReps, numberOfReps)
 
     // Combine replication conditions via 'or'
-    val expOr = new Experiment(TestJamesExperiments.testModel) with Instrumentation with ParallelExecution {
+    val expOr = new Experiment with Instrumentation with ParallelExecution {
+      model = TestJamesExperiments.testModel
       stopTime = 0.5
       observeAtTimes(0.45) { bind("x" ~ "S3") }
       replicationCondition = FixedNumber(1) or FixedNumber(manyReps)

@@ -13,8 +13,9 @@ class TestOptimization {
     import sessl._
     import sessl.james._
 
-    val exp = new Experiment(TestJamesExperiments.testModel) with Instrumentation with Optimization {
+    val exp = new Experiment with Instrumentation with Optimization {
 
+      model = TestJamesExperiments.testModel
       stopTime = 20.5
       replications = 2
       rng = MersenneTwister()

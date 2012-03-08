@@ -15,8 +15,9 @@ import org.junit.Assert._
     import sessl._
     import sessl.james._
 
-    val exp = new Experiment(TestJamesExperiments.testModel) with Instrumentation with Report with ParallelExecution {
+    val exp = new Experiment with Instrumentation with Report with ParallelExecution {
 
+      model = TestJamesExperiments.testModel
       stopTime = 0.5
       replications = 10
       observePeriodically(range(0.0, 0.05, 0.5)) { bind("x" ~ "S0", "y" ~ "S1") }

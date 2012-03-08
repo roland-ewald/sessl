@@ -22,13 +22,15 @@ class TestRNGSetup {
       assertEquals("The correct seed shall be used as the initial seed.", testSeed, SimSystem.getRNGGenerator.getInitialSeed())
     }
 
-    val exp1 = new Experiment(TestJamesExperiments.testModel) {
+    val exp1 = new Experiment {
+      model = TestJamesExperiments.testModel
       stopTime = .01
       rng = LCG(testSeed)
       afterExperiment(testFunction(classOf[_root_.james.core.math.random.generators.lcg.LCG].getName))
     }
 
-    val exp2 = new Experiment(TestJamesExperiments.testModel) {
+    val exp2 = new Experiment {
+      model = TestJamesExperiments.testModel
       stopTime = .01
       rng = MersenneTwister(testSeed)
       afterExperiment(testFunction(classOf[_root_.james.core.math.random.generators.mersennetwister.MersenneTwister].getName))

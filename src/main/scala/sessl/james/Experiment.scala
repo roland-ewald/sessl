@@ -48,21 +48,20 @@ import sessl.util.AlgorithmSet
  *
  *  @author Roland Ewald
  */
-class Experiment(modelURI: URI) extends AbstractExperiment {
+class Experiment extends AbstractExperiment {
 
   /** Encapsulated base experiment. */
   val exp = new BaseExperiment
-  exp.setModelLocation(modelURI)
   exp.setBackupEnabled(false)
 
-  /** Allows alternative experimentation with a model class. */
-  def this(modelClass: Class[_ <: IModel]) = this(new URI(Experiment.URI_PREFIX_IMPL_MODELS + modelClass.getCanonicalName))
-
-  /** Allows alternative experimentation with a string containing a model URI. */
-  def this(modelURI: String) = this(new URI(modelURI))
+  /** Allow to specify a model class. */
+  def model_=(modelClass: Class[_ <: IModel]) = {
+    modelLocation = Some(Experiment.URI_PREFIX_IMPL_MODELS + modelClass.getCanonicalName)
+  }
 
   /** Basic configuration: basic stopping / replication options, rng setup, experiment variables. */
   override def basicConfiguration() = {
+    configureModelLocation()
     configureStopping()
     configureReplications()
     configureSimulator()
@@ -100,6 +99,11 @@ class Experiment(modelURI: URI) extends AbstractExperiment {
       throw new IllegalArgumentException("Mean confidence replication criterion not implemented yet.")
     }
     case x => throw new IllegalArgumentException("Replication criterion '" + x + "' not implemented yet.")
+  }
+
+  /** Configure model location. */
+  def configureModelLocation() = {
+    exp.setModelLocation(new URI(modelLocation.get))
   }
 
   /** Configure stopping. */
@@ -148,17 +152,17 @@ class Experiment(modelURI: URI) extends AbstractExperiment {
 
   /** Define an experiment steerer to iterate over all algorithms. */
   protected[james] def defineMultiAlgoExperimentAllSimulators() = {
-    
+
     // Set up steerer variables
     val steererVars = new SteeredExperimentVariables(classOf[IExperimentSteerer])
     steererVars.setSubLevel(exp.getExperimentVariables())
     val steerers = new java.util.ArrayList[IExperimentSteerer]()
-    
+
     // Create parameter block list of all setups
     val paramBlockList = new java.util.ArrayList[ParamBlock]()
     ParamBlockGenerator.createParamBlockSet(simulatorSet.asInstanceOf[AlgorithmSet[JamesIIAlgo[Factory]]]).foreach(
       p => paramBlockList.add(new ParamBlock().addSubBl(classOf[ProcessorFactory].getName(), p)))
-    
+
     // Set up explorer
     val explorer = new SimpleSimSpaceExplorer(paramBlockList)
     explorer.setCalibrator(null)

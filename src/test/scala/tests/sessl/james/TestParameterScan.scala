@@ -20,8 +20,9 @@ import org.junit.Assert._
     var expDoneCounter = 0
 
     TestCounter.reset()
-    val exp = new Experiment(TestJamesExperiments.testCounterModel) with Instrumentation with ParallelExecution {
+    val exp = new Experiment with Instrumentation with ParallelExecution {
 
+      model = TestJamesExperiments.testCounterModel
       stopTime = 1.0
       replications = 2
 

@@ -15,7 +15,8 @@ import TestJamesExperiments._
     import sessl.james._
 
     //How to re-use experiment definitions: as normal classes...
-    class DefaultExperiment extends Experiment(testModel) with ParallelExecution {
+    class DefaultExperiment extends Experiment with ParallelExecution {
+      model = testModel
       replications = 2
     }
 

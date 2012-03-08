@@ -16,17 +16,16 @@ import sessl._TauLeaping
 import sessl.ExperimentResults
 import sessl.util.SimpleInstrumentation
 
-/**
- * Empty entities to easily check whether an experiment specification depends on system-specific
- * configuration and components or not. This is a 'formal' reference implementation, i.e. it provides all entities with
- * correct names and interfaces - but it does not realize any functionality so far.
+/** Empty entities to easily check whether an experiment specification depends on system-specific
+ *  configuration and components or not. This is a 'formal' reference implementation, i.e. it provides all entities with
+ *  correct names and interfaces - but it does not realize any functionality so far.
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  */
 
 //Central entities
 class EmptyExperiment extends AbstractExperiment with SimpleInstrumentation { def execute() = {}; def basicConfiguration = {} }
-class Experiment(modelURI: String) extends EmptyExperiment
+class Experiment extends EmptyExperiment
 
 //Instrumentation
 trait Instrumentation extends AbstractInstrumentation {
