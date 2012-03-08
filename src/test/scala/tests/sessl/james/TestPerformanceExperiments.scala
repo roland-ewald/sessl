@@ -100,7 +100,13 @@ import sessl.util.CreatableFromVariables
       stopTime = 1.5
       replications = 10
 
-      scan("numOfSpecies" ==> (10, 20))
+      scan("numOfSpecies" ==> (10, 20), "nothing" ==> (1, 2))
+
+      simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue)) }
+      simulatorSet << { TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05)) }
+
+      simulatorExecutionMode = AllSimulators
+      parallelThreads = -1
 
       withRunPerformance { r => println("Runtime:" + r.runtime) }
       withReplicationsPerformance { r =>
@@ -114,18 +120,15 @@ import sessl.util.CreatableFromVariables
         reportSection("Experiment-Wide Results") {
           scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = MList)),
             r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "Showing data for the whole experiment.")
+          histogram(r ~ "runtime")(title = "All runtimes.")
+          histogram(r.having("numOfSpecies" ==> 10) ~ "runtime")(title = "All runtimes for a sub-set of assignments.")
         }
       }
+
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
-
-      simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue)) }
-      simulatorSet << { TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05)) }
-
-      simulatorExecutionMode = AllSimulators
-      parallelThreads = -1
     }
     execute(exp)
-    assertEquals(exp.simulatorSet.size * exp.replications * 2, counter)
+    assertEquals(exp.simulatorSet.size * exp.replications * 4, counter)
   }
 
 }

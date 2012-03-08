@@ -1,5 +1,4 @@
 package sessl
-import scala.annotation.implicitNotFound
 
 import sessl.util.AlgorithmSet
 import sessl.util.MiscUtils
@@ -117,7 +116,13 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
 }
 
 /** The performance aspects of a single simulation run. */
-class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Double) extends RunResultsAspect(classOf[AbstractPerformanceObservation])
+class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Double) extends RunResultsAspect(classOf[AbstractPerformanceObservation]) {
+  /** Method to request a certain performance metric. TODO: Maybe use scala's (planned) reflection API here in future? Check! */
+  def apply(name: String) = name match {
+    case "runtime" => runtime
+    case x => throw new IllegalArgumentException("Metric '" + x + "' is not supported")
+  }
+}
 
 /** The performance aspects of a set of simulation runs, all computing the same variable assignment. */
 class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractPerformanceObservation])
@@ -125,5 +130,21 @@ class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf
 
 /** The performance aspects of all simulation runs executed during the experiment. */
 class PerfObsExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractPerformanceObservation])
-  with AggregatedPerformanceOperations[PerfObsExperimentResultsAspect]
+  with AggregatedPerformanceOperations[PerfObsExperimentResultsAspect] with PartialExperimentResults[PerfObsExperimentResultsAspect] {
+
+  /** Get the last sample for the given variable from all runs. */
+  def apply(name: String) = runsResults.mapValues(_.asInstanceOf[PerfObsRunResultsAspect](name)).values.toList
+
+  /** Apply name to the result, combine results in *named* tuple.*/
+  def ~(name: String) = (name, apply(name))
+
+  override protected def getValuesFor(name: String) = apply(name)
+
+  override def createPartialResult(runsResults: scala.collection.mutable.Map[Int, RunResultsAspect],
+    replicationsResults: scala.collection.mutable.Map[Int, ReplicationsResultsAspect]): PerfObsExperimentResultsAspect = {
+    val aspect = new PerfObsExperimentResultsAspect
+    aspect.setResults(runsResults, replicationsResults)
+    aspect
+  }
+}
 
