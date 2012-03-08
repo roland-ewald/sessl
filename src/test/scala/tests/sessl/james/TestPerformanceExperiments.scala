@@ -99,6 +99,8 @@ import sessl.util.CreatableFromVariables
       model = TestJamesExperiments.testModel
       stopTime = 1.5
       replications = 10
+      
+      reportName = "Performance Report 2"
 
       scan("numOfSpecies" ==> (10, 20), "nothing" ==> (1, 2))
 
