@@ -29,6 +29,7 @@ abstract class AbstractExperiment extends BasicExperimentConfiguration with Supp
 
   /** Prepares the experiment for execution. */
   private final def prepare() = {
+    require(modelLocation.isDefined, "No model is given. Use model = ... to set one.")
     basicConfiguration()
     configure()
     require(configureCalled, "Configuration incomplete: one of the mixed-in traits does not implement stacking properly (i.e., super.configure() is not called!).")
