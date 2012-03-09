@@ -106,25 +106,31 @@ private[sessl] trait BasicExperimentConfiguration extends ExperimentConfiguratio
   def isDone = experimentDoneCalled
 
   override final def runDone(runId: Int) = {
-    runDoneCalled = true
-    registerFinishedRun(runId)
-    collectRunResultsAspects(runId)
-    executeRunDoneActions(runId)
+    synchronized {
+      runDoneCalled = true
+      registerFinishedRun(runId)
+      collectRunResultsAspects(runId)
+      executeRunDoneActions(runId)
+    }
   }
 
   override final def replicationsDone(assignId: Int) = {
-    replicationsDoneCalled = true
-    registerFinishedReplications(assignId)
-    collectReplicationsResultsAspects(assignId)
-    executeReplicationsDoneActions(assignId)
+    synchronized {
+      replicationsDoneCalled = true
+      registerFinishedReplications(assignId)
+      collectReplicationsResultsAspects(assignId)
+      executeReplicationsDoneActions(assignId)
+    }
   }
 
   override final def experimentDone() = {
-    require(runDoneCalled, "For each finished and non-empty experiment, runDone() shold have been called at least once.")
-    require(replicationsDoneCalled, "For each finished and non-empty experiment, replicationsDone() shold have been called at least once.")
-    experimentDoneCalled = true
-    collectExperimentResultsAspects()
-    executeExperimentDoneActions()
+    synchronized {
+      require(runDoneCalled, "For each finished and non-empty experiment, runDone() shold have been called at least once.")
+      require(replicationsDoneCalled, "For each finished and non-empty experiment, replicationsDone() shold have been called at least once.")
+      experimentDoneCalled = true
+      collectExperimentResultsAspects()
+      executeExperimentDoneActions()
+    }
   }
 
   /** Registers in data structures that a run has been finished.
