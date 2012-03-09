@@ -20,7 +20,7 @@ import sessl.sbmlsim._
  *
  *  @author Roland Ewald
  */
-class Experiment extends AbstractExperiment {
+class Experiment extends AbstractExperiment with ResultHandling {
 
   /** Describes a variable assignment (first element) and its id (second element). */
   type AssignmentDescription = (Map[String, Any], Int)
@@ -71,7 +71,12 @@ class Experiment extends AbstractExperiment {
     //Generate all desired combinations (variable-setup, simulator)
     val jobs = for (v <- createVariableSetups().zipWithIndex; i <- simulatorSet.algorithms.indices) yield (v, simulatorSet.algorithms(i).asInstanceOf[BasicSBMLSimSimulator], i == simulatorSet.size - 1)
     require(!jobs.isEmpty, "Current setup does not define any jobs to be executed.")
+
+    //Execute all generated jobs
     executeJobs(jobs.zipWithIndex)
+
+    //Check if the experiment went well, and finish it
+    require(isConsiderResultsCalled, "ConsiderResults(...) call chain has not been invoked correctly, some mix-in violates its contract!")
     experimentDone()
   }
 
@@ -85,10 +90,8 @@ class Experiment extends AbstractExperiment {
   /** Executes the given list of jobs. */
   def executeJobs(jobs: List[JobDescription]) = jobs.map(executeJob)
 
-  protected[sbmlsim] def considerResults(results: MultiTable) = {}
-
   /** Executes a job. */
-  protected[sbmlsim] def executeJob(jobDesc: JobDescription) = {
+  protected[sbmlsim] final def executeJob(jobDesc: JobDescription) = {
 
     //Retrieve IDs from assignment/job description
     val assignmentDesc: AssignmentDescription = jobDesc._1._1
@@ -106,7 +109,9 @@ class Experiment extends AbstractExperiment {
     val interpreter = new SBMLinterpreter(theModel);
     val solution = jobDesc._1._2.createSolver().solve(interpreter, interpreter
       .getInitialValues, 0, stopTime);
-    considerResults(solution)
+
+    //Check if something is done with these results
+    considerResults(runId, assignmentId, solution)
 
     //Register run execution
     addAssignmentForRun(runId, assignmentId, assignmentDesc._1.toList)

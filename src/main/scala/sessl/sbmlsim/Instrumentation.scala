@@ -1,8 +1,7 @@
 package sessl.sbmlsim
 
-import sessl.AbstractInstrumentation
-import sessl.InstrumentationRunResultsAspect
-import sessl.InstrumentationReplicationsResultsAspect
+import org.simulator.math.odes.MultiTable
+
 import sessl.util.SimpleInstrumentation
 
 /** Support for 'instrumentation' of SBMLsimulator runs.
@@ -10,10 +9,11 @@ import sessl.util.SimpleInstrumentation
  *  so this here just implements some kind of sessl-compliant cherry-picking.
  *  @author Roland Ewald
  */
-trait Instrumentation extends SimpleInstrumentation {
+trait Instrumentation extends SimpleInstrumentation with ResultHandling {
   this: Experiment =>
 
-  def process() {
+  abstract override def considerResults(runId: Int, assignmentId: Int, results: MultiTable) {
+    super.considerResults(runId, assignmentId, results)
     //call def addValueFor[T](runID: Int, internalName: String, value: TimeStampedData)
   }
 
