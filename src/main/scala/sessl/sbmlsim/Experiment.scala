@@ -71,7 +71,7 @@ class Experiment extends AbstractExperiment {
     //Generate all desired combinations (variable-setup, simulator)
     val jobs = for (v <- createVariableSetups().zipWithIndex; i <- simulatorSet.algorithms.indices) yield (v, simulatorSet.algorithms(i).asInstanceOf[BasicSBMLSimSimulator], i == simulatorSet.size - 1)
     require(!jobs.isEmpty, "Current setup does not define any jobs to be executed.")
-    executeJobs(jobs.zipWithIndex).foreach(x => println("Solution columns:" + x.getColumnCount()))
+    executeJobs(jobs.zipWithIndex)
     experimentDone()
   }
 
@@ -85,8 +85,10 @@ class Experiment extends AbstractExperiment {
   /** Executes the given list of jobs. */
   def executeJobs(jobs: List[JobDescription]) = jobs.map(executeJob)
 
+  protected[sbmlsim] def considerResults(results: MultiTable) = {}
+
   /** Executes a job. */
-  protected[sbmlsim] def executeJob(jobDesc: JobDescription): MultiTable = {
+  protected[sbmlsim] def executeJob(jobDesc: JobDescription) = {
 
     //Retrieve IDs from assignment/job description
     val assignmentDesc: AssignmentDescription = jobDesc._1._1
@@ -104,6 +106,7 @@ class Experiment extends AbstractExperiment {
     val interpreter = new SBMLinterpreter(theModel);
     val solution = jobDesc._1._2.createSolver().solve(interpreter, interpreter
       .getInitialValues, 0, stopTime);
+    considerResults(solution)
 
     //Register run execution
     addAssignmentForRun(runId, assignmentId, assignmentDesc._1.toList)
@@ -113,7 +116,6 @@ class Experiment extends AbstractExperiment {
     if (jobDesc._1._3) {
       replicationsDone(assignmentId)
     }
-    solution
   }
 
 }
