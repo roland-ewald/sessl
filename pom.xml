@@ -53,6 +53,8 @@
 			<version>4.8</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- To support performance observation and all/any-simulator execution 
+			modes: -->
 		<dependency>
 			<groupId>james2</groupId>
 			<artifactId>sasf</artifactId>
@@ -63,6 +65,14 @@
 			<artifactId>sr</artifactId>
 			<version>0.8.6-SNAPSHOT</version>
 		</dependency>
+		<!-- To suppoort report generation: -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>resultreports</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
+		</dependency>
+		<!-- To support optimization (this is not released yet - components based 
+			on this cannot be released either): -->
 		<dependency>
 			<groupId>james2</groupId>
 			<artifactId>experiment</artifactId>
