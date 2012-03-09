@@ -42,7 +42,7 @@ import org.junit.Test
     import sessl.sbmlsim._
     val exp = new Experiment /*with Instrumentation with ParallelExecution*/ {
       model = "./BIOMD0000000002.xml"
-      simulator = DormandPrince54(stepSize = 1e-02)
+      simulator = Euler(stepSize = 1e-02)
       stopTime = 1.0
     }
     execute(exp)

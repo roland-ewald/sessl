@@ -26,7 +26,7 @@ class Experiment extends AbstractExperiment {
   private[this] var model: Option[Model] = None
 
   /** The solver to be used. */
-  private[this] var solver: Option[AbstractDESSolver] = None
+  private[this] var solver: Option[BasicSBMLSimSimulator] = None
 
   override def basicConfiguration(): Unit = {
     configureModelLocation()
@@ -54,7 +54,7 @@ class Experiment extends AbstractExperiment {
     require(simulatorSet.size <= 1, "Usage of multiple simulator not supported.")
     val simulatorToBeUsed = if (simulatorSet.hasSingleElement) simulatorSet.firstAlgorithm else DormandPrince54
     require(simulator.isInstanceOf[BasicSBMLSimSimulator], "Simulator '" + simulator + "' is not supported.")
-    solver = Some(simulator.asInstanceOf[BasicSBMLSimSimulator].createSolver())
+    solver = Some(simulator.asInstanceOf[BasicSBMLSimSimulator])
   }
 
   //TODO: implement 'scan'?
@@ -62,7 +62,7 @@ class Experiment extends AbstractExperiment {
 
   def execute(): Unit = {
     val interpreter = new SBMLinterpreter(model.get);
-    val solution = solver.get.solve(interpreter, interpreter
+    val solution = solver.get.createSolver().solve(interpreter, interpreter
       .getInitialValues, 0, fixedStopTime.get);
 
     println("Solution columns:" + solution.getColumnCount)
