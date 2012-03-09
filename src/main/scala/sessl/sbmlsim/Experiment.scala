@@ -78,8 +78,8 @@ class Experiment extends AbstractExperiment {
   /** Creates variable setups (or list with single empty map, if none are defined). */
   def createVariableSetups(): List[Map[String, Any]] = {
     if (!variablesToScan.isEmpty)
-      Variable.createMultipleVarsSetups(variablesToScan, Seq(fixedVariables)).toList
-    else List(fixedVariables)
+      Variable.createVariableSetups(variablesToScan).toList
+    else List(Map())
   }
 
   /** Executes the given list of jobs. */
@@ -90,15 +90,16 @@ class Experiment extends AbstractExperiment {
 
     //Retrieve IDs from assignment/job description
     val assignmentDesc: AssignmentDescription = jobDesc._1._1
+    val variableAssignment = assignmentDesc._1 ++ fixedVariables
     val assignmentId = assignmentDesc._2 + 1
     val runId = jobDesc._2 + 1
 
     //TODO: Use logging here
-    println("Run #" + runId + " started, it simulates setup " + assignmentDesc._1 + " with simulator " + jobDesc._1._2)
+    println("Run #" + runId + " started, it simulates setup " + variableAssignment + " with simulator " + jobDesc._1._2)
 
     //Execute SBMLsimulator
     val theModel = model.get.clone()
-    Experiment.assignParameters(assignmentDesc._1, theModel)
+    Experiment.assignParameters(variableAssignment, theModel)
 
     val interpreter = new SBMLinterpreter(theModel);
     val solution = jobDesc._1._2.createSolver().solve(interpreter, interpreter

@@ -31,13 +31,13 @@ trait SupportModelConfiguration {
   }
 
   /** Get all defined variables that shall be scanned.*/
-  protected def variablesToScan = varsToScan.toList
+  protected lazy val variablesToScan = varsToScan.toList
 
   /** Get all defined variables that shall be fixed.*/
-  protected def variablesToSet = varsToSet.toList
+  protected lazy val variablesToSet = varsToSet.toList
   
   /** Get all defined variables that shall be fixed as a map. */
-  protected def fixedVariables = variablesToSet.map(v => (v.name, v.value)).toMap
+  protected lazy val fixedVariables = variablesToSet.map(v => (v.name, v.value)).toMap
 
   /** Allow to specify a model URI. */
   def model_=(modelURI: URI) = { modelLocation = Some(modelURI.toString()) }
