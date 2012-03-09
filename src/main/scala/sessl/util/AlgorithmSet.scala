@@ -26,7 +26,7 @@ case class AlgorithmSet[T <: Algorithm](initialAlgos: Seq[T]) {
 
   /** Adding elements to the set. */
   def <<(algos: Seq[T]) = { algorithmList ++= algos }
-  def <<(algo: T) = { algorithmList += algo }
+  def <+(algos: T*) = { algorithmList ++= algos }
 
   /** Get the defined algorithms. */
   lazy val algorithms: List[T] = algorithmList.toList

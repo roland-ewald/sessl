@@ -5,6 +5,7 @@ import org.simulator.math.odes.EulerMethod
 import sessl.Simulator
 import org.simulator.math.odes.DormandPrince54Solver
 import org.simulator.math.odes.RosenbrockSolver
+import sessl.util.CreatableFromVariables
 
 /** Types to represent the algorithms offered by SBMLsimulator.
  *  @author Roland Ewald
@@ -33,14 +34,14 @@ object BasicSBMLSimSimulator {
   val defaultStepSize = 10e-05
 }
 
-case class Euler(stepSize: Double = BasicSBMLSimSimulator.defaultStepSize) extends BasicSBMLSimSimulator {
+case class Euler(stepSize: Double = BasicSBMLSimSimulator.defaultStepSize) extends BasicSBMLSimSimulator with CreatableFromVariables[Euler] {
   override def create() = new EulerMethod
 }
 
-case class DormandPrince54(stepSize: Double = BasicSBMLSimSimulator.defaultStepSize) extends BasicSBMLSimSimulator {
+case class DormandPrince54(stepSize: Double = BasicSBMLSimSimulator.defaultStepSize) extends BasicSBMLSimSimulator with CreatableFromVariables[DormandPrince54] {
   override def create() = new DormandPrince54Solver
 }
 
-case class Rosenbrock(stepSize: Double = BasicSBMLSimSimulator.defaultStepSize) extends BasicSBMLSimSimulator {
+case class Rosenbrock(stepSize: Double = BasicSBMLSimSimulator.defaultStepSize) extends BasicSBMLSimSimulator with CreatableFromVariables[Rosenbrock] {
   override def create() = new RosenbrockSolver
 } 

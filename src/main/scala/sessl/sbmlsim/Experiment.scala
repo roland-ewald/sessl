@@ -54,7 +54,7 @@ class Experiment extends AbstractExperiment {
   def configureSimulatorSetup() {
     require(fixedStopTime.isDefined, "No stop time is given. Use stopTime =... to set it.")
     if (simulatorSet.isEmpty)
-      simulatorSet << DormandPrince54()
+      simulatorSet <+ DormandPrince54()
     simulatorSet.algorithms.foreach(s => require(s.isInstanceOf[BasicSBMLSimSimulator], "Simulator '" + s + "' is not supported."))
   }
 
@@ -80,9 +80,10 @@ class Experiment extends AbstractExperiment {
   /** Executes a job. */
   protected[sbmlsim] def executeJob(job: ((Map[String, Any], BasicSBMLSimSimulator), Int)): MultiTable = {
 
-    //No replications allowed, so IDs are straightforward
-    val assignmentId = job._2
+    //No replications allowed, so IDs are straightforward (just correct for indices starting with 0)
+    val assignmentId = job._2 + 1
     val runId = assignmentId
+    println("Run #" + runId + " started, it simulates setup " + job._1._1 + " with simulator " + job._1._2) //TODO: Use logging here
 
     //Execute SBMLsimulator
     val theModel = model.get.clone()
