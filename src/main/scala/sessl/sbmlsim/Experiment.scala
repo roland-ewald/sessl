@@ -98,18 +98,7 @@ class Experiment extends AbstractExperiment {
 
     //Execute SBMLsimulator
     val theModel = model.get.clone()
-    //TODO: Apply parameter changes
-    val assignment = assignmentDesc._1
-    for ((name, value) <- assignment) {
-      val parameter = theModel.getParameter(name)
-      if (parameter == null)
-        println("Warning: model parameter '" + name + "' not defined, will be ignored. The parameters declared by the model are (in (name,value) pairs): " +
-          modelParameters.mkString(","))
-      else {
-        require(value.isInstanceOf[Number], "Value '" + value + "' not supported, must be numeric.")
-        parameter.setValue(value.asInstanceOf[Number].doubleValue)
-      }
-    }
+    Experiment.assignParameters(assignmentDesc._1, theModel)
 
     val interpreter = new SBMLinterpreter(theModel);
     val solution = jobDesc._1._2.createSolver().solve(interpreter, interpreter
@@ -126,8 +115,29 @@ class Experiment extends AbstractExperiment {
     solution
   }
 
-  def modelParameters() = {
-    val theModel = model.get.clone()
-    for (i <- 0 until theModel.getParameterCount()) yield (theModel.getParameter(i).toString, theModel.getParameter(i).getValue())
+}
+
+object Experiment {
+
+  private def assignParameters(assignment: Map[String, Any], model: Model) = {
+    assignment.foreach {
+      varAssignment =>
+        {
+          val (name, value) = varAssignment
+          val parameter = model.getParameter(name)
+          //TODO: Use logging here
+          if (parameter == null)
+            println("Model parameter '" + name + "' not defined. The parameters declared by the model are (in (name,value) pairs): " +
+              createModelParamDesc(model).mkString(","))
+          else if (!value.isInstanceOf[Number])
+            println("Value '" + value + "' of parameter '" + name + "' not supported, must be numeric.")
+          else
+            parameter.setValue(value.asInstanceOf[Number].doubleValue)
+        }
+    }
+  }
+
+  private def createModelParamDesc(model: Model) = {
+    for (i <- 0 until model.getParameterCount()) yield (model.getParameter(i).toString, model.getParameter(i).getValue())
   }
 }
