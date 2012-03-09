@@ -27,16 +27,24 @@ import org.junit.Test
     }
   }
 
-  @Test def testSimpleExperiment() {
-
+  /** Setting stopping conditions is not supported yet. */
+  @Test(expected = classOf[UnsupportedOperationException])
+  def testSetStoppingConditions() {
     import sessl._
     import sessl.sbmlsim._
+    val exp = new Experiment {
+      stopCondition = Never or AfterWallClockTime(seconds = 2)
+    }
+  }
 
+  @Test def testSimpleExperiment() {
+    import sessl._
+    import sessl.sbmlsim._
     val exp = new Experiment /*with Instrumentation with ParallelExecution*/ {
       model = "./BIOMD0000000002.xml"
+      simulator = DormandPrince54(stepSize = 1e-02)
       stopTime = 1.0
     }
-    //step size: 10e-05
     execute(exp)
 
   }

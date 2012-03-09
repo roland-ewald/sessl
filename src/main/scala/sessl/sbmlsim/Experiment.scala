@@ -12,12 +12,15 @@ import sessl.VariableAssignment
 import sessl.StoppingCondition
 
 /** Encapsulates the SBMLsimulator (see http://www.ra.cs.uni-tuebingen.de/software/SBMLsimulator).
- *  As only the core is provided at sourceforge (http://sourceforge.net/projects/sbml-simulator/), this will be integrated (i.e., no
- *  functionality to set up experiments via the GUI is reused here).
+ *  As only the core is provided at Sourceforge (http://sourceforge.net/projects/sbml-simulator/),
+ *  this will be integrated (i.e., no functionality to set up experiments via the GUI is reused here).
  *
  *  @author Roland Ewald
  */
 class Experiment extends AbstractExperiment {
+
+  /** The default solver to be used. */
+  private val defaultSolver = DormandPrince54
 
   /** The model to be simulated. */
   private[this] var model: Option[Model] = None
@@ -39,9 +42,6 @@ class Experiment extends AbstractExperiment {
   override def stopCondition_=(sc: StoppingCondition) =
     throw new UnsupportedOperationException("Not implemented so far.")
 
-  //TODO: implement 'scan'?
-  //TODO: implement parallel execution with actors?
-
   /** Configure model location. */
   def configureModelLocation() = {
     model = Some((new SBMLReader).readSBML(modelLocation.get).getModel)
@@ -52,11 +52,13 @@ class Experiment extends AbstractExperiment {
   /** Configure simulator setup. */
   def configureSimulatorSetup() {
     require(simulatorSet.size <= 1, "Usage of multiple simulator not supported.")
-    solver = Some(new DormandPrince54Solver)
-    //TODO: 
-    solver.get.setStepSize(10e-05)
-    solver.get.setIncludeIntermediates(false)
+    val simulatorToBeUsed = if (simulatorSet.hasSingleElement) simulatorSet.firstAlgorithm else DormandPrince54
+    require(simulator.isInstanceOf[BasicSBMLSimSimulator], "Simulator '" + simulator + "' is not supported.")
+    solver = Some(simulator.asInstanceOf[BasicSBMLSimSimulator].createSolver())
   }
+
+  //TODO: implement 'scan'?
+  //TODO: implement parallel execution with actors?
 
   def execute(): Unit = {
     val interpreter = new SBMLinterpreter(model.get);
@@ -64,6 +66,7 @@ class Experiment extends AbstractExperiment {
       .getInitialValues, 0, fixedStopTime.get);
 
     println("Solution columns:" + solution.getColumnCount)
+    println("Solution:" + solution)
     val runId = 1
     val assignmentId = 1
     addAssignmentForRun(1, 1, List(("nothing", 42)))

@@ -24,6 +24,7 @@ trait BasicSBMLSimSimulator extends Simulator with SBMLSimAlgorithm[AbstractDESS
   def createSolver() = {
     val solver = create()
     solver.setStepSize(stepSize)
+    solver.setIncludeIntermediates(false)
     solver
   }
 }

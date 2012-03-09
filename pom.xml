@@ -65,7 +65,7 @@
 			<artifactId>sr</artifactId>
 			<version>0.8.6-SNAPSHOT</version>
 		</dependency>
-		<!-- To suppoort report generation: -->
+		<!-- To support report generation: -->
 		<dependency>
 			<groupId>james2</groupId>
 			<artifactId>resultreports</artifactId>
