@@ -40,10 +40,11 @@ import org.junit.Test
   @Test def testSimpleExperiment() {
     import sessl._
     import sessl.sbmlsim._
-    val exp = new Experiment /*with Instrumentation with ParallelExecution*/ {
+    val exp = new Experiment with ParallelExecution /*with Instrumentation */ {
       model = "./BIOMD0000000002.xml"
       simulator = Euler(stepSize = 1e-02)
-      stopTime = 1.0
+      scan("x" ==> range(1, 1, 10))
+      stopTime = 1000.0
     }
     execute(exp)
 

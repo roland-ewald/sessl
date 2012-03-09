@@ -14,7 +14,7 @@ trait SupportModelConfiguration {
   private[this] val varsToScan = ListBuffer[Variable]()
 
   /** List of experiment variables to be set (for each run). */
-  private[this] val varsToSet = ListBuffer[Variable]()
+  private[this] val varsToSet = ListBuffer[VarSingleVal]()
 
   /** Define the experiment variables to be scanned. */
   def scan(variablesToScan: Variable*) = {
@@ -35,6 +35,9 @@ trait SupportModelConfiguration {
 
   /** Get all defined variables that shall be fixed.*/
   protected def variablesToSet = varsToSet.toList
+  
+  /** Get all defined variables that shall be fixed as a map. */
+  protected def fixedVariables = variablesToSet.map(v => (v.name, v.value)).toMap
 
   /** Allow to specify a model URI. */
   def model_=(modelURI: URI) = { modelLocation = Some(modelURI.toString()) }

@@ -60,15 +60,18 @@ class Experiment extends AbstractExperiment {
 
   /** Executes experiment*/
   def execute(): Unit = {
-    //Analyze what variables to be scanned
-    val variableSetups = Variable.createMultipleVarsSetups(variablesToScan).toList
-
     //Generate all desired combinations (variable-setup, simulator)
-    val jobs = for (v <- variableSetups; s <- simulatorSet.algorithms) yield (v, s.asInstanceOf[BasicSBMLSimSimulator])
-
-    //Execute all jobs
-    executeJobs(jobs.zipWithIndex)
+    val jobs = for (v <- createVariableSetups(); s <- simulatorSet.algorithms) yield (v, s.asInstanceOf[BasicSBMLSimSimulator])
+    require(!jobs.isEmpty, "Current setup does not define any jobs to be executed.")
+    executeJobs(jobs.zipWithIndex).foreach(x => println("Solution columns:" + x.getColumnCount()))
     experimentDone()
+  }
+
+  /** Creates variable setups (or list with single empty map, if none are defined). */
+  def createVariableSetups(): List[Map[String, Any]] = {
+    if (!variablesToScan.isEmpty)
+      Variable.createMultipleVarsSetups(variablesToScan, Seq(fixedVariables)).toList
+    else List(fixedVariables)
   }
 
   /** Executes the given list of jobs. */
@@ -91,15 +94,7 @@ class Experiment extends AbstractExperiment {
     addAssignmentForRun(runId, assignmentId, job._1._1.toList)
     runDone(runId)
     replicationsDone(assignmentId)
+    println("Run done with id:" + runId) //TODO: Use logging here
     solution
-  }
-}
-
-/** Executes a single run. */
-class RunExecutor(val id: Int, val solver: BasicSBMLSimSimulator, val model: Model, val stopTime: Double) {
-  val solution = {
-    val interpreter = new SBMLinterpreter(model.clone())
-    solver.createSolver().solve(interpreter, interpreter
-      .getInitialValues, 0, stopTime);
   }
 }

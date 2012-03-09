@@ -17,7 +17,7 @@ trait ParallelExecution extends AbstractParallelExecution {
 
   override def executeJobs(jobs: List[((Map[String, Any], BasicSBMLSimSimulator), Int)]) = {
     collection.parallel.ForkJoinTasks.defaultForkJoinPool.setParallelism(numberOfThreads)
-    jobs.par.map(executeJob)
+    jobs.par.map(executeJob).toList
   }
 
 }

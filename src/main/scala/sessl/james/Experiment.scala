@@ -249,9 +249,9 @@ class Experiment extends AbstractExperiment {
   }
 
   /** Set variables that are fixed for each run. */
-  def defineFixedModelVariables() {
-    for (variable <- variablesToSet)
-      exp.getFixedModelParameters().put(variable.name, variable.value)
+  def defineFixedModelVariables() = {
+    for (v <- fixedVariables)
+      exp.getFixedModelParameters().put(v._1, v._2)
   }
 
   /** Creates the experiment variable.
