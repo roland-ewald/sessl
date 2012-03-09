@@ -99,6 +99,18 @@ class Experiment extends AbstractExperiment {
     //Execute SBMLsimulator
     val theModel = model.get.clone()
     //TODO: Apply parameter changes
+    val assignment = assignmentDesc._1
+    for ((name, value) <- assignment) {
+      println("Setting parameter " + name)
+      val parameter = theModel.getParameter(name)
+      if (parameter == null)
+        println("Warning: model parameter '" + parameter + "' not defined. The parameters declared by the model are (in (name,value) pairs): " +
+          modelParameters.mkString(","))
+      else {
+
+      }
+    }
+
     val interpreter = new SBMLinterpreter(theModel);
     val solution = jobDesc._1._2.createSolver().solve(interpreter, interpreter
       .getInitialValues, 0, stopTime);
@@ -112,5 +124,17 @@ class Experiment extends AbstractExperiment {
       replicationsDone(assignmentId)
     }
     solution
+  }
+
+  def modelParameters() = {
+    synchronized {
+      val theModel = model.get.clone()
+      println("#params" + theModel.getParameterCount())
+      for (i <- 0 until theModel.getParameterCount()) {
+        println(theModel.getParameter(i).toString , theModel.getParameter(i).getValue())
+      }
+      List(("a", "b"))
+      //yield (theModel.getParameter(i).toString, theModel.getParameter(i).getValue())
+    }
   }
 }
