@@ -26,7 +26,7 @@ object Variable {
    *  @param givenSetups the given setups
    *  @return the created setups
    */
-  def createMultipleVarsSetups(variables: List[Variable], givenSetups: Seq[Map[String, Any]] = Seq()) = {
+  def createMultipleVarsSetups(variables: List[Variable], givenSetups: Seq[Map[String, Any]] = Seq(Map())) = {
     val allNewSetups = variables.map(v => createVariableSetups(Seq(v), Seq(Map[String, AnyRef]())))
     require(!allNewSetups.isEmpty && allNewSetups.forall(_.length == allNewSetups(0).length), "The number of generated setups needs to be the same.")
 
