@@ -12,6 +12,8 @@ import sessl.VariableAssignment
 import sessl.StoppingCondition
 import sessl.Variable
 
+import sessl.sbmlsim._
+
 /** Encapsulates the SBMLsimulator (see http://www.ra.cs.uni-tuebingen.de/software/SBMLsimulator).
  *  As only the core is provided at Sourceforge (http://sourceforge.net/projects/sbml-simulator/),
  *  this will be integrated (i.e., no functionality to set up experiments via the GUI is reused here).
@@ -19,6 +21,12 @@ import sessl.Variable
  *  @author Roland Ewald
  */
 class Experiment extends AbstractExperiment {
+
+  /** Describes a variable assignment (first element) and its id (second element). */
+  type AssignmentDescription = (Map[String, Any], Int)
+
+  /** Describes a job with a an id as second element and a triple (variable assignment, simulator-setup,flag-replications-done) as a first element. */
+  type JobDescription = ((AssignmentDescription, BasicSBMLSimSimulator, Boolean), Int)
 
   /** The default solver to be used. */
   private val defaultSolver = DormandPrince54
@@ -61,7 +69,7 @@ class Experiment extends AbstractExperiment {
   /** Executes experiment*/
   def execute(): Unit = {
     //Generate all desired combinations (variable-setup, simulator)
-    val jobs = for (v <- createVariableSetups(); s <- simulatorSet.algorithms) yield (v, s.asInstanceOf[BasicSBMLSimSimulator])
+    val jobs = for (v <- createVariableSetups().zipWithIndex; i <- simulatorSet.algorithms.indices) yield (v, simulatorSet.algorithms(i).asInstanceOf[BasicSBMLSimSimulator], i == simulatorSet.size - 1)
     require(!jobs.isEmpty, "Current setup does not define any jobs to be executed.")
     executeJobs(jobs.zipWithIndex).foreach(x => println("Solution columns:" + x.getColumnCount()))
     experimentDone()
@@ -75,27 +83,34 @@ class Experiment extends AbstractExperiment {
   }
 
   /** Executes the given list of jobs. */
-  def executeJobs(jobs: List[((Map[String, Any], BasicSBMLSimSimulator), Int)]) = jobs.map(executeJob)
+  def executeJobs(jobs: List[JobDescription]) = jobs.map(executeJob)
 
   /** Executes a job. */
-  protected[sbmlsim] def executeJob(job: ((Map[String, Any], BasicSBMLSimSimulator), Int)): MultiTable = {
+  protected[sbmlsim] def executeJob(jobDesc: JobDescription): MultiTable = {
 
-    //No replications allowed, so IDs are straightforward (just correct for indices starting with 0)
-    val assignmentId = job._2 + 1
-    val runId = assignmentId
-    println("Run #" + runId + " started, it simulates setup " + job._1._1 + " with simulator " + job._1._2) //TODO: Use logging here
+    //Retrieve IDs from assignment/job description
+    val assignmentDesc: AssignmentDescription = jobDesc._1._1
+    val assignmentId = assignmentDesc._2 + 1
+    val runId = jobDesc._2 + 1
+
+    //TODO: Use logging here
+    println("Run #" + runId + " started, it simulates setup " + assignmentDesc._1 + " with simulator " + jobDesc._1._2)
 
     //Execute SBMLsimulator
     val theModel = model.get.clone()
     //TODO: Apply parameter changes
     val interpreter = new SBMLinterpreter(theModel);
-    val solution = job._1._2.createSolver().solve(interpreter, interpreter
+    val solution = jobDesc._1._2.createSolver().solve(interpreter, interpreter
       .getInitialValues, 0, stopTime);
 
-    addAssignmentForRun(runId, assignmentId, job._1._1.toList)
+    //Register run execution
+    addAssignmentForRun(runId, assignmentId, assignmentDesc._1.toList)
     runDone(runId)
-    replicationsDone(assignmentId)
-    println("Run done with id:" + runId) //TODO: Use logging here
+
+    //Register replications execution if this is the last setup
+    if (jobDesc._1._3) {
+      replicationsDone(assignmentId)
+    }
     solution
   }
 }

@@ -42,15 +42,19 @@ import org.junit.Assert._
   @Test def testSimpleExperiment() {
     import sessl._
     import sessl.sbmlsim._
-    var counter = 0
+    var runCounter = 0
+    var replicationCounter = 0
     val exp = new Experiment with ParallelExecution /*with Instrumentation */ {
       model = "./BIOMD0000000002.xml"
       simulatorSet << (Euler() scan { "stepSize" ==> range(0.01, 0.01, 0.1) })
       scan("x" ==> range(1, 1, 10))
       stopTime = 1000.0
-      afterRun { r => {counter +=  1} }
+      afterRun { r => { runCounter += 1 } }
+      afterReplications { r => { replicationCounter += 1 } }
     }
-    assertEquals("There should be 100 runs on 10 variable assignments", 100, counter)
     execute(exp)
+    assertEquals("There should be 100 runs.", 100, runCounter)
+    assertEquals("There should be 10 variable assignments", 10, replicationCounter)
+
   }
 }
