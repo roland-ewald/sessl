@@ -10,6 +10,7 @@ import org.sbml.jsbml.Model
 import org.sbml.jsbml.xml.stax.SBMLReader
 import sessl.VariableAssignment
 import sessl.StoppingCondition
+import sessl.Variable
 
 /** Encapsulates the SBMLsimulator (see http://www.ra.cs.uni-tuebingen.de/software/SBMLsimulator).
  *  As only the core is provided at Sourceforge (http://sourceforge.net/projects/sbml-simulator/),
@@ -51,28 +52,54 @@ class Experiment extends AbstractExperiment {
 
   /** Configure simulator setup. */
   def configureSimulatorSetup() {
-    require(simulatorSet.size <= 1, "Usage of multiple simulator not supported.")
-    val simulatorToBeUsed = if (simulatorSet.hasSingleElement) simulatorSet.firstAlgorithm else DormandPrince54
-    require(simulator.isInstanceOf[BasicSBMLSimSimulator], "Simulator '" + simulator + "' is not supported.")
-    solver = Some(simulator.asInstanceOf[BasicSBMLSimSimulator])
+    require(fixedStopTime.isDefined, "No stop time is given. Use stopTime =... to set it.")
+    if (simulatorSet.isEmpty)
+      simulatorSet << DormandPrince54()
+    simulatorSet.algorithms.foreach(s => require(s.isInstanceOf[BasicSBMLSimSimulator], "Simulator '" + s + "' is not supported."))
   }
 
-  //TODO: implement 'scan'?
-  //TODO: implement parallel execution with actors?
-
+  /** Executes experiment*/
   def execute(): Unit = {
-    val interpreter = new SBMLinterpreter(model.get);
-    val solution = solver.get.createSolver().solve(interpreter, interpreter
-      .getInitialValues, 0, fixedStopTime.get);
+    //Analyze what variables to be scanned
+    val variableSetups = Variable.createMultipleVarsSetups(variablesToScan).toList
 
-    println("Solution columns:" + solution.getColumnCount)
-    println("Solution:" + solution)
-    val runId = 1
-    val assignmentId = 1
-    addAssignmentForRun(1, 1, List(("nothing", 42)))
-    runDone(runId)
-    replicationsDone(assignmentId)
+    //Generate all desired combinations (variable-setup, simulator)
+    val jobs = for (v <- variableSetups; s <- simulatorSet.algorithms) yield (v, s.asInstanceOf[BasicSBMLSimSimulator])
+
+    //Execute all jobs
+    executeJobs(jobs.zipWithIndex)
     experimentDone()
   }
 
+  /** Executes the given list of jobs. */
+  def executeJobs(jobs: List[((Map[String, Any], BasicSBMLSimSimulator), Int)]) = jobs.map(executeJob)
+
+  /** Executes a job. */
+  protected[sbmlsim] def executeJob(job: ((Map[String, Any], BasicSBMLSimSimulator), Int)): MultiTable = {
+
+    //No replications allowed, so IDs are straightforward
+    val assignmentId = job._2
+    val runId = assignmentId
+
+    //Execute SBMLsimulator
+    val theModel = model.get.clone()
+    //TODO: Apply parameter changes
+    val interpreter = new SBMLinterpreter(theModel);
+    val solution = job._1._2.createSolver().solve(interpreter, interpreter
+      .getInitialValues, 0, stopTime);
+
+    addAssignmentForRun(runId, assignmentId, job._1._1.toList)
+    runDone(runId)
+    replicationsDone(assignmentId)
+    solution
+  }
+}
+
+/** Executes a single run. */
+class RunExecutor(val id: Int, val solver: BasicSBMLSimSimulator, val model: Model, val stopTime: Double) {
+  val solution = {
+    val interpreter = new SBMLinterpreter(model.clone())
+    solver.createSolver().solve(interpreter, interpreter
+      .getInitialValues, 0, stopTime);
+  }
 }

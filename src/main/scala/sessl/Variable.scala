@@ -26,7 +26,7 @@ object Variable {
    *  @param givenSetups the given setups
    *  @return the created setups
    */
-  def createMultipleVarsSetups(variables: List[Variable], givenSetups: Seq[Map[String, Any]]) = {
+  def createMultipleVarsSetups(variables: List[Variable], givenSetups: Seq[Map[String, Any]] = Seq()) = {
     val allNewSetups = variables.map(v => createVariableSetups(Seq(v), Seq(Map[String, AnyRef]())))
     require(!allNewSetups.isEmpty && allNewSetups.forall(_.length == allNewSetups(0).length), "The number of generated setups needs to be the same.")
 
@@ -40,7 +40,7 @@ object Variable {
   /** Creates all defined variable setups.
    *
    *  @param variablesToScan the variables to scan
-   *  @return the scala.collection. seq
+   *  @return the sequence of defined setups
    */
   protected[sessl] def createVariableSetups(variablesToScan: Seq[Variable]): Seq[Map[String, Any]] = {
     val varsToScan = variablesToScan.map(v => (v.name, v)).toMap
