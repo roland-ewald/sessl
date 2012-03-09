@@ -22,7 +22,7 @@ class ParamBlockGeneratorTest {
     testSize(tlSetups.size, tlParamBlocks.size)
     testFactoryClassSetup(TauLeaping().factory, tlParamBlocks)
 
-    val nrSetups = AlgorithmSet[BasicJamesIISimulator](NextReactionMethod() scan { "eventQueue" ==> (SortedList, MList) })
+    val nrSetups = AlgorithmSet[BasicJamesIISimulator](NextReactionMethod() scan { "eventQueue" ==> (SortedList, LinkedList) })
     assertEquals("There should be two simulator setups.", 2, nrSetups.size)
     val nrParamBlocks = ParamBlockGenerator.createParamBlockSet(nrSetups)
     testSize(nrSetups.size, nrParamBlocks.size)

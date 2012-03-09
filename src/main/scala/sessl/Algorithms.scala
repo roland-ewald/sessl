@@ -49,6 +49,8 @@ trait _Heap extends EventQueue
 trait _SortedList extends EventQueue
 trait _MList extends EventQueue
 trait _CalendarQueue extends EventQueue
+trait _BucketQueue extends EventQueue
+trait _LinkedList extends EventQueue
 
 //Statistical Testing
 trait StatisticalTest extends Algorithm

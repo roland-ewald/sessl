@@ -56,7 +56,7 @@ import sessl.util.CreatableFromVariables
     //TODO: Make this independent of instrumentation mix-in!
     var counter = 0
     val tauLeapingAlgorithms = TauLeaping() scan ("epsilon" ==> range(0.02, 0.01, 0.05))
-    val nrAlgorithms = NextReactionMethod() scan ("eventQueue" ==> Seq(MList, CalendarQueue, Heap, SortedList))
+    val nrAlgorithms = NextReactionMethod() scan ("eventQueue" ==> Seq(BucketQueue, LinkedList, Heap, SortedList))
     val exp = new Experiment with ParallelExecution with PerformanceObservation with Report {
 
       model = TestJamesExperiments.testModel
@@ -99,12 +99,12 @@ import sessl.util.CreatableFromVariables
       model = TestJamesExperiments.testModel
       stopTime = 1.5
       replications = 10
-      
+
       reportName = "Performance Report 2"
 
       scan("numOfSpecies" ==> (10, 20), "nothing" ==> (1, 2))
 
-      simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (MList, CalendarQueue)) }
+      simulatorSet << { NextReactionMethod() scan ("eventQueue" ==> (LinkedList, BucketQueue)) }
       simulatorSet << { TauLeaping() scan ("epsilon" ==> range(0.02, 0.005, 0.05)) }
 
       simulatorExecutionMode = AllSimulators
@@ -113,14 +113,14 @@ import sessl.util.CreatableFromVariables
       withRunPerformance { r => println("Runtime:" + r.runtime) }
       withReplicationsPerformance { r =>
         reportSection("Results for assignment " + r.results.id) {
-          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = MList)),
+          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = LinkedList)),
             r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "A scatterplot for a single assignment.")
         }
       }
 
       withExperimentPerformance { r =>
         reportSection("Experiment-Wide Results") {
-          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = MList)),
+          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = LinkedList)),
             r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "Showing data for the whole experiment.")
           histogram(r ~ "runtime")(title = "All runtimes.")
           histogram(r.having("numOfSpecies" ==> 10) ~ "runtime")(title = "All runtimes for a sub-set of assignments.")

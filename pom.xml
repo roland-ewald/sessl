@@ -60,8 +60,8 @@
 		</dependency>
 		<dependency>
 			<groupId>james2</groupId>
-			<artifactId>sr-testbench</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<artifactId>sr</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>james2</groupId>

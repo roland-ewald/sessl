@@ -29,11 +29,13 @@ import james.core.util.eventset.plugintype.EventQueueFactory
 import james.core.util.eventset.HeapEventQueueFactory
 import james.core.util.eventset.SimpleEventQueueFactory
 import sessl._SortedList
-import eventqueues.mlist.MListFactory
 import sessl._MList
 import sessl._CalendarQueue
-import eventqueues.calendarqueue.CalendarQueueFactory
 import sessl.Algorithm
+import sessl._BucketQueue
+import james.core.util.eventset.LinkedListEventQueueFactory
+import sessl._LinkedList
+import james.core.util.eventset.BucketsThresholdEventQueueFactory
 
 /**
  * Defines all James II algorithms that are accessible via sessl.
@@ -75,11 +77,11 @@ case object Heap extends _Heap with BasicJamesIIEventQueue {
 case object SortedList extends _SortedList with BasicJamesIIEventQueue {
   override def factory = new SimpleEventQueueFactory
 }
-case object MList extends _MList with BasicJamesIIEventQueue {
-  override def factory = new MListFactory
+case object LinkedList extends _LinkedList with BasicJamesIIEventQueue {
+  override def factory = new LinkedListEventQueueFactory
 }
-case object CalendarQueue extends _CalendarQueue with BasicJamesIIEventQueue {
-  override def factory = new CalendarQueueFactory
+case object BucketQueue extends _BucketQueue with BasicJamesIIEventQueue {
+  override def factory = new BucketsThresholdEventQueueFactory
 }
 
 //Simulators
@@ -89,7 +91,7 @@ case object DirectMethod extends _DirectMethod with BasicJamesIISimulator {
   override def factory = new DirectReactionProcessorVarAFactory
 }
 
-case class NextReactionMethod(val eventQueue: BasicJamesIIEventQueue = MList)
+case class NextReactionMethod(val eventQueue: BasicJamesIIEventQueue = Heap)
   extends CreatableFromVariables[NextReactionMethod] with _NextReactionMethod with BasicJamesIISimulator {
   override def factory = new NextReactionProcessorVarAFactory
 }
