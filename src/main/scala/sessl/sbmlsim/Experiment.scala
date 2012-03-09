@@ -101,13 +101,13 @@ class Experiment extends AbstractExperiment {
     //TODO: Apply parameter changes
     val assignment = assignmentDesc._1
     for ((name, value) <- assignment) {
-      println("Setting parameter " + name)
       val parameter = theModel.getParameter(name)
       if (parameter == null)
-        println("Warning: model parameter '" + parameter + "' not defined. The parameters declared by the model are (in (name,value) pairs): " +
+        println("Warning: model parameter '" + name + "' not defined, will be ignored. The parameters declared by the model are (in (name,value) pairs): " +
           modelParameters.mkString(","))
       else {
-
+        require(value.isInstanceOf[Number], "Value '" + value + "' not supported, must be numeric.")
+        parameter.setValue(value.asInstanceOf[Number].doubleValue)
       }
     }
 
@@ -127,14 +127,7 @@ class Experiment extends AbstractExperiment {
   }
 
   def modelParameters() = {
-    synchronized {
-      val theModel = model.get.clone()
-      println("#params" + theModel.getParameterCount())
-      for (i <- 0 until theModel.getParameterCount()) {
-        println(theModel.getParameter(i).toString , theModel.getParameter(i).getValue())
-      }
-      List(("a", "b"))
-      //yield (theModel.getParameter(i).toString, theModel.getParameter(i).getValue())
-    }
+    val theModel = model.get.clone()
+    for (i <- 0 until theModel.getParameterCount()) yield (theModel.getParameter(i).toString, theModel.getParameter(i).getValue())
   }
 }

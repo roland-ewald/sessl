@@ -47,7 +47,7 @@ import org.junit.Assert._
     val exp = new Experiment with ParallelExecution /*with Instrumentation */ {
       model = "./BIOMD0000000002.xml"
       simulatorSet << (Euler() scan { "stepSize" ==> range(0.01, 0.01, 0.1) })
-      scan("x" ==> range(1, 1, 10))
+      scan("kf_2" ==> range(30000, 1100, 40000))
       stopTime = 1000.0
       afterRun { r => { runCounter += 1 } }
       afterReplications { r => { replicationCounter += 1 } }
