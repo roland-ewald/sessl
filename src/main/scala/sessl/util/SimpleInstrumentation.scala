@@ -23,13 +23,14 @@ trait SimpleInstrumentation extends AbstractInstrumentation {
    *  @param internalName the internal (model/sim-specific) name of the variable
    *  @param value the observed value for the variable
    */
-  protected[sessl] def addValueFor[T](runID: Int, internalName: String, value: TimeStampedData) = {
+  protected[sessl] def addValueFor(runID: Int, internalName: String, value: TimeStampedData) = {
+    require(variableBindings.contains(internalName), "Internal variable name '" + internalName + "' is not known.")
     val externalNames = variableBindings.get(internalName).get
     val runResults = inMemoryDatabase.getOrElseUpdate(runID, Map())
     for (externalName <- externalNames)
       runResults += ((externalName, value :: runResults.get(externalName).getOrElse(Nil)))
 
-    println("Results for run " + runID + ":" + runResults)
+    println("Added results for run " + runID + ":" + value) //TODO:Use logging here (log-level:finest!)
   }
 
   /** Collects run results from 'database'. */

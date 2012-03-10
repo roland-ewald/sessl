@@ -31,7 +31,7 @@ trait BasicSBMLSimSimulator extends Simulator with SBMLSimAlgorithm[AbstractDESS
 }
 
 object BasicSBMLSimSimulator {
-  val defaultStepSize = 10e-05
+  val defaultStepSize = 1e-06
 }
 
 case class Euler(stepSize: Double = BasicSBMLSimSimulator.defaultStepSize) extends BasicSBMLSimSimulator with CreatableFromVariables[Euler] {
