@@ -15,10 +15,13 @@ trait Instrumentation extends SimpleInstrumentation with ResultHandling {
 
   abstract override def considerResults(runId: Int, assignmentId: Int, results: MultiTable) {
     super.considerResults(runId, assignmentId, results)
-    for (
-      p <- findInterpolationPoints(results.getTimePoints(), observationTimes); v <- varsToBeObserved
-    ) {
-      addValueForPoint(runId, p, v, results)
+    for (v <- varsToBeObserved) {
+      val colIndex = results.getColumnIndex(v)
+      if (colIndex < 0) {
+        println("Warning: Variable '" + v + "' could not be found, will be ignored.")
+      } else {
+        findInterpolationPoints(results.getTimePoints(), observationTimes).foreach(p => addValueForPoint(runId, p, colIndex, v, results))
+      }
     }
   }
 
@@ -28,14 +31,14 @@ trait Instrumentation extends SimpleInstrumentation with ResultHandling {
    *  are adjusted accordingly (linear interpolation).
    *  @param runId the run id
    *  @param point the interpolation point
+   *  @param colIndex the results column index
    *  @param varName the variable name
    *  @param results the results
    */
-  private[this] def addValueForPoint(runId: Int, point: InterpolationPoint, varName: String, results: MultiTable) = {
+  private[this] def addValueForPoint(runId: Int, point: InterpolationPoint, colIndex: Int, varName: String, results: MultiTable) = {
     require(point._1._2 <= point._2 && point._3._2 >= point._2, "Invalid interpolation point:" + point)
 
     //Get values between which shall be interpolated
-    val colIndex = results.getColumnIndex(varName)
     val firstValue = results.getValueAt(point._1._1, colIndex)
     val secondValue = results.getValueAt(point._3._1, colIndex)
 

@@ -50,6 +50,7 @@ import org.junit.Assert._
       define("kr_0" ==> 8042)
       scan("kf_2" ==> range(30000, 1000, 34000), "kr_2" ==> (650, 750))
       stopTime = 100.0
+      observePeriodically(range(0, 10, 100)) { bind("x" ~ "ActiveACh2", "y" ~ "IntermediateACh") }
 
       simulatorSet << (Euler() scan { "stepSize" ==> range(0.01, 0.01, 0.1) })
       afterRun { r => { runCounter += 1 } }
