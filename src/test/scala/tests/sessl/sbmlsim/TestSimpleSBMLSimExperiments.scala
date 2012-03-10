@@ -49,7 +49,7 @@ import org.junit.Assert._
       model = "./BIOMD0000000002.xml"
       define("kr_0" ==> 8042)
       scan("kf_2" ==> range(30000, 1000, 34000), "kr_2" ==> (650, 750))
-      stopTime = 1000.0
+      stopTime = 100.0
 
       simulatorSet << (Euler() scan { "stepSize" ==> range(0.01, 0.01, 0.1) })
       afterRun { r => { runCounter += 1 } }

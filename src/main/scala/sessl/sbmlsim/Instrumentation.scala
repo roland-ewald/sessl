@@ -29,25 +29,6 @@ trait Instrumentation extends SimpleInstrumentation with ResultHandling {
     }
   }
 
-  //TODO: Move to utility class and test this!
-
-  def getInterpolationIndices(results: MultiTable): List[(Int, Int)] = {
-
-    if (observationTimes.isEmpty) return List()
-    val timePoints = results.getTimePoints()
-    if (timePoints.isEmpty) return List()
-
-    val timePointIndices = ListBuffer[(Int, Int)]()
-    var j = 0
-    for (i <- 1 until timePoints.length) {
-      while (j < observationTimes.length && timePoints(i) > observationTimes(j)) {
-        timePointIndices += ((i - 1, i))
-        j += 1
-      }
-    }
-
-    timePointIndices.toList
-  }
 
 }
 
