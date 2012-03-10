@@ -18,7 +18,7 @@ trait Instrumentation extends SimpleInstrumentation with ResultHandling {
     for (v <- varsToBeObserved) {
       val colIndex = results.getColumnIndex(v)
       if (colIndex < 0) {
-        println("Warning: Variable '" + v + "' could not be found, will be ignored.")
+        println("Warning: Variable '" + v + "' could not be found, will be ignored.\nVariables defined in the model: " + retrieveVariableNames(results).mkString(","))
       } else {
         findInterpolationPoints(results.getTimePoints(), observationTimes).foreach(p => addValueForPoint(runId, p, colIndex, v, results))
       }
@@ -50,6 +50,11 @@ trait Instrumentation extends SimpleInstrumentation with ResultHandling {
     val secondWeight = 1 - firstWeight
 
     addValueFor(runId, varName, (point._2, firstWeight * firstValue + secondWeight * secondValue))
+  }
+
+  /** Retrieve variable names from results table. */
+  private[this] def retrieveVariableNames(results: MultiTable): Seq[String] = {
+    for (i <- 0 until results.getColumnCount) yield results.getColumnName(i)
   }
 
 }
