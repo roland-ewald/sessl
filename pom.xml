@@ -4,7 +4,7 @@
 	<groupId>sessl</groupId>
 	<artifactId>sessl</artifactId>
 	<packaging>jar</packaging>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.7-SNAPSHOT</version>
 	<name>Simulation Experiment Specification via a Scala Layer</name>
 	<url>http://</url>
 
