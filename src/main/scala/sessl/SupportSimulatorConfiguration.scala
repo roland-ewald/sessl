@@ -9,19 +9,18 @@ import sessl.util.AlgorithmSet
 trait SupportSimulatorConfiguration {
 
   /** The user-defined set of simulation algorithms. */
-  val simulatorSet = AlgorithmSet[Simulator]()
+  val simulators = AlgorithmSet[Simulator]()
 
   /** Defines the execution mode of the specified set of simulation algorithms. */
   var simulatorExecutionMode: SimulatorExecutionOption = AnySimulator
 
   /** Getting/setting the simulator. */
-  def simulator_=(s: Simulator) = { simulatorSet.clear(); simulatorSet << Seq(s) }
+  def simulator_=(s: Simulator) = { simulators.clear(); simulators <~ Seq(s) }
   def simulator = {
-    require(simulatorSet.hasSingleElement,
+    require(simulators.hasSingleElement,
       "Use simulatorSet instead of this simulator property, there is more than one algorithm in the set!")
-    simulatorSet.firstAlgorithm
+    simulators.firstAlgorithm
   }
-
 }
 
 /** A type hierarchy for execution options regarding the specified algorithms. */

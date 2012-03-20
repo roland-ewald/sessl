@@ -37,7 +37,7 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
   override def configure() {
     super.configure()
     // Read out all defined algorithm setups
-    simulatorSet.algorithms.foreach(algo => {
+    simulators.algorithms.foreach(algo => {
       val representation = ParameterBlocks.toUniqueString(ParamBlockGenerator.createParamBlock(algo.asInstanceOf[JamesIIAlgo[Factory]]))
       setups(representation) = algo
     })

@@ -61,15 +61,15 @@ class Experiment extends AbstractExperiment with ResultHandling {
   /** Configure simulator setup. */
   def configureSimulatorSetup() {
     require(fixedStopTime.isDefined, "No stop time is given. Use stopTime =... to set it.")
-    if (simulatorSet.isEmpty)
-      simulatorSet <+ DormandPrince54()
-    simulatorSet.algorithms.foreach(s => require(s.isInstanceOf[BasicSBMLSimSimulator], "Simulator '" + s + "' is not supported."))
+    if (simulators.isEmpty)
+      simulators <+ DormandPrince54()
+    simulators.algorithms.foreach(s => require(s.isInstanceOf[BasicSBMLSimSimulator], "Simulator '" + s + "' is not supported."))
   }
 
   /** Executes experiment*/
   def execute(): Unit = {
     //Generate all desired combinations (variable-setup, simulator)
-    val jobs = for (v <- createVariableSetups().zipWithIndex; i <- simulatorSet.algorithms.indices) yield (v, simulatorSet.algorithms(i).asInstanceOf[BasicSBMLSimSimulator], i == simulatorSet.size - 1)
+    val jobs = for (v <- createVariableSetups().zipWithIndex; i <- simulators.algorithms.indices) yield (v, simulators.algorithms(i).asInstanceOf[BasicSBMLSimSimulator], i == simulators.size - 1)
     require(!jobs.isEmpty, "Current setup does not define any jobs to be executed.")
 
     //Execute all generated jobs

@@ -25,7 +25,7 @@ case class AlgorithmSet[T <: Algorithm](initialAlgos: Seq[T]) {
   def this(algorithm: T) = this(Seq(algorithm))
 
   /** Adding elements to the set. */
-  def <<(algos: Seq[T]) = { algorithmList ++= algos }
+  def <~(algos: Seq[T]) = { algorithmList ++= algos }
   def <+(algos: T*) = { algorithmList ++= algos }
 
   /** Get the defined algorithms. */

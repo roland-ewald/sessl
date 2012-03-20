@@ -65,7 +65,7 @@ import sessl.util.CreatableFromVariables
 
       afterRun { r => { counter += 1 } }
 
-      simulatorSet << (nrAlgorithms ++ tauLeapingAlgorithms)
+      simulators <~ (nrAlgorithms ++ tauLeapingAlgorithms)
 
       simulatorExecutionMode = AnySimulator
 
@@ -104,8 +104,8 @@ import sessl.util.CreatableFromVariables
 
       scan("numOfSpecies" ~> (10, 20), "nothing" ~> (1, 2))
 
-      simulatorSet << { NextReactionMethod() scan ("eventQueue" ~> (LinkedList, BucketQueue)) }
-      simulatorSet << { TauLeaping() scan ("epsilon" ~> range(0.02, 0.005, 0.05)) }
+      simulators <~ { NextReactionMethod() scan ("eventQueue" ~> (LinkedList, BucketQueue)) }
+      simulators <~ { TauLeaping() scan ("epsilon" ~> range(0.02, 0.005, 0.05)) }
 
       simulatorExecutionMode = AllSimulators
       parallelThreads = -1
@@ -130,7 +130,7 @@ import sessl.util.CreatableFromVariables
       afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
     }
     execute(exp)
-    assertEquals(exp.simulatorSet.size * exp.replications * 4, counter)
+    assertEquals(exp.simulators.size * exp.replications * 4, counter)
   }
 
 }

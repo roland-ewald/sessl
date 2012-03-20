@@ -52,7 +52,7 @@ import org.junit.Assert._
       stopTime = .01
       observePeriodically(range(0, 1e-04, 1e-02)) { bind("x" ~ "ILL", "y" ~ "DLL") }
 
-      simulatorSet << (DormandPrince54() scan { "stepSize" ~> (1e-06, 2e-06) })
+      simulators <~ (DormandPrince54() scan { "stepSize" ~> (1e-06, 2e-06) })
       afterRun { r => { runCounter += 1 } }
       afterReplications { r => { replicationCounter += 1 } }
     }

@@ -22,7 +22,7 @@ trait ParallelExecution extends AbstractParallelExecution {
 
   override def configureParallelExecution(numThreads: Int) = {
     val parameters = Param() :/ (NUM_CORES ~>> numThreads)
-    if (simulatorSet.size > 1) {
+    if (simulators.size > 1) {
       SimSystem.report(Level.INFO, "Adapting the configuration of the adaptive task runner to use " + numThreads + " threads.");
       val trFactory = exp.getTaskRunnerFactory()
       require(trFactory.getFactory().getClass().isAssignableFrom(classOf[AdaptiveTaskRunnerFactory]))

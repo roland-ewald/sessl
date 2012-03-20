@@ -23,7 +23,7 @@ trait PerformanceExploration {
 
     // Create parameter block list of all setups
     val paramBlockList = new java.util.ArrayList[ParamBlock]()
-    ParamBlockGenerator.createParamBlockSet(simulatorSet.asInstanceOf[AlgorithmSet[JamesIIAlgo[Factory]]]).foreach(
+    ParamBlockGenerator.createParamBlockSet(simulators.asInstanceOf[AlgorithmSet[JamesIIAlgo[Factory]]]).foreach(
       p => paramBlockList.add(new ParamBlock().addSubBl(classOf[ProcessorFactory].getName(), p)))
 
     // Set up explorer

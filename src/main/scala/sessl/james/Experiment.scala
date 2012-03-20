@@ -140,9 +140,9 @@ class Experiment extends AbstractExperiment {
 
   /** Configure simulator. */
   def configureSimulator() = {
-    if (simulatorSet.size == 1)
+    if (simulators.size == 1)
       useFirstSetupAsProcessor()
-    else if (simulatorSet.size > 1)
+    else if (simulators.size > 1)
       configureMultiSimulatorExperiment()
   }
 
@@ -152,17 +152,17 @@ class Experiment extends AbstractExperiment {
     simulatorExecutionMode match {
       case AllSimulators => {
         val repsPerSetup = fixedReplications.getOrElse(1)
-        exp.addReplicationCriterion(new ReplicationNumberCriterion(repsPerSetup * simulatorSet.size))
-        configureAdaptiveRunner(1, simulatorSet, repsPerSetup)
+        exp.addReplicationCriterion(new ReplicationNumberCriterion(repsPerSetup * simulators.size))
+        configureAdaptiveRunner(1, simulators, repsPerSetup)
       }
-      case AnySimulator => configureAdaptiveRunner(1, simulatorSet)
+      case AnySimulator => configureAdaptiveRunner(1, simulators)
       case x => throw new IllegalArgumentException("Execution mode '" + x + "' is not supported.")
     }
   }
 
   /** Specifies the first given simulator setup as the processor to be used. */
   def useFirstSetupAsProcessor() =
-    setProcessorParameters(ParamBlockGenerator.createParamBlock(simulatorSet.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
+    setProcessorParameters(ParamBlockGenerator.createParamBlock(simulators.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
 
   /** Configure experiment to use the adaptive task runner.
    *
