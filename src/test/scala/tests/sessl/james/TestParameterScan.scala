@@ -28,9 +28,9 @@ import org.junit.Assert._
 
       rng = MersenneTwister(1234)
 
-      set("fixedVar" ~> fixedValue, "answer" ~> "no!")
+      set("fixedVar" <~ fixedValue, "answer" <~ "no!")
 
-      scan("upperVar" ~> (1, 2), { "testDouble" ~> range(1., 1., 10.) } and { "testInt" ~> range(21, 1, 30) } + { "testLong" ~> range(31L, 1L, 40L) })
+      scan("upperVar" <~ (1, 2), "testDouble" <~ range(1., 1., 10.) and "testInt" <~ range(21, 1, 30) and "testLong" <~ range(31L, 1L, 40L))
 
       observeAtTimes(.1, .2, .3, .9) { // currently no true 'scope', but would be possible...
         bind("x" to "S1", "y" ~ "S1")
@@ -59,8 +59,8 @@ import org.junit.Assert._
             println("y-results:" + results("y"))
             println("Variance of y-results:" + results.variance("y"))
             TestCounter.checkEquality("The size without restrictions should always be the same.", replications * expectedSetups, results("y").size)
-            TestCounter.checkEquality("The given restriction should not restrict anything.", replications * expectedSetups, results.having("fixedVar" ~> fixedValue)("y").size)
-            TestCounter.checkEquality("Exactly one configuration should have upperVar=1, testInt=25:", replications, results.having("upperVar" ~> 1, "testInt" ~> 25)("y").size)
+            TestCounter.checkEquality("The given restriction should not restrict anything.", replications * expectedSetups, results.having("fixedVar" <~ fixedValue)("y").size)
+            TestCounter.checkEquality("Exactly one configuration should have upperVar=1, testInt=25:", replications, results.having("upperVar" <~ 1, "testInt" <~ 25)("y").size)
           }
       }
 
@@ -87,8 +87,8 @@ import org.junit.Assert._
     execute {
       new Experiment {
         model = TestJamesExperiments.testCounterModel
-        set("x" ~> 2, "y" ~> "anotherParamValue")
-        scan("x" ~> (1, 17), "y" ~> range(1.1, 1, 10.1) and "z" ~> range(21, 1, 30))
+        set("x" <~ 2, "y" <~ "anotherParamValue")
+        scan("x" <~ (1, 17), "y" <~ range(1.1, 1, 10.1) and "z" <~ range(21, 1, 30))
         stopTime = 1
         replications = 2
         rng = MersenneTwister(seed = 1234)
