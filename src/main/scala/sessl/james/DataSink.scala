@@ -28,5 +28,5 @@ trait DataSink extends AbstractDataSink {
 
 }
 
-/** Convenience class to avoid having to look up the correct driver/URI scheme*/
+/** Convenience class to avoid having to look up the correct URI scheme*/
 case class MySQLDataSink(host: String = "localhost", schema: String = "schema", user: String = "root", password: String = "root") extends DataSinkSpecification
