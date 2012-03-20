@@ -80,4 +80,19 @@ import org.junit.Assert._
     assertEquals("Only one experiment has been finished.", 1, expDoneCounter)
   }
 
+  @Test def testMinimalExample {
+    import sessl._
+    import sessl.james._
+
+    execute {
+      new Experiment {
+        model = TestJamesExperiments.testCounterModel
+        define("x" ==> 2, "y" ==> "anotherParamValue")
+        scan("x" ==> (1, 17), "y" ==> range(1.1, 1, 10.1) and "z" ==> range(21, 1, 30))
+        stopTime = 1
+        replications = 2
+        rng = MersenneTwister(seed = 1234)
+      }
+    }
+  }
 }
