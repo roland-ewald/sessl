@@ -27,13 +27,12 @@ class TestBiBJamesExperiment {
       stopTime = 100000
 
       //Experiment design
-      optimizeFor("x" ~ "A")(results => results.max("x")) { //<- diff: uses curve fitting with some real data, could be easily provided like this: curveFitting(results.trajectory("x"), realData)
-        optStopPolicy = OptMaxAssignments(10) or OptMaxTime(hours = 1) //diff: was 100, but this takes too long for testing, no time constraint! ;-)
-        optimize("synthRate" ~ "r1", range(1.0, 10.0))
-        optimize("degradRate" ~ "r2", range(5.0, 15.0))
-        startOptimizationWith("synthRate" <~ 1.0, "degradRate" <~ 5.0)
-        optimizer = HillClimbing //<- diff: SimulatedAnnealing() for James is buggy
-      }
+      optimizeFor("x" ~ "A")(results => results.max("x")) //<- diff: uses curve fitting with some real data, could be easily provided like this: curveFitting(results.trajectory("x"), realData)
+      optStopPolicy = OptMaxAssignments(10) or OptMaxTime(hours = 1) //diff: was 100, but this takes too long for testing, no time constraint! ;-)
+      optimize("synthRate" ~ "r1", range(1.0, 10.0))
+      optimize("degradRate" ~ "r2", range(5.0, 15.0))
+      startOptimizationWith("synthRate" <~ 1.0, "degradRate" <~ 5.0)
+      optimizer = HillClimbing //<- diff: SimulatedAnnealing() for James is buggy
 
       //Setup for stochastic simulation
       replications = 10

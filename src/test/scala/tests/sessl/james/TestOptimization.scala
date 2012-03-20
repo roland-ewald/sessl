@@ -20,13 +20,14 @@ class TestOptimization {
       replications = 2
       rng = MersenneTwister()
 
-      optimizeFor("x" ~ "S1", "y" ~ "S0")(results => { results.mean("y") + results.mean("x") }) {
-        optimizeOnAllConfigs = false //<- can be left away, the default is false
-        optimizer = HillClimbing
-        optimize("#species" ~ "numSpecs", range(10, 100))
-        startOptimizationWith("#species" <~ 12)
-        optStopPolicy = OptMaxTime(seconds = 50) or OptMaxAssignments(2) //<- careful, and/or operators have the same priority, use parentheses!
+      optimize("#species" ~ "numSpecs", range(10, 1, 20))
+      optimizeFor("x" ~ "S1", "y" ~ "S0") {
+        r => { r.mean("y") + r.mean("x") }
       }
+      optimizeOnAllConfigs = false //<- can be left away, the default is false
+      optimizer = HillClimbing
+      startOptimizationWith("#species" <~ 12)
+      optStopPolicy = OptMaxTime(seconds = 50) or OptMaxAssignments(2) //<- careful, and/or operators have the same priority, use parentheses!
     }
     execute(exp)
   }

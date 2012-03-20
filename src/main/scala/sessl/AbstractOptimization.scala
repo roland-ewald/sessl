@@ -54,10 +54,9 @@ trait AbstractOptimization extends ExperimentConfiguration {
   def optimizer: Optimizer = { optimizationAlgorithm.get }
 
   /** Configure optimization. */
-  def optimizeFor(varsInOptFunction: DataElemBinding*)(optFunction: ObjectiveFunction)(configFunction: => Unit) {
+  def optimizeFor(varsInOptFunction: DataElemBinding*)(optFunction: ObjectiveFunction) {
     varsInOptFunction.map(bind(_))
     objectiveFunction = Some(optFunction)
-    configFunction
   }
 
   /** Get the default observation time to be used. */
