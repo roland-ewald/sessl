@@ -21,7 +21,8 @@ import org.junit.Assert._
     val expAnd = new Experiment with Instrumentation with ParallelExecution {
       model = TestJamesExperiments.testModel
       stopTime = 1.5
-      observeAtTimes(0.45) { bind("x" ~ "S3") }
+      bind("x" ~ "S3")
+      observeAtTimes(0.45) 
       //replicationCondition = FixedNumber(1) and (FixedNumber(manyReps) or MeanConfidenceReached("x")) TODO: implement this for James II...
       replicationCondition = FixedNumber(1) and FixedNumber(manyReps)
       withExperimentResult { r => numberOfReps = r("x").length }
@@ -33,7 +34,8 @@ import org.junit.Assert._
     val expOr = new Experiment with Instrumentation with ParallelExecution {
       model = TestJamesExperiments.testModel
       stopTime = 0.5
-      observeAtTimes(0.45) { bind("x" ~ "S3") }
+      bind("x" ~ "S3")
+      observeAtTimes(0.45)
       replicationCondition = FixedNumber(1) or FixedNumber(manyReps)
       withExperimentResult { r => numberOfReps = r("x").length }
     }

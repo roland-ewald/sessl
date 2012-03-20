@@ -67,7 +67,8 @@ trait AbstractOptimization extends ExperimentConfiguration {
     require(optimizationAlgorithm.isDefined, "No optimization algorithm is defined, use 'optimizer = ' to set one.")
     if (!isObservationTimingDefined && fixedStopTime.isDefined) {
       val defaultObsTime = defaultObsStopTimeFactor * stopTime
-      observeAtTimes(defaultObsTime) { println("Warning: no observation times are set, using " + scala.math.round(defaultObsStopTimeFactor * 100) + "% of stop time: " + defaultObsTime) } //TODO: Use logging here
+      observeAtTimes(defaultObsTime)
+      println("Warning: no observation times are set, using " + scala.math.round(defaultObsStopTimeFactor * 100) + "% of stop time: " + defaultObsTime) //TODO: Use logging here
     }
     require(isObservationTimingDefined, "No times for observation are set (use observeAtTimes(...)), and no fixed stop time is given, ie no default value can be set.")
     super.configure()

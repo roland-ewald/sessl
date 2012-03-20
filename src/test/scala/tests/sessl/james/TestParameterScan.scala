@@ -32,9 +32,8 @@ import org.junit.Assert._
 
       scan("upperVar" <~ (1, 2), "testDouble" <~ range(1., 1., 10.) and "testInt" <~ range(21, 1, 30) and "testLong" <~ range(31L, 1L, 40L))
 
-      observeAtTimes(.1, .2, .3, .9) { // currently no true 'scope', but would be possible...
-        bind("x" to "S1", "y" ~ "S1")
-      }
+      bind("x" to "S1", "y" ~ "S1") // currently no true 'scope' (e.g. observe x only for t \in [l,u]), but would be possible...
+      observeAtTimes(.1, .2, .3, .9)
 
       withRunResult { //specifies what shall be done after each run
         results =>

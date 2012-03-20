@@ -24,15 +24,13 @@ abstract trait AbstractInstrumentation extends ExperimentConfiguration {
   private val bindings: Map[String, Set[String]] = Map()
 
   /** Configuring observation at specific time steps.*/
-  final def observeAtTimes(instrTimes: Double*)(instrFunc: => Unit) = {
+  final def observeAtTimes(instrTimes: Double*) = {
     times = Some(instrTimes.toList)
-    instrFunc
   }
 
   /** Configuring observation at a specific range of times. */
-  final def observePeriodically(range: ValueRange[Double])(instrFunc: => Unit) = {
-    timeRange = Some(range)
-    instrFunc
+  final def observePeriodically(range: ValueRange[Double]) = { 
+    timeRange = Some(range) 
   }
 
   /** Defines to 'bind' one variable name in sessl to a model/sim-specific ('internal') variable.*/

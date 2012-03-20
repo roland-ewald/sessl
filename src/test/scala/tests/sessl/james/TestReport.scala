@@ -20,7 +20,8 @@ import org.junit.Assert._
       model = TestJamesExperiments.testModel
       stopTime = 0.5
       replications = 10
-      observePeriodically(range(0.0, 0.05, 0.5)) { bind("x" ~ "S0", "y" ~ "S1") }
+      bind("x" ~ "S0", "y" ~ "S1")
+      observePeriodically(range(0.0, 0.05, 0.5))
 
       //Some reporting: 
       reportName = "My SESSL Test Report"
