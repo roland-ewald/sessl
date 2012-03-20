@@ -47,7 +47,7 @@ import org.junit.Assert._
     class MyExperiment extends Experiment with ParallelExecution with Instrumentation {
 
       model = "./BIOMD0000000002.xml"
-      define("kr_0" ==> 8042)
+      set("kr_0" ==> 8042)
       scan("kf_2" ==> range(30000, 1000, 34000), "kr_2" ==> (650, 750))
       stopTime = .01
       observePeriodically(range(0, 1e-04, 1e-02)) { bind("x" ~ "ILL", "y" ~ "DLL") }

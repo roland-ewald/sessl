@@ -22,7 +22,7 @@ trait SupportModelConfiguration {
   }
 
   /** Define the variables to be set for each run (fixed). */
-  def define(variablesToSet: Variable*) {
+  def set(variablesToSet: Variable*) {
     for (variable <- variablesToSet)
       variable match {
         case v: VarSingleVal => varsToSet += v

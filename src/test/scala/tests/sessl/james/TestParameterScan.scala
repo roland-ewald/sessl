@@ -28,7 +28,7 @@ import org.junit.Assert._
 
       rng = MersenneTwister(1234)
 
-      define("fixedVar" ==> fixedValue, "answer" ==> "no!")
+      set("fixedVar" ==> fixedValue, "answer" ==> "no!")
 
       scan("upperVar" ==> (1, 2), { "testDouble" ==> range(1., 1., 10.) } and { "testInt" ==> range(21, 1, 30) } + { "testLong" ==> range(31L, 1L, 40L) })
 
@@ -87,7 +87,7 @@ import org.junit.Assert._
     execute {
       new Experiment {
         model = TestJamesExperiments.testCounterModel
-        define("x" ==> 2, "y" ==> "anotherParamValue")
+        set("x" ==> 2, "y" ==> "anotherParamValue")
         scan("x" ==> (1, 17), "y" ==> range(1.1, 1, 10.1) and "z" ==> range(21, 1, 30))
         stopTime = 1
         replications = 2
