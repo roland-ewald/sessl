@@ -51,7 +51,7 @@ import org.junit.Assert._
       scan("kf_2" <~ range(30000, 1000, 34000), "kr_2" <~ (650, 750))
       stopTime = .01
       bind("x" ~ "ILL", "y" ~ "DLL")
-      observePeriodically(range(0, 1e-04, 1e-02))
+      observeAt(range(0, 1e-04, 1e-02))
 
       simulators <~ (DormandPrince54() scan { "stepSize" <~ (1e-06, 2e-06) })
       afterRun { r => { runCounter += 1 } }

@@ -21,7 +21,7 @@ import org.junit.Assert._
       stopTime = 0.5
       replications = 10
       bind("x" ~ "S0", "y" ~ "S1")
-      observePeriodically(range(0.0, 0.05, 0.5))
+      observeAt(range(0.0, 0.05, 0.5))
 
       //Some reporting: 
       reportName = "My SESSL Test Report"

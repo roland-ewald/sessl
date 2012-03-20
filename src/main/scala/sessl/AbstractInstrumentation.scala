@@ -24,12 +24,12 @@ abstract trait AbstractInstrumentation extends ExperimentConfiguration {
   private val bindings: Map[String, Set[String]] = Map()
 
   /** Configuring observation at specific time steps.*/
-  final def observeAtTimes(instrTimes: Double*) = {
+  final def observeAt(instrTimes: Double*) = {
     times = Some(instrTimes.toList)
   }
 
   /** Configuring observation at a specific range of times. */
-  final def observePeriodically(range: ValueRange[Double]) = { 
+  final def observeAt(range: ValueRange[Double]) = { 
     timeRange = Some(range) 
   }
 
