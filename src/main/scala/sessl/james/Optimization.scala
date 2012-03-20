@@ -119,7 +119,7 @@ trait Optimization extends AbstractOptimization {
     val optimizationAlgorithms = new Array[Optimizer](1)
     //TODO: Change parameter setup of optimizers!
     optimizationAlgorithms(0) = new Optimizer(optimizationAlgorithm.get.asInstanceOf[BasicJamesIIOptimizer].factory.create(
-      Param("", optProb) :/ BasicHillClimbingOptimizerFactory.START_CONFIGURATION ~> createPredefConfig(startConfigurations(0))), optProb)
+      Param("", optProb) :/ BasicHillClimbingOptimizerFactory.START_CONFIGURATION ~>> createPredefConfig(startConfigurations(0))), optProb)
     val optimizerVariable = new OptimizerVariable(optimizationAlgorithms)
     val experimentVariables = new ExperimentVariables
     experimentVariables.addVariable(optimizerVariable)

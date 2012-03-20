@@ -21,12 +21,12 @@ trait ParallelExecution extends AbstractParallelExecution {
   this: Experiment =>
 
   override def configureParallelExecution(numThreads: Int) = {
-    val parameters = Param() :/ (NUM_CORES ~> numThreads)
+    val parameters = Param() :/ (NUM_CORES ~>> numThreads)
     if (simulatorSet.size > 1) {
       SimSystem.report(Level.INFO, "Adapting the configuration of the adaptive task runner to use " + numThreads + " threads.");
       val trFactory = exp.getTaskRunnerFactory()
       require(trFactory.getFactory().getClass().isAssignableFrom(classOf[AdaptiveTaskRunnerFactory]))
-      trFactory.setParameter(trFactory.getParameters() :/ (NUM_CORES ~> numThreads))
+      trFactory.setParameter(trFactory.getParameters() :/ (NUM_CORES ~>> numThreads))
     } else {
       exp.setTaskRunnerFactory(new ParameterizedFactory[TaskRunnerFactory](new ParallelComputationTaskRunnerFactory, parameters))
     }

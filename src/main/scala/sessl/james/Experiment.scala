@@ -119,15 +119,15 @@ class Experiment extends AbstractExperiment {
   /** Create parameterized stop factory. */
   def createParamStopFactory(s: StoppingCondition): ParameterizedFactory[StopFactory] = s match {
     case Never => new ParamFactory[StopFactory](new EmptyStopConditionStopPolicyFactory(), Param())
-    case st: AfterSimTime => new ParamFactory[StopFactory](new SimTimeStopFactory(), Param() :/ (SimTimeStopFactory.SIMEND ~> st.time))
-    case ssteps: AfterSimSteps => new ParamFactory[StopFactory](new StepCountStopFactory(), Param() :/ (StepCountStopFactory.TASKEND ~> ssteps.steps))
-    case w: AfterWallClockTime => new ParamFactory[StopFactory](new WallClockTimeStopFactory(), Param() :/ (WallClockTimeStopFactory.SIMEND ~> w.toMilliSeconds))
+    case st: AfterSimTime => new ParamFactory[StopFactory](new SimTimeStopFactory(), Param() :/ (SimTimeStopFactory.SIMEND ~>> st.time))
+    case ssteps: AfterSimSteps => new ParamFactory[StopFactory](new StepCountStopFactory(), Param() :/ (StepCountStopFactory.TASKEND ~>> ssteps.steps))
+    case w: AfterWallClockTime => new ParamFactory[StopFactory](new WallClockTimeStopFactory(), Param() :/ (WallClockTimeStopFactory.SIMEND ~>> w.toMilliSeconds))
     case c: ConjunctiveStoppingCondition =>
       new ParamFactory[StopFactory](new ConjunctiveSimRunStopPolicyFactory(), Param() :/
-        (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~> listParamStopFactories(createParamStopFactory(c.left), createParamStopFactory(c.right))))
+        (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~>> listParamStopFactories(createParamStopFactory(c.left), createParamStopFactory(c.right))))
     case d: DisjunctiveStoppingCondition =>
       new ParamFactory[StopFactory](new DisjunctiveSimRunStopPolicyFactory(), Param() :/
-        (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~> listParamStopFactories(createParamStopFactory(d.left), createParamStopFactory(d.right))))
+        (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~>> listParamStopFactories(createParamStopFactory(d.left), createParamStopFactory(d.right))))
     case x => throw new IllegalArgumentException("Stopping criterion '" + s + "' not supported.")
   }
 
@@ -181,8 +181,8 @@ class Experiment extends AbstractExperiment {
 
     //Define parameters of the task runner
     var runnerParameters = Param() :/
-      (ParallelComputationTaskRunnerFactory.NUM_CORES ~> threads,
-        AdaptiveTaskRunnerFactory.PORTFOLIO ~> paramBlockList)
+      (ParallelComputationTaskRunnerFactory.NUM_CORES ~>> threads,
+        AdaptiveTaskRunnerFactory.PORTFOLIO ~>> paramBlockList)
     if (requiredInitialRounds > 1)
       runnerParameters = runnerParameters :/ Param(AdaptiveTaskRunnerFactory.POLICY, classOf[EpsilonGreedyDecrInitFactory].getName,
         Param(EpsilonGreedyDecrInitFactory.MIN_NUM_TRIALS, requiredInitialRounds))

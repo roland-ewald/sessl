@@ -19,9 +19,9 @@ trait DataSink extends AbstractDataSink {
     if (dataSinkSpecification.isDefined)
       dataSinkSpecification.get match {
         case ds: MySQLDataSink => exp.setDataStorageFactory(new ParameterizedFactory[DataStorageFactory](new JdbcDataStorageFactory,
-          Param() :/ (PARAM_URL ~> ("jdbc:mysql://" + ds.host + "/" + ds.schema), PARAM_USER ~> ds.user, PARAM_PASSWORD ~> ds.password, PARAM_DRIVER ~> "com.mysql.jdbc.Driver")))
+          Param() :/ (PARAM_URL ~>> ("jdbc:mysql://" + ds.host + "/" + ds.schema), PARAM_USER ~>> ds.user, PARAM_PASSWORD ~>> ds.password, PARAM_DRIVER ~>> "com.mysql.jdbc.Driver")))
         case ds: DatabaseDataSink => exp.setDataStorageFactory(new ParameterizedFactory[DataStorageFactory](new JdbcDataStorageFactory,
-          Param() :/ (PARAM_URL ~> ds.url, PARAM_USER ~> ds.user, PARAM_PASSWORD ~> ds.password, PARAM_DRIVER ~> ds.driver)))
+          Param() :/ (PARAM_URL ~>> ds.url, PARAM_USER ~>> ds.user, PARAM_PASSWORD ~>> ds.password, PARAM_DRIVER ~>> ds.driver)))
         case ds => throw new IllegalArgumentException("Data sink of type '" + ds + "' is not supported.")
       }
   }

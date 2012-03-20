@@ -16,13 +16,13 @@ class ParamBlockGeneratorTest {
 
   /** Tests the conversion of sessl algorithm setups to parameter blocks. */
   @Test def testAlgorithmSetConversion() {
-    val tlSetups = AlgorithmSet[BasicJamesIISimulator](TauLeaping(gamma = 11) scan { "epsilon" ==> range(0.01, 0.01, 0.03) })
+    val tlSetups = AlgorithmSet[BasicJamesIISimulator](TauLeaping(gamma = 11) scan { "epsilon" ~> range(0.01, 0.01, 0.03) })
     assertEquals("There should be three simulator setups.", 3, tlSetups.size)
     val tlParamBlocks = ParamBlockGenerator.createParamBlockSet(tlSetups)
     testSize(tlSetups.size, tlParamBlocks.size)
     testFactoryClassSetup(TauLeaping().factory, tlParamBlocks)
 
-    val nrSetups = AlgorithmSet[BasicJamesIISimulator](NextReactionMethod() scan { "eventQueue" ==> (SortedList, LinkedList) })
+    val nrSetups = AlgorithmSet[BasicJamesIISimulator](NextReactionMethod() scan { "eventQueue" ~> (SortedList, LinkedList) })
     assertEquals("There should be two simulator setups.", 2, nrSetups.size)
     val nrParamBlocks = ParamBlockGenerator.createParamBlockSet(nrSetups)
     testSize(nrSetups.size, nrParamBlocks.size)

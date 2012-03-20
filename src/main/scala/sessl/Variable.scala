@@ -81,7 +81,7 @@ object Variable {
 
 /** Class that represents a semi-defined variable (only variable name is given so far). */
 case class VarName(name: String) {
-  def ==>[T](values: T*) = {
+  def ~>[T](values: T*) = {
     if (values.size == 1) {
       values(0) match {
         case r: ValueRange[_] => VarRange(name, r.from, r.step, r.to)

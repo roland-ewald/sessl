@@ -13,7 +13,7 @@ sealed case class Param(name: String, value: Option[Any], childs: Map[String, Pa
 
 /** Syntactic sugar to define simple parameter structures. */
 sealed case class ParamName(name: String) {
-  def ~>(value: Any) = Param(name, value)
+  def ~>>(value: Any) = Param(name, value)
 }
 
 /** Some factory methods. */
