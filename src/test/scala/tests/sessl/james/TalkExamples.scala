@@ -1,6 +1,7 @@
 package tests.sessl.james
 
 import org.junit.Test
+import org.junit.Assert._
 
 /** Some example experiments from a presentation.
  *
@@ -36,6 +37,102 @@ import org.junit.Test
         }
       }
     }
+  }
+
+  /** Performance observation and testing example. */
+  @Test def testPerfEvalAndReporting {
+
+    import sessl._
+    import sessl.james._
+
+    val tlSetups = TauLeaping() scan
+      ("epsilon" <~ range(.02, .01, .05))
+    val nrSetups = NextReactionMethod() scan
+      ("eventQueue" <~ (Heap, SortedList))
+    execute {
+      new Experiment with ParallelExecution with Report with PerformanceObservation {
+        model = "java://examples.sr.LinearChainSystem"
+        replications = 200; stopTime = 1.5
+        simulators <~ tlSetups; simulators <~ nrSetups
+        performanceDataSink = FilePerformanceDataSink()
+        withExperimentPerformance { r => //withRunPerf etc. ...
+          reportSection("Results") {
+            histogram(r.runtimes)(title = "All run times")
+            boxPlot(r.runtimesForAll)(title = "Time/setup")
+            boxPlot(r.runtimesFor(tlSetups))(title = "Time/setup")
+          }
+        }
+      }
+    }
+  }
+
+  @Test def testExperimentReuse {
+
+    import sessl._
+    import sessl.james._
+
+    class MyLCSExperiment extends Experiment with ParallelExecution {
+      model = "java://examples.sr.LinearChainSystem"
+      replications = 2
+    }
+
+    execute {
+      new MyLCSExperiment() {
+        stopCondition = AfterSimSteps(100)
+      }
+    }
+  }
+
+  @Test def testExperimentNesting {
+
+    import sessl._
+    import sessl.james._
+
+    class MyLCSExperiment extends Experiment with ParallelExecution {
+      model = "java://examples.sr.LinearChainSystem"
+      replications = 2
+    }
+
+    var subCounter = 0
+    var counter = 0
+    execute {
+      new MyLCSExperiment() {
+        stopCondition = AfterSimSteps(100)
+        afterRun {
+          r =>
+            {
+              counter += 1
+              execute {
+                new MyLCSExperiment() {
+                  stopCondition = AfterSimSteps(10)
+                  afterRun {
+                    r => subCounter += 1
+                  }
+                }
+              }
+            }
+        }
+      }
+    }
+
+    assertEquals(4, subCounter)
+    assertEquals(2, counter)
+  }
+
+  @Test def testExperimentAdaptation {
+
+    import sessl._
+    import sessl.james._
+
+    execute {
+      new Experiment {
+        model = "java://examples.sr.LinearChainSystem"
+        replications = 2; stopTime = 1
+        exp.setBackupEnabled(true) //<-add custom code here
+        exp.getExecutionController().setExperiment(exp)
+      }
+    }
+
   }
 
 }
