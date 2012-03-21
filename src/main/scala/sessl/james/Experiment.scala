@@ -202,7 +202,7 @@ class Experiment extends AbstractExperiment {
     SimSystem.getRNGGenerator().setInitialSeed(customRNG.seed)
   }
 
-  override def execute() = {
+  override def executeExperiment() = {
     addExecutionListener(exp)
     exp.execute()
     experimentDone()

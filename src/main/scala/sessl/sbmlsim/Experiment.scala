@@ -67,7 +67,7 @@ class Experiment extends AbstractExperiment with ResultHandling {
   }
 
   /** Executes experiment*/
-  def execute(): Unit = {
+  def executeExperiment(): Unit = {
     //Generate all desired combinations (variable-setup, simulator)
     val jobs = for (v <- createVariableSetups().zipWithIndex; i <- simulators.algorithms.indices) yield (v, simulators.algorithms(i).asInstanceOf[BasicSBMLSimSimulator], i == simulators.size - 1)
     require(!jobs.isEmpty, "Current setup does not define any jobs to be executed.")

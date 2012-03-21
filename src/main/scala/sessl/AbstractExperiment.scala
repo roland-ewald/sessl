@@ -22,7 +22,7 @@ abstract class AbstractExperiment extends BasicExperimentConfiguration with Supp
   protected def basicConfiguration(): Unit
 
   /** Called to execute the experiment. */
-  protected def execute(): Unit
+  protected[sessl] def executeExperiment(): Unit
 
   /** Setting the flags that control a proper call hierarchy, calling event handlers if installed. */
   override def configure() = { configureCalled = true }
@@ -47,7 +47,7 @@ object AbstractExperiment {
    */
   def execute(exps: AbstractExperiment*) = for (exp <- exps) {
     exp.prepare()
-    exp.execute()
+    exp.executeExperiment()
     require(exp.isDone, "The experiment seems to have finished incomplete.")
   }
 
