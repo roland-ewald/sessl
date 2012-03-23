@@ -135,4 +135,23 @@ import org.junit.Assert._
 
   }
 
+  @Test def testIntrodctionExperiment {
+    import sessl._
+    import sessl.james._
+
+    execute {
+      new Experiment with Instrumentation with ParallelExecution {
+        model = "file-sr:/./SimpleModel.sr"
+        replications = 10
+        stopCondition = AfterWallClockTime(seconds = 1) and AfterSimTime(1.0)
+        bind("x" ~ "A")
+        observeAt(range(0.1, .01, .9))
+        scan("r1" <~ range(.5, .1, 1.4))
+        withRunResult {
+          results => println(results ~ "x")
+        }
+      }
+    }
+  }
+
 }
