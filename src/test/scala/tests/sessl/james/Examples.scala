@@ -146,7 +146,7 @@ import org.junit.Assert._
         replications = 10
         stopCondition = AfterWallClockTime(seconds = 1) and AfterSimTime(10e4)
         bind("x" ~ "A")
-        observeAt(range(100, 100, 9000))
+        observeAt(range(100, 50, 9000))
         withRunResult {
           results => println(results ~ "x")
         }
