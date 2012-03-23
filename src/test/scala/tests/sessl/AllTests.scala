@@ -19,12 +19,13 @@ import tests.sessl.james.TestStoppingConditions
 import tests.sessl.james.TestReplicationConditions
 import tests.sessl.sbmlsim.TestSimpleSBMLSimExperiments
 import sessl.util.TestInterpolation
+import tests.sessl.james.Examples
 
 /** Bundles all tests together (as the Eclipse-JUnit-Runner cannot easily deal with Scala code).
  *  @author Roland Ewald
  */
 @RunWith(value = classOf[org.junit.runners.Suite])
-@SuiteClasses(value = Array(classOf[TestInterpolation], classOf[TestParameterScan], classOf[TestOptimization], classOf[TestRNGSetup],
+@SuiteClasses(value = Array(classOf[TestInterpolation], classOf[Examples], classOf[TestParameterScan], classOf[TestOptimization], classOf[TestRNGSetup],
   classOf[TestDataSink], classOf[TestBiBJamesExperiment], classOf[TestReport], classOf[TestStoppingConditions],
   classOf[TestReplicationConditions], classOf[TestPerformanceExperiments],
   classOf[TestVariable], classOf[TestSimpleInstrumentation], classOf[ParamBlockGeneratorTest], classOf[TestSimpleSBMLSimExperiments]))

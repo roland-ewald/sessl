@@ -3,11 +3,11 @@ package tests.sessl.james
 import org.junit.Test
 import org.junit.Assert._
 
-/** Some example experiments from a presentation.
+/** Some example experiments to be used in talk(s) and publication(s).
  *
  *  @author Roland Ewaldd
  */
-@Test class TalkExamples {
+@Test class Examples {
 
   /** Full instrumentation example. */
   @Test def testInstrumentation {
@@ -142,11 +142,11 @@ import org.junit.Assert._
     execute {
       new Experiment with Instrumentation with ParallelExecution {
         model = "file-sr:/./SimpleModel.sr"
+        scan("r1" <~ range(.5, .1, 1.4))
         replications = 10
         stopCondition = AfterWallClockTime(seconds = 1) and AfterSimTime(1.0)
         bind("x" ~ "A")
         observeAt(range(0.1, .01, .9))
-        scan("r1" <~ range(.5, .1, 1.4))
         withRunResult {
           results => println(results ~ "x")
         }
