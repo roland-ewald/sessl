@@ -144,9 +144,9 @@ import org.junit.Assert._
         model = "file-sr:/./SimpleModel.sr"
         scan("r1" <~ range(.5, .1, 1.4))
         replications = 10
-        stopCondition = AfterWallClockTime(seconds = 1) and AfterSimTime(1.0)
+        stopCondition = AfterWallClockTime(seconds = 1) and AfterSimTime(10e4)
         bind("x" ~ "A")
-        observeAt(range(0.1, .01, .9))
+        observeAt(range(100, 100, 9000))
         withRunResult {
           results => println(results ~ "x")
         }

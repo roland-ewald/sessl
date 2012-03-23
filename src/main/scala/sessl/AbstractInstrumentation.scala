@@ -29,8 +29,8 @@ abstract trait AbstractInstrumentation extends ExperimentConfiguration {
   }
 
   /** Configuring observation at a specific range of times. */
-  final def observeAt(range: ValueRange[Double]) = { 
-    timeRange = Some(range) 
+  final def observeAt[T <: AnyVal](r: ValueRange[T])(implicit n: Numeric[T]) = {
+    timeRange = Some(ValueRange[Double](n.toDouble(r.from), n.toDouble(r.step), n.toDouble(r.to)))
   }
 
   /** Defines to 'bind' one variable name in sessl to a model/sim-specific ('internal') variable.*/
