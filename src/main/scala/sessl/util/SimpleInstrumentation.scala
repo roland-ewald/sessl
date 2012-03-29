@@ -29,8 +29,7 @@ trait SimpleInstrumentation extends AbstractInstrumentation {
     val runResults = inMemoryDatabase.getOrElseUpdate(runID, Map())
     for (externalName <- externalNames)
       runResults += ((externalName, value :: runResults.get(externalName).getOrElse(Nil)))
-
-    println("Added results for run " + runID + ":" + value) //TODO:Use logging here (log-level:finest!)
+    //println("Added results for run " + runID + ":" + value) //TODO:Use logging here (log-level:finest!)
   }
 
   /** Collects run results from 'database'. */
