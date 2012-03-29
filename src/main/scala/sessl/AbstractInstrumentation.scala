@@ -1,9 +1,10 @@
 package sessl
 
-import scala.collection.mutable.Set
 import scala.collection.mutable.Map
-import sessl.util.ResultOperations
+import scala.collection.mutable.Set
+
 import sessl.util.MiscUtils
+import sessl.util.ResultOperations
 
 /** Support for instrumentation. The instrumentation trait is also concerned with managing the observed data in simple way,
  *  ie. it has to provide read-access to be used across other traits (mixed-in later).
@@ -173,7 +174,10 @@ class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends
 
   /** Get all data on a given variable name, and includes the name.*/
   def ~(name: String): (String, Trajectory) = (name, getVarData(name))
-
+  
+  /** Get all data in a manner that is easy to plot. */
+  def all: Seq[(String, Trajectory)] = names.map(this ~ _)
+  
   /** Get all times at which the data was observed. */
   def times(name: String): List[Double] = getVarData(name).map(_._1)
 

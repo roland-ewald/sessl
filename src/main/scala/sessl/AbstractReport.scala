@@ -61,13 +61,22 @@ trait AbstractReport extends ExperimentConfiguration {
 
   /** Define a line plot with variable names. The first value list defines the time points (if it is a trajectory, both values and times are taken from it). */
   def linePlot(data: Any*)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "") = {
-    val convertedData = data.head match {
-      case tuple: (_, _) => ("Time", tuple._2.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
-      case trajectory: List[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
-      case _ => data.toList.flatMap(toNamedList)
-    }
+    val convertedData = convertToLinePlotData(retrieveInstrumentationResult(data))
     if (convertedData.forall(x => dataIsNumeric(x._2)))
       currentSection.childs += LinePlotView(convertedData.map(x => (x._1, toDoubleList(x._2))), title, caption, xLabel, yLabel, currentSection)
+  }
+
+  /** Checks whether the whole result of a simulation run has been passed, in which case it is retrieved. */
+  private[this] def retrieveInstrumentationResult(data: Seq[Any]) = data.head match {
+    case result: InstrumentationRunResultsAspect => require(data.size == 1, "Only single-element result list is allowed."); result.all
+    case _ => data
+  }
+
+  /** Converts data items to a common format that can be used for line plots. */
+  private[this] def convertToLinePlotData(data: Seq[Any]): List[(String, List[_])] = data.head match {
+    case tuple: (_, _) => ("Time", tuple._2.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
+    case trajectory: List[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
+    case _ => data.toList.flatMap(toNamedList)
   }
 
   /** Define a report section that describes the outcomes of a statistical test. */
