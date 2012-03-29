@@ -136,10 +136,13 @@ abstract trait AbstractInstrumentation extends ExperimentConfiguration {
 }
 
 /** Represents an association between a 'sessl'-variable and a model/sim-specific ('internal') variable. */
-sealed case class DataElemBinding(sesslName: String, internalName: String)
+sealed class DataElemBinding(val sesslName: String, val internalName: String) {
+  /** Simple constructor for 'id' bindings. */
+  def this(singleName: String) = this(singleName, singleName)
+}
 
 /** Name of a data element (=> the first part of a data element binding). */
-sealed case class DataElemName(sesslName: String) {
+sealed case class DataElemName(override val sesslName: String) extends DataElemBinding(sesslName, sesslName) {
   def to(internalName: String) = new DataElemBinding(sesslName, internalName)
   def ~(internalName: String) = to(internalName)
 }
