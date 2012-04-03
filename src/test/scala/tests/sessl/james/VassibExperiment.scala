@@ -41,7 +41,7 @@ import org.junit.Test
 
     //Execute accuracy experiment
     execute {
-      new AutoRegExperiment /*TODO with PerformanceObservation*/ {
+      new AutoRegExperiment with PerformanceObservation {
         replications = repsForTauImpl
         simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.002, 0.05), "gamma" <~ range(5, 1, 15)))
         simulatorExecutionMode = AllSimulators

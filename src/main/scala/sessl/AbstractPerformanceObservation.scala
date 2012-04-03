@@ -40,7 +40,7 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
   /** Before the run is done, add the performance data on this run to the experiment. */
   override def collectRunResultsAspects(runId: Int) {
     super.collectRunResultsAspects(runId)
-    addRunResultsAspect(runId, collectResults(runId, true))
+    addRunResultsAspect(runId, collectPerformanceResults(runId, true))
   }
 
   /** Before the replications are done, add all results of this run to the experiment. */
@@ -62,7 +62,7 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
    *  @param removeData flag to signal that the data will not be required again (and can hence be dismissed)
    *  @return the result aspect of the run (w.r.t. performance)
    */
-  def collectResults(runID: Int, removeData: Boolean): PerfObsRunResultsAspect
+  def collectPerformanceResults(runID: Int, removeData: Boolean): PerfObsRunResultsAspect
 
 }
 

@@ -59,7 +59,7 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
     configurePerformanceDataSink()
   }
 
-  override def collectResults(runId: Int, removeData: Boolean): PerfObsRunResultsAspect = {
+  override def collectPerformanceResults(runId: Int, removeData: Boolean): PerfObsRunResultsAspect = {
     val runPerformance = if (removeData)
       runPerformances.remove(runId)
     else
