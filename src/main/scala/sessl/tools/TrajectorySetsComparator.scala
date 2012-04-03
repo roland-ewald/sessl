@@ -3,6 +3,7 @@ import sessl.InstrumentationReplicationsResultsAspect
 import sessl.InstrumentationRunResultsAspect
 import sessl.Trajectory
 import james.core.math.statistics.tests.wilcoxon.WilcoxonRankSumTest
+import sessl.util.ScalaToJava._
 
 /** Simple component to compare two sets of trajectories.
  *
@@ -20,9 +21,8 @@ object TrajectorySetsComparator {
     val referenceSlices = sliceTrajectories(getTrajectorySet(referenceData, varName))
     val testSlices = sliceTrajectories(getTrajectorySet(testData, varName))
     require(referenceSlices.size == testSlices.size, "Number of reference and test slices need to be equal (are all trajectories of the same length?).")
-    for ((refSlice, testSlice) <- referenceSlices zip testSlices) yield new WilcoxonRankSumTest().executeTest(null, null)
+    for ((refSlice, testSlice) <- referenceSlices zip testSlices) yield new WilcoxonRankSumTest().executeTest(toList(refSlice), toList(testSlice))
   }
-
 
   /** Retrieves list of trajectories from result aspect. */
   private[this] def getTrajectorySet(aspect: InstrumentationReplicationsResultsAspect, varName: String) =

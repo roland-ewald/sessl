@@ -1,9 +1,14 @@
 package sessl.util
 
+import java.util.ArrayList
+
 object ScalaToJava {
 
-  def toList(values: Iterable[Double]): List[Double] = {
-    null
+  /** Creates an array list.*/
+  def toList(values: Iterable[Double]): ArrayList[java.lang.Double] = {
+    val result = new ArrayList[java.lang.Double]()
+    values.foreach(v => result.add(v))
+    result
   }
 
   /** Convert list to double array. */

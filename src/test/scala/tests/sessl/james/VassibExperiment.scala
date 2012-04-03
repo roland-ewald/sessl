@@ -27,8 +27,8 @@ import sessl.tools.TrajectorySetsComparator
     import sessl._
     import sessl.james._
 
-    val repsForReferenceImpl = 1
-    val repsForTauImpl = 2
+    val repsForReferenceImpl = 20
+    val repsForTauImpl = 20
 
     //General experiment: what model, what data
     class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution with Report {
