@@ -33,8 +33,8 @@ import sessl.util.AlgorithmSet
     val runtimes = CSVFileWriter("vassib_autoreg_nw_mlr_runtimes.csv")
     val tlUncertainty = CSVFileWriter("vassib_autoreg_nw_mlr_comparison.csv")
 
-    val repsForReferenceImpl = 20
-    val repsForEvaluation = 20
+    val repsForReferenceImpl = 1000
+    val repsForEvaluation = 250
 
     //General experiment: what model, what data
     class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution {
@@ -60,8 +60,8 @@ import sessl.util.AlgorithmSet
 
     val simulators = new AlgorithmSet[Simulator]()
     simulators <+ NextReactionMethod()
-    simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.01, 0.02)))
-    //simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.002, 0.05), "gamma" <~ range(5, 1, 15)))
+    //    simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.01, 0.02)))
+    simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.002, 0.05), "gamma" <~ range(5, 1, 15)))
 
     //Execute accuracy experiments
     for (sim <- simulators.algorithms)
