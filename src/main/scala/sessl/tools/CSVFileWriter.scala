@@ -2,9 +2,8 @@ package sessl.tools
 
 import java.io.FileWriter
 import scala.collection.mutable.ListBuffer
-
 import james.core.util.misc.Strings
-import sessl.util.ScalaToJava._
+import sessl.util.ScalaToJava
 
 /** Simple utility to store CSV files.
  *  @author Roland Ewald
@@ -18,15 +17,21 @@ class CSVFileWriter(fileName: String) {
   def store(elements: Any*) = {
     val lb = ListBuffer[String]()
     for (element <- elements) element match {
-      case seq: Seq[_] => lb += Strings.dispCollection(toList(seq))
+      case seq: Seq[_] => lb += elementsToString(seq)
       case x => lb += "\"" + x.toString + "\""
     }
-    writer.append(Strings.dispCollection(toList(lb)) + "\n")
+    writer.append(elementsToString(lb) + "\n")
     writer.flush()
   }
 
   /** Support C++ I/O notation, might be more intuitive for some. */
-  def <<(elements: Any*) = store(elements:_*)
+  def <<(elements: Any*) = store(elements: _*)
+
+  /** Returns a comma-separated string with all elements in a sequence. */
+  def elementsToString(elements: Seq[_]): String = {
+    val stringRepresentation = Strings.dispCollection(ScalaToJava.toList(elements))
+    stringRepresentation.slice(1, stringRepresentation.size - 1)
+  }
 
 }
 
