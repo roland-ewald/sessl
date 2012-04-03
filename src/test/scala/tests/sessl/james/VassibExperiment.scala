@@ -1,7 +1,6 @@
 package tests.sessl.james
 
 import org.junit.Test
-
 import sessl.james.Experiment
 import sessl.james.Instrumentation
 import sessl.james.NextReactionMethod
@@ -15,6 +14,7 @@ import sessl.stringToVarName
 import sessl.AbstractInstrumentation
 import sessl.AllSimulators
 import sessl.range
+import sessl.tools.TrajectorySetsComparator
 
 /** Simple experiment to produce some test data for VASSiB.
  *  @author Roland Ewald
@@ -27,8 +27,8 @@ import sessl.range
     import sessl._
     import sessl.james._
 
-    val repsForReferenceImpl = 3
-    val repsForTauImpl = 5
+    val repsForReferenceImpl = 1
+    val repsForTauImpl = 2
 
     //General experiment: what model, what data
     class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution with Report {
@@ -40,18 +40,20 @@ import sessl.range
     }
 
     //Execute reference experiment
-    var referenceResult: Any = None
-//    execute {
-//      new AutoRegExperiment {
-//        replications = repsForReferenceImpl
-//        simulator = NextReactionMethod()
-//        reportName = "Reference Results"
-//        withRunResult {
-//          r => linePlot(r)(title = "Test run " + r.id)
-//        }
-//        withReplicationsResult(referenceResult = _)
-//      }
-//    }
+    var referenceResult: InstrumentationReplicationsResultsAspect = null
+    execute {
+      new AutoRegExperiment {
+        replications = repsForReferenceImpl
+        simulator = NextReactionMethod()
+        reportName = "Reference Results"
+        withRunResult {
+          r => linePlot(r)(title = "Test run " + r.id)
+        }
+        withReplicationsResult(referenceResult = _)
+      }
+    }
+
+    require(referenceResult != null, "No reference result recorded!")
 
     //Execute accuracy experiment
     execute {
@@ -61,9 +63,10 @@ import sessl.range
         simulatorExecutionMode = AllSimulators
         reportName = "Accuracy Results"
         withReplicationsPerformance { results =>
-          println("Results" + results.forSetupsAndAspect(TauLeaping(), new InstrumentationReplicationsResultsAspect()))
-          /*TODO: 
-         Crossvalidator.compare(perf.resultsForSetup(s),referenceResult)*/
+          for (s <- simulators.algorithms) {
+            println("Results: " +
+              TrajectorySetsComparator.compare(referenceResult, results.forSetupsAndAspect(s, new InstrumentationReplicationsResultsAspect()), "P2"))
+          }
         }
       }
     }

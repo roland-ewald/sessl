@@ -86,44 +86,22 @@ trait Report extends AbstractReport {
   }
 
   /** Creates data views. */
-  def createJamesDataView(view: DataView): JDataView[_] = view match {
-    case v: ScatterPlotView => new ScatterPlotDataView(to2DJavaDoubleArray(v.xData, v.yData),
-      v.caption, v.title, Array[String](v.xLabel, v.yLabel))
-    case v: HistogramView => new HistogramDataView(toJavaDoubleArray(v.data), v.caption, v.title, v.xLabel, v.yLabel)
-    case v: BoxPlotView => new BoxPlotDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
-      v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1): _*))
-    case v: LinePlotView => new LineChartDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
-      v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1).tail: _*))
-    case v: StatisticalTestView =>
-      val dataPair = new james.core.util.misc.Pair[Array[java.lang.Double], Array[java.lang.Double]](toJavaDoubleArray(v.firstData._2), toJavaDoubleArray(v.secondData._2))
-      new StatisticalTestDataView(dataPair, v.caption, v.firstData._1, v.secondData._1, true, true, StatisticalTestDefinition.KOLMOGOROV_SMIRNOV)
-    case v: TableView => new TableDataView(to2DTransposedJavaStringArray(v.data: _*), v.caption)
-    case _ => throw new IllegalArgumentException("Data view " + view + " not yet supported.")
-  }
-
-  /** Convert list to double array. */
-  private def toJavaDoubleArray(values: List[Double]): Array[java.lang.Double] = values.map(_.asInstanceOf[java.lang.Double]).toArray
-
-  /** Convert list to nested array. */
-  private def to2DJavaDoubleArray(valueLists: List[Double]*) = {
-    val rv: Array[Array[java.lang.Double]] = Array.ofDim(valueLists.length)
-    for (i <- valueLists.indices)
-      rv(i) = toJavaDoubleArray(valueLists(i))
-    rv
-  }
-
-  /** Convert list to (transposed) nested array. */
-  private def to2DTransposedJavaStringArray(valueLists: List[String]*): Array[Array[java.lang.String]] = {
-
-    if (valueLists.length == 0)
-      return Array.ofDim(0)
-
-    val rv: Array[Array[java.lang.String]] = Array.ofDim(valueLists.head.length)
-    for (i <- valueLists.head.indices)
-      rv(i) = Array.ofDim(valueLists.length)
-    for (i <- valueLists.head.indices; j <- valueLists.indices)
-      rv(i)(j) = valueLists(j)(i)
-    rv
+  def createJamesDataView(view: DataView): JDataView[_] = {
+    import sessl.util.ScalaToJava._
+    view match {
+      case v: ScatterPlotView => new ScatterPlotDataView(to2DJavaDoubleArray(v.xData, v.yData),
+        v.caption, v.title, Array[String](v.xLabel, v.yLabel))
+      case v: HistogramView => new HistogramDataView(toDoubleArray(v.data), v.caption, v.title, v.xLabel, v.yLabel)
+      case v: BoxPlotView => new BoxPlotDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
+        v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1): _*))
+      case v: LinePlotView => new LineChartDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
+        v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1).tail: _*))
+      case v: StatisticalTestView =>
+        val dataPair = new james.core.util.misc.Pair[Array[java.lang.Double], Array[java.lang.Double]](toDoubleArray(v.firstData._2), toDoubleArray(v.secondData._2))
+        new StatisticalTestDataView(dataPair, v.caption, v.firstData._1, v.secondData._1, true, true, StatisticalTestDefinition.KOLMOGOROV_SMIRNOV)
+      case v: TableView => new TableDataView(to2DTransposedJavaStringArray(v.data: _*), v.caption)
+      case _ => throw new IllegalArgumentException("Data view " + view + " not yet supported.")
+    }
   }
 
 }
