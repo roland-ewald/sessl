@@ -1,6 +1,10 @@
 package sessl.tools
+
 import java.io.FileWriter
 import scala.collection.mutable.ListBuffer
+
+import james.core.util.misc.Strings
+import sessl.util.ScalaToJava._
 
 /** Simple utility to store CSV files.
  *  @author Roland Ewald
@@ -12,12 +16,12 @@ class CSVFileWriter(fileName: String) {
 
   /** Stores elements in CSV file. */
   def store(elements: Any*) = {
-    val lb = ListBuffer[Any]()
+    val lb = ListBuffer[String]()
     for (element <- elements) element match {
-      case seq: Seq[_] => lb ++= seq
-      case x => lb += x
+      case seq: Seq[_] => lb += Strings.dispCollection(toList(seq))
+      case x => lb += x.toString
     }
-    writer.append(lb.toList.mkString(",") + "\n")
+    writer.append(Strings.dispCollection(toList(lb)) + "\n")
     writer.flush()
   }
 

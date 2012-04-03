@@ -16,6 +16,7 @@ import sessl.AllSimulators
 import sessl.range
 import sessl.tools.TrajectorySetsComparator
 import sessl.tools.CSVFileWriter
+import sessl.util.AlgorithmSet
 
 /** Simple experiment to produce some test data for VASSiB.
  *  @author Roland Ewald
@@ -57,21 +58,24 @@ import sessl.tools.CSVFileWriter
 
     require(referenceResult != null, "No reference result recorded!")
 
-    //Execute accuracy experiment
-    execute {
-      new AutoRegExperiment with PerformanceObservation {
-        replications = repsForEvaluation
-        simulators <+ NextReactionMethod()
-        simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.01, 0.02)))
-        //simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.002, 0.05), "gamma" <~ range(5, 1, 15)))
-        simulatorExecutionMode = AllSimulators
-        withReplicationsPerformance { results =>
-          for (sim <- simulators.algorithms) {
-            runtimes << results.runtimesFor(sim)
-            tlUncertainty << (sim, TrajectorySetsComparator.compare(referenceResult, results.forSetupsAndAspect(sim, new InstrumentationReplicationsResultsAspect()), "P2"))
+    val simulators = new AlgorithmSet[Simulator]()
+    simulators <+ NextReactionMethod()
+    simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.01, 0.02)))
+    //simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.002, 0.05), "gamma" <~ range(5, 1, 15)))
+
+    //Execute accuracy experiments
+    for (sim <- simulators.algorithms)
+      execute {
+        new AutoRegExperiment with PerformanceObservation {
+          replications = repsForEvaluation
+          simulator = sim
+          withReplicationsResult { result =>
+            tlUncertainty << (sim, TrajectorySetsComparator.compare(referenceResult, result, "P2"))
+          }
+          withReplicationsPerformance { result =>
+            runtimes << (sim, result.runtimes)
           }
         }
       }
-    }
   }
 }

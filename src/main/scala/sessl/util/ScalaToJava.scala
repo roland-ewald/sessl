@@ -4,9 +4,16 @@ import java.util.ArrayList
 
 object ScalaToJava {
 
-  /** Creates an array list.*/
-  def toList(values: Iterable[Double]): ArrayList[java.lang.Double] = {
+  /** Creates an array list of java Double objects.*/
+  def toDoubleList(values: Iterable[Double]): ArrayList[java.lang.Double] = {
     val rv = new ArrayList[java.lang.Double]()
+    values.foreach(v => rv.add(v))
+    rv
+  }
+
+  /** Creates an array list.*/
+  def toList[X](values: Iterable[X]): ArrayList[X] = {
+    val rv = new ArrayList[X]()
     values.foreach(v => rv.add(v))
     rv
   }
