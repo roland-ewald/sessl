@@ -29,8 +29,8 @@ import sessl.tools.CSVFileWriter
     import sessl.james._
 
     val refModelOutput = CSVFileWriter("vassib_autoreg_nw_mlr_reference.csv")
-    val uncertainty = CSVFileWriter("vassib_autoreg_nw_mlr_comparison.csv")
     val runtimes = CSVFileWriter("vassib_autoreg_nw_mlr_runtimes.csv")
+    val tlUncertainty = CSVFileWriter("vassib_autoreg_nw_mlr_comparison.csv")
 
     val repsForReferenceImpl = 20
     val repsForEvaluation = 20
@@ -50,7 +50,7 @@ import sessl.tools.CSVFileWriter
       new AutoRegExperiment {
         replications = repsForReferenceImpl
         simulator = NextReactionMethod()
-        withRunResult(refModelOutput << _ ~ "P2")
+        withRunResult(refModelOutput << _.values("P2"))
         withReplicationsResult(referenceResult = _)
       }
     }
@@ -68,8 +68,7 @@ import sessl.tools.CSVFileWriter
         withReplicationsPerformance { results =>
           for (sim <- simulators.algorithms) {
             runtimes << results.runtimesFor(sim)
-            println("Results: " + sim + ":" +
-              TrajectorySetsComparator.compare(referenceResult, results.forSetupsAndAspect(sim, new InstrumentationReplicationsResultsAspect()), "P2"))
+            tlUncertainty << (sim, TrajectorySetsComparator.compare(referenceResult, results.forSetupsAndAspect(sim, new InstrumentationReplicationsResultsAspect()), "P2"))
           }
         }
       }
