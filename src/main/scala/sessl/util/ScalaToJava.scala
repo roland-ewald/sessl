@@ -6,9 +6,9 @@ object ScalaToJava {
 
   /** Creates an array list.*/
   def toList(values: Iterable[Double]): ArrayList[java.lang.Double] = {
-    val result = new ArrayList[java.lang.Double]()
-    values.foreach(v => result.add(v))
-    result
+    val rv = new ArrayList[java.lang.Double]()
+    values.foreach(v => rv.add(v))
+    rv
   }
 
   /** Convert list to double array. */

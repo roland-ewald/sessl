@@ -15,6 +15,7 @@ import sessl.AbstractInstrumentation
 import sessl.AllSimulators
 import sessl.range
 import sessl.tools.TrajectorySetsComparator
+import sessl.tools.CSVFileWriter
 
 /** Simple experiment to produce some test data for VASSiB.
  *  @author Roland Ewald
@@ -27,15 +28,19 @@ import sessl.tools.TrajectorySetsComparator
     import sessl._
     import sessl.james._
 
+    val refModelOutput = CSVFileWriter("vassib_autoreg_nw_mlr_reference.csv")
+    val uncertainty = CSVFileWriter("vassib_autoreg_nw_mlr_comparison.csv")
+    val runtimes = CSVFileWriter("vassib_autoreg_nw_mlr_runtimes.csv")
+
     val repsForReferenceImpl = 20
-    val repsForTauImpl = 20
+    val repsForEvaluation = 20
 
     //General experiment: what model, what data
-    class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution with Report {
+    class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution {
       model = "file-sr:/./AutoregulatoryGeneticNetwork.sr"
-      stopTime = 10100
+      stopTime = 20500
       bind("P2", "P", "RNA")
-      observeAt(range(0, 20, 10000))
+      observeAt(range(0, 20, 20000))
       parallelThreads = -1
     }
 
@@ -45,10 +50,7 @@ import sessl.tools.TrajectorySetsComparator
       new AutoRegExperiment {
         replications = repsForReferenceImpl
         simulator = NextReactionMethod()
-        reportName = "Reference Results"
-        withRunResult {
-          r => linePlot(r)(title = "Test run " + r.id)
-        }
+        withRunResult(refModelOutput << _ ~ "P2")
         withReplicationsResult(referenceResult = _)
       }
     }
@@ -58,14 +60,16 @@ import sessl.tools.TrajectorySetsComparator
     //Execute accuracy experiment
     execute {
       new AutoRegExperiment with PerformanceObservation {
-        replications = repsForTauImpl
-        simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.01, 0.03) /*, "gamma" <~ range(5, 1, 15)*/ ))
+        replications = repsForEvaluation
+        simulators <+ NextReactionMethod()
+        simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.01, 0.02)))
+        //simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.002, 0.05), "gamma" <~ range(5, 1, 15)))
         simulatorExecutionMode = AllSimulators
-        reportName = "Accuracy Results"
         withReplicationsPerformance { results =>
-          for (s <- simulators.algorithms) {
-            println("Results: " +
-              TrajectorySetsComparator.compare(referenceResult, results.forSetupsAndAspect(s, new InstrumentationReplicationsResultsAspect()), "P2"))
+          for (sim <- simulators.algorithms) {
+            runtimes << results.runtimesFor(sim)
+            println("Results: " + sim + ":" +
+              TrajectorySetsComparator.compare(referenceResult, results.forSetupsAndAspect(sim, new InstrumentationReplicationsResultsAspect()), "P2"))
           }
         }
       }
