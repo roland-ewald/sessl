@@ -19,14 +19,14 @@ class CSVFileWriter(fileName: String) {
     val lb = ListBuffer[String]()
     for (element <- elements) element match {
       case seq: Seq[_] => lb += Strings.dispCollection(toList(seq))
-      case x => lb += x.toString
+      case x => lb += "\"" + x.toString + "\""
     }
     writer.append(Strings.dispCollection(toList(lb)) + "\n")
     writer.flush()
   }
 
   /** Support C++ I/O notation, might be more intuitive for some. */
-  def <<(elements: Any*) = store(elements)
+  def <<(elements: Any*) = store(elements:_*)
 
 }
 
