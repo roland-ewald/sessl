@@ -85,16 +85,7 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
   lazy val allSetups = runsResultsMap.mapValues(_.asInstanceOf[PerfObsRunResultsAspect].setup).values.toSet
 
   /** Retrieves all run times for a set of results executed with certain setups. */
-  def runtimes(algorithms: Any): Iterable[Double] = {
-    algorithms match {
-      case algo: Simulator => runtimesFor(AlgorithmSet[Simulator](algo))
-      case algoSeq: Seq[_] => algoSeq.head match {
-        case s: Simulator => runtimesFor(AlgorithmSet[Simulator](algoSeq.asInstanceOf[Seq[Simulator]]))
-        case x => throw new IllegalArgumentException("Object '" + algoSeq.head + "' in sequence '" + algoSeq + "' not supported for run times lookup.")
-      }
-      case x => throw new IllegalArgumentException("Object '" + algorithms + "' not supported for run times lookup.")
-    }
-  }
+  def runtimes(algorithms: Any): Iterable[Double] = runtimesFor(retrieveAlgorithmSet(algorithms))
 
   /** Retrieve the run times for all setups, sorted alphabetically by the string representation of the setup. */
   def runtimesForAll: Seq[(String, List[Double])] = runtimesFor(allSetups.toSeq)
@@ -106,13 +97,30 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
   def runtimesFor(setups: Seq[Simulator]): Seq[(String, List[Double])] =
     setups.map(setup => (setup.toString, runtimesFor(AlgorithmSet[Simulator](setup)).toList)).toSeq.sortBy(_._1)
 
+  /** Gets general results for certain setups. */
+  def forSetups(algorithms: Any) =
+    filterBySetups(retrieveAlgorithmSet(algorithms)).map(_._2.results)
+
   /** Retrieve runtime results for all runs having used a setup that is contained in the given set. */
-  private[this] def runtimesFor(setups: AlgorithmSet[Simulator]) =
-    retrieveRuntimes(runsResultsMap.filter(entry => setups.algorithmSet(entry._2.asInstanceOf[PerfObsRunResultsAspect].setup)))
+  private[this] def runtimesFor(setups: AlgorithmSet[Simulator]) = retrieveRuntimes(filterBySetups(setups))
 
   /** Retrieve the runtime results for a given number of runs, represented by a map run id => run result aspect. */
   private[this] def retrieveRuntimes(results: Map[Int, RunResultsAspect]) =
     results.values.map(_.asInstanceOf[PerfObsRunResultsAspect].runtime)
+
+  /** Filter the results by setups. */
+  private[this] def filterBySetups(setups: AlgorithmSet[Simulator]) =
+    runsResultsMap.filter(entry => setups.algorithmSet(entry._2.asInstanceOf[PerfObsRunResultsAspect].setup))
+
+  /** Checks input if it is a single simulation algorithm or a sequence of them. */
+  private[this] def retrieveAlgorithmSet(algorithms: Any): AlgorithmSet[Simulator] = algorithms match {
+    case algo: Simulator => AlgorithmSet[Simulator](algo)
+    case algoSeq: Seq[_] => algoSeq.head match {
+      case s: Simulator => AlgorithmSet[Simulator](algoSeq.asInstanceOf[Seq[Simulator]])
+      case x => throw new IllegalArgumentException("Object '" + algoSeq.head + "' in sequence '" + algoSeq + "' is not a simulator.")
+    }
+    case x => throw new IllegalArgumentException("Object '" + algorithms + "' is not a simulator.")
+  }
 }
 
 /** The performance aspects of a single simulation run. */
@@ -126,7 +134,18 @@ class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Double) extends
 
 /** The performance aspects of a set of simulation runs, all computing the same variable assignment. */
 class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractPerformanceObservation])
-  with AggregatedPerformanceOperations[PerfObsReplicationsResultsAspect]
+  with AggregatedPerformanceOperations[PerfObsReplicationsResultsAspect] {
+
+  /** Add all results observed for the given algorithms to a given replication results aspect. */
+  def forSetupsAndAspect[R <: ReplicationsResultsAspect](algorithms: Any, aspect: R): R = {
+    val repResults = new ReplicationsResults(this.results.id)
+    for (runResult <- forSetups(algorithms)) {
+      repResults += runResult
+    }
+    repResults.addAspect(aspect)
+    aspect
+  }
+}
 
 /** The performance aspects of all simulation runs executed during the experiment. */
 class PerfObsExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractPerformanceObservation])

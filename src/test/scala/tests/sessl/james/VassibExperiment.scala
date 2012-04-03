@@ -2,6 +2,20 @@ package tests.sessl.james
 
 import org.junit.Test
 
+import sessl.james.Experiment
+import sessl.james.Instrumentation
+import sessl.james.NextReactionMethod
+import sessl.james.ParallelExecution
+import sessl.james.PerformanceObservation
+import sessl.james.Report
+import sessl.james.TauLeaping
+import sessl.execute
+import sessl.stringToDataElementName
+import sessl.stringToVarName
+import sessl.AbstractInstrumentation
+import sessl.AllSimulators
+import sessl.range
+
 /** Simple experiment to produce some test data for VASSiB.
  *  @author Roland Ewald
  */
@@ -27,28 +41,30 @@ import org.junit.Test
 
     //Execute reference experiment
     var referenceResult: Any = None
-    execute {
-      new AutoRegExperiment {
-        replications = repsForReferenceImpl
-        simulator = NextReactionMethod()
-        reportName = "Reference Results"
-        withRunResult {
-          r => linePlot(r)(title = "Test run " + r.id)
-        }
-        withReplicationsResult(referenceResult = _)
-      }
-    }
+//    execute {
+//      new AutoRegExperiment {
+//        replications = repsForReferenceImpl
+//        simulator = NextReactionMethod()
+//        reportName = "Reference Results"
+//        withRunResult {
+//          r => linePlot(r)(title = "Test run " + r.id)
+//        }
+//        withReplicationsResult(referenceResult = _)
+//      }
+//    }
 
     //Execute accuracy experiment
     execute {
       new AutoRegExperiment with PerformanceObservation {
         replications = repsForTauImpl
-        simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.002, 0.05), "gamma" <~ range(5, 1, 15)))
+        simulators <~ (TauLeaping() scan ("epsilon" <~ range(0.01, 0.01, 0.03) /*, "gamma" <~ range(5, 1, 15)*/ ))
         simulatorExecutionMode = AllSimulators
         reportName = "Accuracy Results"
-        /*TODO: withReplicationsPerformance(
-         Crossvalidator.compare(perf.resultsForSetup(s),referenceResult)
-        */
+        withReplicationsPerformance { results =>
+          println("Results" + results.forSetupsAndAspect(TauLeaping(), new InstrumentationReplicationsResultsAspect()))
+          /*TODO: 
+         Crossvalidator.compare(perf.resultsForSetup(s),referenceResult)*/
+        }
       }
     }
   }

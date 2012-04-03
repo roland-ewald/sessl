@@ -39,7 +39,6 @@ class ReplicationsResults(val id: Int) extends Result with ResultAspectManagemen
       Result.checkAssignmentEquality(runs.get(runs.keys.toList.head).get.assignment, results.assignment)
     runs += ((results.id, results))
   }
-
 }
 
 /** The results of a simulation experiment. */
