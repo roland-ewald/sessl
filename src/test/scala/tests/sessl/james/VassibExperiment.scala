@@ -29,9 +29,9 @@ import sessl.util.AlgorithmSet
     import sessl._
     import sessl.james._
 
-    val refModelOutput = CSVFileWriter("vassib_autoreg_nw_mlr_reference.csv")
-    val runtimes = CSVFileWriter("vassib_autoreg_nw_mlr_runtimes.csv")
-    val tlUncertainty = CSVFileWriter("vassib_autoreg_nw_mlr_comparison.csv")
+    val refModelOutput = CSVFileWriter("vassib_autoreg_nw_sr_reference.csv")
+    val runtimes = CSVFileWriter("vassib_autoreg_nw_sr_runtimes.csv")
+    val tlUncertainty = CSVFileWriter("vassib_autoreg_nw_sr_comparison.csv")
 
     val repsForReferenceImpl = 1000
     val repsForEvaluation = 250
@@ -40,7 +40,7 @@ import sessl.util.AlgorithmSet
     class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution {
       model = "file-sr:/./AutoregulatoryGeneticNetwork.sr"
       stopTime = 20500
-      bind("P2", "P", "RNA")
+      bind("P2") //, "P", "RNA"
       observeAt(range(0, 20, 20000))
       parallelThreads = -1
     }
@@ -70,6 +70,7 @@ import sessl.util.AlgorithmSet
           replications = repsForEvaluation
           simulator = sim
           withReplicationsResult { result =>
+            //Maybe use KL-Divergence, or some other measure/test?
             tlUncertainty << (sim, TrajectorySetsComparator.compare(referenceResult, result, "P2"))
           }
           withReplicationsPerformance { result =>

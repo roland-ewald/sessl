@@ -1,7 +1,7 @@
 package sessl.util
 import scala.collection.mutable.ListBuffer
-
 import sessl.Algorithm
+import sessl.Simulator
 
 /** Represents a (multi-)set of sessl algorithm representations. For convenience, the order
  *  with which the elements are added is currently preserved.
