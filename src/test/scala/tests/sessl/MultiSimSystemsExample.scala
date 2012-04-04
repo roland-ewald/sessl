@@ -29,6 +29,7 @@ import org.junit.Test
         new Experiment {
           model = "./BIOMD0000000002.xml"
           stopTime = .01
+          //...
         }
       },
       {
@@ -36,6 +37,7 @@ import org.junit.Test
         new Experiment {
           model = "./BIOMD0000000002.xml"
           stopTime = .01
+          //...
         }
       })
   }
