@@ -42,7 +42,7 @@ package object sessl {
    *  @param p the optimization stop policy
    *  @return a 'combined' policy with just the left-hand side defined
    */
-  implicit def optStopPolicyToCombinedPolicy(p: OptimizationStopPolicy) = new CombinedOptimizationStopPolicy(p)
+  implicit def optStopPolicyToCombinedPolicy(p: OptimizationStopCondition) = new CombinedOptimizationStopCondition(p)
 
   /** Support for combining stopping conditions.
    *  @param s the stopping condition

@@ -27,7 +27,7 @@ class TestOptimization {
       optimizeOnAllConfigs = false //<- can be left away, the default is false
       optimizer = HillClimbing()
       startOptimizationWith("#species" <~ 12)
-      optStopPolicy = OptMaxTime(seconds = 50) or OptMaxAssignments(2) //<- careful, and/or operators have the same priority, use parentheses!
+      optStopCondition = OptMaxTime(seconds = 50) or OptMaxAssignments(2) //<- careful, and/or operators have the same priority, use parentheses!
     }
     execute(exp)
   }

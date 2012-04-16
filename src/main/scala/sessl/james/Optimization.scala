@@ -67,19 +67,19 @@ trait Optimization extends AbstractOptimization {
     for (startConfig <- startConfigurations)
       optProb.addPredefinedConfiguration(createPredefConfig(startConfig))
     optProb.setRepresentedValueCalculation(new ArithmeticMeanOfObjectives)
-    optProb.addCancelOptimizationCriteria(createCancelCriteria(optStopPolicy)) //TODO: configure this properly
+    optProb.addCancelOptimizationCriteria(createCancelCriteria(optStopCondition)) //TODO: configure this properly
   }
 
   /** Creates (nested) optimization cancel criterion. */
-  private def createCancelCriteria(policy: OptimizationStopPolicy): CancelCriterion =
+  private def createCancelCriteria(policy: OptimizationStopCondition): CancelCriterion =
     policy match {
       case OptMaxAssignments(num) => new TotalConfigurationCancellation(num)
       case o: OptMaxTime => new TotalWallclockCancellation(o.toMilliSeconds)
-      case ConjunctiveOptimizationStopPolicy(left, right) =>
+      case ConjunctiveOptimizationStopCondition(left, right) =>
         joinCancelCriteria(createCancelCriteria(left), createCancelCriteria(right), _ && _)
-      case DisjunctiveOptimizationStopPolicy(left, right) =>
+      case DisjunctiveOptimizationStopCondition(left, right) =>
         joinCancelCriteria(createCancelCriteria(left), createCancelCriteria(right), _ || _)
-      case _ => throw new IllegalArgumentException("Stop policy '" + optStopPolicy + " of type " + optStopPolicy.getClass() + " is not supported.")
+      case _ => throw new IllegalArgumentException("Stop policy '" + optStopCondition + " of type " + optStopCondition.getClass() + " is not supported.")
     }
 
   /** Creates joint cancel criterion; the decision function f checks whether the cancel criteria c1/2 are met. */

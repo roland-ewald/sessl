@@ -46,8 +46,8 @@ trait AbstractOptimization extends ExperimentConfiguration {
   /** The objective function to be used. */
   protected[sessl] var objectiveFunction: Option[ObjectiveFunction] = None
 
-  /** The optimization stop policy. Per default, only the first variable assignment is simulated.*/
-  var optStopPolicy: OptimizationStopPolicy = OptMaxAssignments(1)
+  /** The optimization stop condition. Per default, only the first variable assignment is simulated.*/
+  var optStopCondition: OptimizationStopCondition = OptMaxAssignments(1)
 
   /** Set/get optimization algorithm. */
   def optimizer_=(opt: Optimizer) = { optimizationAlgorithm = Some(opt) }
@@ -110,23 +110,23 @@ trait AbstractOptimization extends ExperimentConfiguration {
 
 }
 
-/** Super trait of all stop policies. */
-trait OptimizationStopPolicy
+/** Super trait of all optimization stop conditions. */
+trait OptimizationStopCondition
 
 /** Stop after a certain number of assignments has been computed. */
-case class OptMaxAssignments(number: Int) extends OptimizationStopPolicy
+case class OptMaxAssignments(number: Int) extends OptimizationStopCondition
 
 /** Stop after a certain amount of time has been consumed. */
-case class OptMaxTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends OptimizationStopPolicy with Duration
+case class OptMaxTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends OptimizationStopCondition with Duration
 
 /** Use two policies (combined with AND). */
-case class ConjunctiveOptimizationStopPolicy(left: OptimizationStopPolicy, right: OptimizationStopPolicy) extends OptimizationStopPolicy
+case class ConjunctiveOptimizationStopCondition(left: OptimizationStopCondition, right: OptimizationStopCondition) extends OptimizationStopCondition
 
 /** Use two policies (combined with OR). */
-case class DisjunctiveOptimizationStopPolicy(left: OptimizationStopPolicy, right: OptimizationStopPolicy) extends OptimizationStopPolicy
+case class DisjunctiveOptimizationStopCondition(left: OptimizationStopCondition, right: OptimizationStopCondition) extends OptimizationStopCondition
 
 /** Intermediate policy to provide and/or methods. */
-case class CombinedOptimizationStopPolicy(left: OptimizationStopPolicy) extends OptimizationStopPolicy {
-  def or(right: OptimizationStopPolicy) = new DisjunctiveOptimizationStopPolicy(left, right)
-  def and(right: OptimizationStopPolicy) = new ConjunctiveOptimizationStopPolicy(left, right)
+case class CombinedOptimizationStopCondition(left: OptimizationStopCondition) extends OptimizationStopCondition {
+  def or(right: OptimizationStopCondition) = new DisjunctiveOptimizationStopCondition(left, right)
+  def and(right: OptimizationStopCondition) = new ConjunctiveOptimizationStopCondition(left, right)
 }
