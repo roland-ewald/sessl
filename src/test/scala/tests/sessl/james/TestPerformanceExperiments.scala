@@ -56,7 +56,7 @@ import sessl.util.CreatableFromVariables
     //TODO: Make this independent of instrumentation mix-in!
     var counter = 0
     val tauLeapingAlgorithms = TauLeaping() scan ("epsilon" <~ range(0.02, 0.01, 0.05))
-    val nrAlgorithms = NextReactionMethod() scan ("eventQueue" <~ Seq(BucketQueue, LinkedList, Heap, SortedList))
+    val nrAlgorithms = NextReactionMethod() scan ("eventQueue" <~ Seq(BucketQueue(), LinkedList(), Heap(), SortedList()))
     val exp = new Experiment with ParallelExecution with PerformanceObservation with Report {
 
       model = TestJamesExperiments.testModel
@@ -104,7 +104,7 @@ import sessl.util.CreatableFromVariables
 
       scan("numOfSpecies" <~ (10, 20), "nothing" <~ (1, 2))
 
-      simulators <~ { NextReactionMethod() scan ("eventQueue" <~ (LinkedList, BucketQueue)) }
+      simulators <~ { NextReactionMethod() scan ("eventQueue" <~ (LinkedList(), BucketQueue())) }
       simulators <~ { TauLeaping() scan ("epsilon" <~ range(0.02, 0.005, 0.05)) }
 
       simulatorExecutionMode = AllSimulators

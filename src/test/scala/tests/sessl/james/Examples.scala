@@ -48,7 +48,7 @@ import org.junit.Assert._
     val tlSetups = TauLeaping() scan
       ("epsilon" <~ range(.02, .01, .05))
     val nrSetups = NextReactionMethod() scan
-      ("eventQueue" <~ (Heap, SortedList))
+      ("eventQueue" <~ (Heap(), SortedList()))
     execute {
       new Experiment with ParallelExecution with Report with PerformanceObservation {
         model = "java://examples.sr.LinearChainSystem"
