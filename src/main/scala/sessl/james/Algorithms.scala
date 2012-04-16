@@ -62,36 +62,36 @@ case class MersenneTwister(val seed: Long = RNGUtils.defaultSeed) extends _Merse
 //Optimizers - TODO: add parameterization
 trait BasicJamesIIOptimizer extends Optimizer with JamesIIAlgo[OptimizationAlgorithmFactory]
 
-case object SimulatedAnnealing extends _SimulatedAnnealing with BasicJamesIIOptimizer {
+case class SimulatedAnnealing() extends _SimulatedAnnealing with BasicJamesIIOptimizer {
   override def factory = new SimulatedAnnealingOptimizerFactory
 }
-case object HillClimbing extends _HillClimbing with BasicJamesIIOptimizer {
+case class HillClimbing() extends _HillClimbing with BasicJamesIIOptimizer {
   override def factory = new BFSHillClimbingOptimizerFactory
 }
 
 //Event Queues
 trait BasicJamesIIEventQueue extends EventQueue with JamesIIAlgo[EventQueueFactory]
-case object Heap extends _Heap with BasicJamesIIEventQueue {
+case class Heap() extends _Heap with BasicJamesIIEventQueue {
   override def factory = new HeapEventQueueFactory
 }
-case object SortedList extends _SortedList with BasicJamesIIEventQueue {
+case class SortedList() extends _SortedList with BasicJamesIIEventQueue {
   override def factory = new SimpleEventQueueFactory
 }
-case object LinkedList extends _LinkedList with BasicJamesIIEventQueue {
+case class LinkedList() extends _LinkedList with BasicJamesIIEventQueue {
   override def factory = new LinkedListEventQueueFactory
 }
-case object BucketQueue extends _BucketQueue with BasicJamesIIEventQueue {
+case class BucketQueue() extends _BucketQueue with BasicJamesIIEventQueue {
   override def factory = new BucketsThresholdEventQueueFactory
 }
 
 //Simulators
 trait BasicJamesIISimulator extends Simulator with JamesIIAlgo[ProcessorFactory]
 
-case object DirectMethod extends _DirectMethod with BasicJamesIISimulator {
+case class DirectMethod() extends _DirectMethod with BasicJamesIISimulator {
   override def factory = new DirectReactionProcessorVarAFactory
 }
 
-case class NextReactionMethod(val eventQueue: BasicJamesIIEventQueue = Heap)
+case class NextReactionMethod(val eventQueue: BasicJamesIIEventQueue = Heap())
   extends CreatableFromVariables[NextReactionMethod] with _NextReactionMethod with BasicJamesIISimulator {
   override def factory = new NextReactionProcessorVarAFactory
 }

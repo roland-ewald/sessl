@@ -113,14 +113,14 @@ import sessl.util.CreatableFromVariables
       withRunPerformance { r => println("Runtime:" + r.runtime) }
       withReplicationsPerformance { r =>
         reportSection("Results for assignment " + r.results.id) {
-          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = LinkedList)),
+          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = LinkedList())),
             r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "A scatterplot for a single assignment.")
         }
       }
 
       withExperimentPerformance { r =>
         reportSection("Experiment-Wide Results") {
-          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = LinkedList)),
+          scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = LinkedList())),
             r.runtimesFor(TauLeaping(epsilon = 0.025)))(title = "Showing data for the whole experiment.")
           histogram(r ~ "runtime")(title = "All runtimes.")
           histogram(r.having("numOfSpecies" <~ 10) ~ "runtime")(title = "All runtimes for a sub-set of assignments.")

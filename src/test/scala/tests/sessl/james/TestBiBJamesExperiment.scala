@@ -32,7 +32,7 @@ class TestBiBJamesExperiment {
       optimize("synthRate" ~ "r1", range(1.0, 10.0))
       optimize("degradRate" ~ "r2", range(5.0, 15.0))
       startOptimizationWith("synthRate" <~ 1.0, "degradRate" <~ 5.0)
-      optimizer = HillClimbing //<- diff: SimulatedAnnealing() for James is buggy
+      optimizer = HillClimbing() //<- diff: SimulatedAnnealing() for James is buggy
 
       //Setup for stochastic simulation
       replications = 10
@@ -45,7 +45,7 @@ class TestBiBJamesExperiment {
       dataSink = MySQLDataSink(schema = "test2")
 
       //Execution
-      simulator = DirectMethod
+      simulator = DirectMethod()
     }
     execute(exp)
   }

@@ -25,7 +25,7 @@ class TestOptimization {
         r => { r.mean("y") + r.mean("x") }
       }
       optimizeOnAllConfigs = false //<- can be left away, the default is false
-      optimizer = HillClimbing
+      optimizer = HillClimbing()
       startOptimizationWith("#species" <~ 12)
       optStopPolicy = OptMaxTime(seconds = 50) or OptMaxAssignments(2) //<- careful, and/or operators have the same priority, use parentheses!
     }

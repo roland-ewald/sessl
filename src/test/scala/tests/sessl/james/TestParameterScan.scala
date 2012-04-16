@@ -68,7 +68,7 @@ import org.junit.Assert._
 
       parallelThreads = -1 //Leave one core idle... 
       // Simple configuration tasks are done by case classes...
-      simulator = DirectMethod
+      simulator = DirectMethod()
     }
 
     execute(exp)
