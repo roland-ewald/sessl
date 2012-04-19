@@ -123,8 +123,9 @@ import sessl.util.AlgorithmSet
       }
     }
   }
-
+}
+object VassibExperiment {
   def main(args: Array[String]): Unit = {
-      (new VassibExperiment).secondExperiment
+    (new VassibExperiment).secondExperiment
   }
 }
