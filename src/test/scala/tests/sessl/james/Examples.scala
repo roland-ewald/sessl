@@ -53,7 +53,7 @@ import org.junit.Assert._
       new Experiment with ParallelExecution with Report with PerformanceObservation {
         model = "java://examples.sr.LinearChainSystem"
         replications = 200; stopTime = 1.5
-        simulators <~ tlSetups; simulators <~ nrSetups
+        simulators <~ (tlSetups ++ nrSetups)
         performanceDataSink = FilePerformanceDataSink()
         withExperimentPerformance { r => //withRunPerf etc. ...
           reportSection("Results") {
@@ -197,6 +197,36 @@ import org.junit.Assert._
 
     ///END
     def test(lists: List[Any]*) = lists.foreach(println)
+  }
+
+  @Test def testPerfAnalysisExample {
+
+    import sessl._
+    import sessl.james._
+
+    val tlSetups = TauLeaping() scan ("epsilon" <~ range(0.02, 0.01, 0.05))
+    val nrSetups = NextReactionMethod() scan ("eventQueue" <~ Seq(BucketQueue(), LinkedList(), Heap(), SortedList()))
+
+    execute {
+      new Experiment with ParallelExecution with PerformanceObservation with Report {
+        model = "java://examples.sr.LinearChainSystem"
+        stopTime = 1.5
+        replications = 20
+        simulators <~ (nrSetups ++ tlSetups)
+        simulatorExecutionMode = AllSimulators
+
+        performanceDataSink = FilePerformanceDataSink()
+
+        reportName = "Sample Performance Report"
+        withExperimentPerformance { r =>
+          reportSection("Results") {
+            boxPlot(r.runtimesForAll)("Run times for all setups")
+            boxPlot(("TL", r.runtimes(tlSetups)),
+              ("NRM", r.runtimes(nrSetups)))(title = "Run time comparison for algorithm families")
+          }
+        }
+      }
+    }
   }
 
 }
