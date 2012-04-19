@@ -159,7 +159,7 @@ import org.junit.Assert._
 
     import sessl._
 
-    //System-independent:
+    //Simulation system independent:
     trait GeneralTestSetup {
       this: AbstractExperiment with AbstractInstrumentation with AbstractParallelExecution with AbstractReport =>
 
@@ -169,7 +169,6 @@ import org.junit.Assert._
       model = "java://examples.sr.LinearChainSystem"
       replications = 200
       stopTime = 1.5
-      reportName = "Results of " + simulator
       bind("S3")
       observeAt(1.4)
       withExperimentResult { results =>
@@ -180,20 +179,21 @@ import org.junit.Assert._
       }
     }
 
+    //Simulation system dependent:
     import sessl.james._
 
-    //System-dependent code
     class JamesIITestSetup(simulatorUnderTest: Simulator)
       extends Experiment with Instrumentation with ParallelExecution with Report with GeneralTestSetup {
       simulator = simulatorUnderTest
+      reportName = "Results of " + simulator
     }
 
     val expDefaultSetup = new JamesIITestSetup(NextReactionMethod())
-    val expSetupHeap = new JamesIITestSetup(NextReactionMethod(eventQueue = Heap()))
+    val expHeapSetup = new JamesIITestSetup(NextReactionMethod(eventQueue = Heap()))
     //...
 
-    execute(expDefaultSetup, expSetupHeap)
-    test(expDefaultSetup.finalResult, expSetupHeap.finalResult)
+    execute(expDefaultSetup, expHeapSetup)
+    test(expDefaultSetup.finalResult, expHeapSetup.finalResult)
 
     ///END
     def test(lists: List[Any]*) = lists.foreach(println)
