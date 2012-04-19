@@ -18,7 +18,7 @@ trait SupportSimulatorConfiguration {
   def simulator_=(s: Simulator) = { simulators.clear(); simulators <~ Seq(s) }
   def simulator = {
     require(simulators.hasSingleElement,
-      "Use simulatorSet instead of this simulator property, there is more than one algorithm in the set!")
+      "Use simulatorSet instead of this simulator property, there are " + simulators.size + " algorithms in the set but there needs to be exactly one!")
     simulators.firstAlgorithm
   }
 }
