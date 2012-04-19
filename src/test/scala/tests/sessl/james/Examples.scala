@@ -129,7 +129,7 @@ import org.junit.Assert._
         model = "java://examples.sr.LinearChainSystem"
         replications = 2; stopTime = 1
         exp.setBackupEnabled(true) //<-add custom code here
-        exp.getExecutionController().setExperiment(exp)
+        exp.getExecutionController()
       }
     }
 
@@ -149,6 +149,35 @@ import org.junit.Assert._
         observeAt(range(100, 50, 9000))
         withRunResult {
           results => println(results ~ "A")
+        }
+      }
+    }
+  }
+
+  /** Testing a simple example experiment with to simulator setups. */
+  @Test def testCrossvalidationTestPaper {
+
+    import sessl._
+    import sessl.james._
+
+    execute {
+      new Experiment with ParallelExecution with Report with PerformanceObservation {
+
+        val setup1 = NextReactionMethod(eventQueue = Heap())
+        val setup2 = NextReactionMethod(eventQueue = SortedList())
+
+        model = "java://examples.sr.LinearChainSystem"
+        replications = 200
+        stopTime = 1.5
+        simulators <+ setup1
+        simulators <+ setup2
+        performanceDataSink = FilePerformanceDataSink()
+        withExperimentPerformance { r => //withRunPerf etc. ...
+          reportSection("Results") {
+            histogram(r.runtimes)(title = "All run times")
+            boxPlot(r.runtimesForAll)(title = "Time/setup")
+            boxPlot(r.runtimesFor(setup1))(title = "Times/setup1")
+          }
         }
       }
     }
