@@ -205,7 +205,9 @@ import org.junit.Assert._
     import sessl.james._
 
     val tlSetups = TauLeaping() scan ("epsilon" <~ range(0.02, 0.01, 0.05))
-    val nrSetups = NextReactionMethod() scan ("eventQueue" <~ Seq(BucketQueue(), LinkedList(), Heap(), SortedList()))
+    val nrSetups = NextReactionMethod() scan {
+      "eventQueue" <~ Seq(BucketQueue(), LinkedList(), Heap(), SortedList())
+    }
 
     execute {
       new Experiment with ParallelExecution with PerformanceObservation with Report {
@@ -221,8 +223,8 @@ import org.junit.Assert._
         withExperimentPerformance { r =>
           reportSection("Results") {
             boxPlot(r.runtimesForAll)("Run times for all setups")
-            boxPlot(("TL", r.runtimes(tlSetups)),
-              ("NRM", r.runtimes(nrSetups)))(title = "Run time comparison for algorithm families")
+            boxPlot(("TL", r.runtimes(tlSetups)), ("NRM", r.runtimes(nrSetups)))(
+              title = "Run time comparison for algorithm families")
           }
         }
       }
