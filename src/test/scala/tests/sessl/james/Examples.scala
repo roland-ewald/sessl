@@ -158,29 +158,45 @@ import org.junit.Assert._
   @Test def testCrossvalidationTestPaper {
 
     import sessl._
-    import sessl.james._
 
-    execute {
-      new Experiment with ParallelExecution with Report with PerformanceObservation {
+    //System-independent:
+    trait GeneralTestSetup {
+      this: AbstractExperiment with AbstractInstrumentation with AbstractParallelExecution with AbstractReport =>
 
-        val setup1 = NextReactionMethod(eventQueue = Heap())
-        val setup2 = NextReactionMethod(eventQueue = SortedList())
+      //The experiment result
+      var finalResult = List[Any]()
 
-        model = "java://examples.sr.LinearChainSystem"
-        replications = 200
-        stopTime = 1.5
-        simulators <+ setup1
-        simulators <+ setup2
-        performanceDataSink = FilePerformanceDataSink()
-        withExperimentPerformance { r => //withRunPerf etc. ...
-          reportSection("Results") {
-            histogram(r.runtimes)(title = "All run times")
-            boxPlot(r.runtimesForAll)(title = "Time/setup")
-            boxPlot(r.runtimesFor(setup1))(title = "Times/setup1")
-          }
+      model = "java://examples.sr.LinearChainSystem"
+      replications = 200
+      stopTime = 1.5
+      reportName = "Results of " + simulator
+      bind("S3")
+      observeAt(1.4)
+      withExperimentResult { results =>
+        reportSection("Results") {
+          histogram(results("S3"))(title = "Species #3 after 1.4 s")
+          finalResult = results("S3")
         }
       }
     }
+
+    import sessl.james._
+
+    //System-dependent code
+    class JamesIITestSetup(simulatorUnderTest: Simulator)
+      extends Experiment with Instrumentation with ParallelExecution with Report with GeneralTestSetup {
+      simulator = simulatorUnderTest
+    }
+
+    val expDefaultSetup = new JamesIITestSetup(NextReactionMethod())
+    val expSetupHeap = new JamesIITestSetup(NextReactionMethod(eventQueue = Heap()))
+    //...
+
+    execute(expDefaultSetup, expSetupHeap)
+    test(expDefaultSetup.finalResult, expSetupHeap.finalResult)
+
+    ///END
+    def test(lists: List[Any]*) = lists.foreach(println)
   }
 
 }
