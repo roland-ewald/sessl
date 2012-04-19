@@ -96,7 +96,7 @@ case class NextReactionMethod(val eventQueue: BasicJamesIIEventQueue = Heap())
   override def factory = new NextReactionProcessorVarAFactory
 }
 
-case class TauLeaping(val epsilon: Double = 0.03, val gamma: Double = 10, val numSSASteps: Int = 100, val criticalReactions: Int = 10)
+case class TauLeaping(val epsilon: Double = 0.03, val gamma: Double = 10, val stepNum: Int = 100, val criticalReactionThreshold: Int = 10)
   extends CreatableFromVariables[TauLeaping] with _TauLeaping with BasicJamesIISimulator {
   override def factory = new TauLeapingProcessorFactory
 }
