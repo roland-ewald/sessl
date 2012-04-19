@@ -78,6 +78,21 @@
 			<artifactId>experiment</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
+
+
+		<!-- SBMLsim dependencies -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>sbmlsim</groupId>
+			<artifactId>sbmlsim</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<!-- BUILDING -->
@@ -141,6 +156,41 @@
 						<sourceInclude>**/*.java</sourceInclude>
 					</sourceIncludes>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>full.xml</descriptor>
+					</descriptors>
+					<finalName>sessl-${project.version}</finalName>
+				</configuration>
+				<executions>
+					<execution>
+						<id>dist-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- Include tests classes (in extra JAR file) -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
