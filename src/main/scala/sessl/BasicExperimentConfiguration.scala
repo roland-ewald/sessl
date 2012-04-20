@@ -104,6 +104,9 @@ private[sessl] trait BasicExperimentConfiguration extends ExperimentConfiguratio
 
   /** Checks if experiment is done.*/
   def isDone = experimentDoneCalled
+  
+  /** Allows to access the experiment results. */
+  def results = experimentResults
 
   override final def runDone(runId: Int) = {
     synchronized {

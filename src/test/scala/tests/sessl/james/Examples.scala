@@ -160,12 +160,8 @@ import org.junit.Assert._
     import sessl._
 
     //Simulation system independent:
-    trait GeneralTestSetup {
+    trait SomeTestSetup {
       this: AbstractExperiment with AbstractInstrumentation with AbstractParallelExecution with AbstractReport =>
-
-      //The experiment result
-      var finalResult = List[Any]()
-
       model = "java://examples.sr.LinearChainSystem"
       replications = 200
       stopTime = 1.5
@@ -174,7 +170,6 @@ import org.junit.Assert._
       withExperimentResult { results =>
         reportSection("Results") {
           histogram(results("S3"))(title = "Species #3 after 1.4 s")
-          finalResult = results("S3")
         }
       }
     }
@@ -183,7 +178,7 @@ import org.junit.Assert._
     import sessl.james._
 
     class JamesIITestSetup(simulatorUnderTest: Simulator)
-      extends Experiment with Instrumentation with ParallelExecution with Report with GeneralTestSetup {
+      extends Experiment with Instrumentation with ParallelExecution with Report with SomeTestSetup {
       simulator = simulatorUnderTest
       reportName = "Results of " + simulator
     }
@@ -193,10 +188,13 @@ import org.junit.Assert._
     //...
 
     execute(expDefaultSetup, expHeapSetup)
-    test(expDefaultSetup.finalResult, expHeapSetup.finalResult)
+    someTest(expDefaultSetup.results, expHeapSetup.results)
 
     ///END
-    def test(lists: List[Any]*) = lists.foreach(println)
+    def someTest(results1: ExperimentResults, results2: ExperimentResults) = {
+      println(results1)
+      println(results2)
+    }
   }
 
   @Test def testPerfAnalysisExample {
