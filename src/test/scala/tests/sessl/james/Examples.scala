@@ -161,7 +161,7 @@ import org.junit.Assert._
 
     //Simulation system independent:
     trait SomeTestSetup {
-      this: AbstractExperiment with AbstractInstrumentation with AbstractParallelExecution with AbstractReport =>
+      this: AbstractExperiment with AbstractInstrumentation with AbstractReport =>
       model = "java://examples.sr.LinearChainSystem"
       replications = 200
       stopTime = 1.5
