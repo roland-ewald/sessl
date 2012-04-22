@@ -202,17 +202,18 @@ import org.junit.Assert._
     import sessl._
     import sessl.james._
 
-    val tlSetups = TauLeaping() scan ("epsilon" <~ range(0.02, 0.01, 0.05))
-    val nrSetups = NextReactionMethod() scan {
-      "eventQueue" <~ Seq(BucketQueue(), LinkedList(), Heap(), SortedList())
-    }
-
     execute {
       new Experiment with ParallelExecution with PerformanceObservation with Report {
         model = "java://examples.sr.LinearChainSystem"
         stopTime = 1.5
         replications = 20
-        simulators <~ (nrSetups ++ tlSetups)
+
+        val tlSetups = TauLeaping() scan ("epsilon" <~ range(0.02, 0.01, 0.05))
+        val nrSetups = NextReactionMethod() scan {
+          "eventQueue" <~ (BucketQueue(), LinkedList(), Heap(), SortedList())
+        }
+        
+        simulators <~ (nrSetups ++ tlSetups)        
         simulatorExecutionMode = AllSimulators
 
         performanceDataSink = FilePerformanceDataSink()

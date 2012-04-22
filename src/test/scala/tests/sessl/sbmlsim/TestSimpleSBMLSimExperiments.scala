@@ -64,7 +64,7 @@ import org.junit.Assert._
     //This experiment shows how to *combine* features of simulation systems!
     execute {
       new MyExperiment with sessl.james.Report {
-        reportName = "SBMLsim Report"
+        reportName = "SBMLsimulator Report"
         withRunResult { r =>
           {
             reportSection("Run Number " + r.id) {
