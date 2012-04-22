@@ -53,7 +53,7 @@ import org.junit.Assert._
       bind("x" ~ "ILL", "y" ~ "DLL")
       observeAt(range(0, 1e-04, 1e-02))
 
-      simulators <~ (DormandPrince54() scan { "stepSize" <~ (1e-06, 2e-06) })
+      simulator = DormandPrince54(stepSize = 1e-06)
       afterRun { r => { runCounter += 1 } }
       afterReplications { r => { replicationCounter += 1 } }
     }

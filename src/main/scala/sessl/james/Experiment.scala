@@ -148,8 +148,8 @@ class Experiment extends AbstractExperiment {
 
   /** Configures experiment for multiple simulation algorithms. */
   final def configureMultiSimulatorExperiment() = {
-    SimSystem.report(Level.INFO, "Configuring multi-simulator experiment with mode: " + simulatorExecutionMode)
-    simulatorExecutionMode match {
+    SimSystem.report(Level.INFO, "Configuring multi-simulator experiment with mode: " + executionMode)
+    executionMode match {
       case AllSimulators => {
         val repsPerSetup = fixedReplications.getOrElse(1)
         exp.addReplicationCriterion(new ReplicationNumberCriterion(repsPerSetup * simulators.size))

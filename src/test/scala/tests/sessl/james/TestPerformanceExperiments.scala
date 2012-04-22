@@ -53,7 +53,6 @@ import sessl.util.CreatableFromVariables
     import sessl._
     import sessl.james._
 
-    //TODO: Make this independent of instrumentation mix-in!
     var counter = 0
     val tauLeapingAlgorithms = TauLeaping() scan ("epsilon" <~ range(0.02, 0.01, 0.05))
     val nrAlgorithms = NextReactionMethod() scan ("eventQueue" <~ Seq(BucketQueue(), LinkedList(), Heap(), SortedList()))
@@ -67,7 +66,7 @@ import sessl.util.CreatableFromVariables
 
       simulators <~ (nrAlgorithms ++ tauLeapingAlgorithms)
 
-      simulatorExecutionMode = AnySimulator
+      executionMode = AnySimulator
 
       performanceDataSink = FilePerformanceDataSink()
 
@@ -107,7 +106,7 @@ import sessl.util.CreatableFromVariables
       simulators <~ { NextReactionMethod() scan ("eventQueue" <~ (LinkedList(), BucketQueue())) }
       simulators <~ { TauLeaping() scan ("epsilon" <~ range(0.02, 0.005, 0.05)) }
 
-      simulatorExecutionMode = AllSimulators
+      executionMode = AllSimulators
       parallelThreads = -1
 
       withRunPerformance { r => println("Runtime:" + r.runtime) }

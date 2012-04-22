@@ -214,7 +214,7 @@ import org.junit.Assert._
         }
         
         simulators <~ (nrSetups ++ tlSetups)        
-        simulatorExecutionMode = AllSimulators
+        executionMode = AllSimulators
 
         performanceDataSink = FilePerformanceDataSink()
 

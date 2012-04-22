@@ -12,7 +12,7 @@ trait SupportSimulatorConfiguration {
   val simulators = AlgorithmSet[Simulator]()
 
   /** Defines the execution mode of the specified set of simulation algorithms. */
-  var simulatorExecutionMode: SimulatorExecutionOption = AnySimulator
+  var executionMode: SimulatorExecutionOption = AnySimulator
 
   /** Getting/setting the simulator. */
   def simulator_=(s: Simulator) = { simulators.clear(); simulators <~ Seq(s) }
