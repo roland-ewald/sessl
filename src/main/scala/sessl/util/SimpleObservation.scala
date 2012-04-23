@@ -9,9 +9,9 @@ import sessl.AbstractObservation
 import sessl.AbstractExperiment
 import sessl.Trajectory
 
-/** Provides a simple implementation that supports the general contract of the instrumentation trait.
+/** Provides a simple observation mechanism that supports the general contract of the observation trait.
  */
-trait SimpleInstrumentation extends AbstractObservation {
+trait SimpleObservation extends AbstractObservation {
   this: AbstractExperiment =>
 
   /** A naive specification of an in-memory 'database': just a map from run ID => a map of (internal) variable names to trajectories. */

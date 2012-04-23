@@ -21,14 +21,14 @@ import sessl.util.SimpleObserverHelper
 import sessl.AbstractObservation
 import sessl.RunResults
 import sessl.VariableAssignment
-import sessl.util.SimpleInstrumentation
+import sessl.util.SimpleObservation
 
-/** Configuring James II for instrumentation.
+/** Configuring James II for observation.
  *
  *  @author Roland Ewald
  *
  */
-trait Instrumentation extends SimpleInstrumentation {
+trait Instrumentation extends SimpleObservation {
   this: Experiment =>
 
   abstract override def configure() {
@@ -45,13 +45,13 @@ object Instrumentation {
 //The James II code for the custom instrumentation plug-in
 
 /** Factory for the computation task instrumenter. */
-case class SESSLCompInstrFactory(val instrConfig: SimpleInstrumentation) extends ComputationInstrumenterFactory {
+case class SESSLCompInstrFactory(val instrConfig: SimpleObservation) extends ComputationInstrumenterFactory {
   override def create(parameters: ParameterBlock): IComputationInstrumenter = new SESSLInstrumenter(instrConfig)
   override def supportsParameters(parameters: ParameterBlock) = 1
 }
 
 /** The computation task instrumenter. */
-class SESSLInstrumenter(val instrConfig: SimpleInstrumentation) extends IResponseObsSimInstrumenter {
+class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObsSimInstrumenter {
 
   val observers = new java.util.ArrayList[IResponseObserver]()
 
@@ -89,7 +89,7 @@ class SESSLInstrumenter(val instrConfig: SimpleInstrumentation) extends IRespons
     val bindings = instrConfig.variableBindings
     val varsToBeObserved = instrConfig.varsToBeObserved
 
-    val observer = new SRSnapshotObserver(obsTimes, 1000) with SimpleObserverHelper[SimpleInstrumentation] {
+    val observer = new SRSnapshotObserver(obsTimes, 1000) with SimpleObserverHelper[SimpleObservation] {
 
       registerCompTask(computation)
 

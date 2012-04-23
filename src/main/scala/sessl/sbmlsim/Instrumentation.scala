@@ -1,7 +1,7 @@
 package sessl.sbmlsim
 
 import org.simulator.math.odes.MultiTable
-import sessl.util.SimpleInstrumentation
+import sessl.util.SimpleObservation
 import scala.collection.mutable.ListBuffer
 import sessl.util.Interpolation._
 
@@ -10,7 +10,7 @@ import sessl.util.Interpolation._
  *  so this here just implements some kind of sessl-compliant cherry-picking.
  *  @author Roland Ewald
  */
-trait Instrumentation extends SimpleInstrumentation with ResultHandling {
+trait Instrumentation extends SimpleObservation with ResultHandling {
   this: Experiment =>
 
   abstract override def considerResults(runId: Int, assignmentId: Int, results: MultiTable) {

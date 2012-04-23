@@ -14,7 +14,7 @@ import sessl._DirectMethod
 import sessl._NextReactionMethod
 import sessl._TauLeaping
 import sessl.ExperimentResults
-import sessl.util.SimpleInstrumentation
+import sessl.util.SimpleObservation
 
 /** Empty entities to easily check whether an experiment specification depends on system-specific
  *  configuration and components or not. This is a 'formal' reference implementation, i.e. it provides all entities with
@@ -24,17 +24,17 @@ import sessl.util.SimpleInstrumentation
  */
 
 //Central entities
-class EmptyExperiment extends AbstractExperiment with SimpleInstrumentation { def executeExperiment() = {}; def basicConfiguration = {} }
+class EmptyExperiment extends AbstractExperiment with SimpleObservation { def executeExperiment() = {}; def basicConfiguration = {} }
 class Experiment extends EmptyExperiment
 
 //Instrumentation
-trait Instrumentation extends AbstractObservation {
+trait Observation extends AbstractObservation {
   this: AbstractExperiment =>
 }
 
 //Data sinks
 trait DataSink extends AbstractDataSink {
-  this: Instrumentation =>
+  this: Observation =>
 }
 
 //Optimization
@@ -49,12 +49,12 @@ trait ParallelExecution extends AbstractParallelExecution {
 
 //Hypothesis tests
 trait Hypothesis extends AbstractHypothesis {
-  this: Instrumentation =>
+  this: Observation =>
 }
 
 //Reporting
 trait Report extends AbstractReport {
-  this: AbstractExperiment with Instrumentation =>
+  this: AbstractExperiment with Observation =>
   override def generateReport(results: ExperimentResults) = {}
 }
 

@@ -61,7 +61,7 @@ trait ObserverHelper[I <: ExperimentConfiguration] {
  * @param <I>
  *          the instrumentation type
  */
-trait SimpleObserverHelper[I <: SimpleInstrumentation] extends ObserverHelper[I] {
+trait SimpleObserverHelper[I <: SimpleObservation] extends ObserverHelper[I] {
 
   def addValueFor[T](internalName: String, value: TimeStampedData) = {
     checkRequiredData()
