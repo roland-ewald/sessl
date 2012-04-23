@@ -104,7 +104,7 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
         val time = model.getTime()
         val speciesMap = model.getObjectMapping()
         super.store()
-        for (varToBeObserved <- sesslInstrConfig.varsToBeObserved) {
+        for (varToBeObserved <- sesslObsConfig.varsToBeObserved) {
           val amount = state.get(speciesMap.get(varToBeObserved))
           addValueFor(varToBeObserved, (time, amount))
         }

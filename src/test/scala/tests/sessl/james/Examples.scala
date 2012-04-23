@@ -9,8 +9,8 @@ import org.junit.Assert._
  */
 @Test class Examples {
 
-  /** Full instrumentation example. */
-  @Test def testInstrumentation {
+  /** Observation example. */
+  @Test def testObservation {
 
     import sessl._
     import sessl.james._

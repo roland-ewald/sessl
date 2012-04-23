@@ -49,7 +49,7 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
     addReplicationsResultsAspect(assignId, new PerfObsReplicationsResultsAspect())
   }
 
-  /** Before the experiment is done, add result aspect for instrumentation. */
+  /** Before the experiment is done, add result aspect for performance observation. */
   override def collectExperimentResultsAspects() {
     super.collectExperimentResultsAspects()
     addExperimentResultsAspect(new PerfObsExperimentResultsAspect())

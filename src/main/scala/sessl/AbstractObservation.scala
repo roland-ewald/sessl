@@ -71,7 +71,7 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
       else if (timeRange.isDefined)
         timeRange.get.toList
       else {
-        println("Warning: Neither specific times nor a time range is given for instrumentation.") //TODO: Use logging here
+        println("Warning: Neither specific times nor a time range is given for observation.") //TODO: Use logging here
         Nil
       }
     }
@@ -114,18 +114,18 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
     addReplicationsResultsAspect(assignId, collectReplicationsResults(assignId))
   }
 
-  /** Before the experiment is done, add result aspect for instrumentation. */
+  /** Before the experiment is done, add result aspect for observation. */
   override def collectExperimentResultsAspects() {
     super.collectExperimentResultsAspects()
     addExperimentResultsAspect(new ObservationExperimentResultsAspect())
   }
 
   /** Collects the results of the indicated run. If the removeData flag is set to true,
-   *  the instrumentation sub-system may regard the data as read-out (and hence delete it).
+   *  the observation sub-system may regard the data as read-out (and hence delete it).
    *
    *  @param runID the ID of the run
    *  @param removeData flag to signal that the data will not be required again (and can hence be dismissed)
-   *  @return the result aspect of the run (w.r.t. instrumentation)
+   *  @return the result aspect of the run (w.r.t. observation)
    */
   def collectResults(runID: Int, removeData: Boolean): ObservationRunResultsAspect
 

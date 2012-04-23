@@ -30,7 +30,7 @@ object Interpolation {
     require(recordedSampleTimes.head <= timesToObserve.head && recordedSampleTimes.last >= timesToObserve.last,
       "Not all desired observation times (" + timesToObserve.mkString(",") +
         ") are covered by time point interval [" + recordedSampleTimes.head + "," +
-        "]. Ignoring instrumentation configuration entirely.")
+        "]. Ignoring observation configuration entirely.")
     createInterpolationPoints(recordedSampleTimes, timesToObserve)
   }
 

@@ -38,7 +38,7 @@ class TestBiBJamesExperiment {
       replications = 10
       rng = MersenneTwister()
 
-      //Model instrumentation
+      //Model observation
       observeAt(10000, 20000, 99900) //<- diff: 100000 is stop time, but sim end hook is not yet used...
 
       //Data storage (diff: using DB instead of file-based, as it is already released - which is slightly more complicated to set up)

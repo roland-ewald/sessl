@@ -95,7 +95,7 @@ class Experiment extends AbstractExperiment {
     }
     case ci: MeanConfidenceReached => {
       require(this.isInstanceOf[AbstractObservation], "The replication criterion '" + ci +
-        "' is specified, which works on observed data, but no instrumentation is defined. Use '... with Instrumentation'.")
+        "' is specified, which works on observed data, but no observation is defined. Use '... with Observation'.")
       val self = this.asInstanceOf[AbstractObservation]
       require(self.reverseVariableBindings.contains(ci.varName), "The variable '" + ci.varName +
         "' has not been bound to a model variable yet.")
