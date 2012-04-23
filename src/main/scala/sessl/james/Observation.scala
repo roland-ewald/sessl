@@ -28,7 +28,7 @@ import sessl.util.SimpleObservation
  *  @author Roland Ewald
  *
  */
-trait Instrumentation extends SimpleObservation {
+trait Observation extends SimpleObservation {
   this: Experiment =>
 
   abstract override def configure() {
@@ -38,7 +38,7 @@ trait Instrumentation extends SimpleObservation {
   }
 }
 
-object Instrumentation {
+object Observation {
   val instrumentationResults = "$sessl$instrResults"
 }
 
@@ -63,7 +63,7 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
   override def getObservedResponses(): java.util.Map[String, _ <: BaseVariable[_]] = {
     require(myRunID.isDefined, "The run ID should be defined...")
     val resultMap: java.util.Map[String, BaseVariable[_]] = new HashMap()
-    val baseVar = new BaseVariable[Any](Instrumentation.instrumentationResults)
+    val baseVar = new BaseVariable[Any](Observation.instrumentationResults)
     baseVar.setValue(instrConfig.collectResults(myRunID.get))
     resultMap.put(baseVar.getName, baseVar)
     resultMap

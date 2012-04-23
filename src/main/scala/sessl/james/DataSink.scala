@@ -12,7 +12,7 @@ import sessl._
  *
  */
 trait DataSink extends AbstractDataSink {
-  this: Experiment with Instrumentation =>
+  this: Experiment with Observation =>
 
   abstract override def configure() {
     super.configure()

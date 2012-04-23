@@ -12,7 +12,7 @@ class TestDataSink {
     import sessl._
     import sessl.james._
 
-    val exp = new Experiment with Instrumentation with DataSink {
+    val exp = new Experiment with Observation with DataSink {
       model = TestJamesExperiments.testModel
       stopTime = 0.1
       dataSink = MySQLDataSink(schema = "test")

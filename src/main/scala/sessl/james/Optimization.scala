@@ -30,7 +30,7 @@ import sessl._
  *
  */
 trait Optimization extends AbstractOptimization {
-  this: Experiment with Instrumentation =>
+  this: Experiment with Observation =>
 
   /** The type used in James II  to specify start configurations. */
   type JamesParamConfig = _root_.james.core.experiments.optimization.parameter.Configuration
@@ -56,9 +56,9 @@ trait Optimization extends AbstractOptimization {
   private[this] def configureOptimizationProblem() = {
     optProb.addOptimizationObjective(new IOptimizationObjective() {
       override def calcObjective(config: Configuration, results: java.util.Map[String, BaseVariable[_]]): Double = {
-        require(results.containsKey(Instrumentation.instrumentationResults),
-          "Results should have been packaged in base variable called '" + Instrumentation.instrumentationResults + "'")
-        val baseVar = results.get(Instrumentation.instrumentationResults)
+        require(results.containsKey(Observation.instrumentationResults),
+          "Results should have been packaged in base variable called '" + Observation.instrumentationResults + "'")
+        val baseVar = results.get(Observation.instrumentationResults)
         objectiveFunction.get.apply(baseVar.getValue().asInstanceOf[InstrumentationRunResultsAspect]).doubleValue()
       }
       override def getName() = "sessl objective"

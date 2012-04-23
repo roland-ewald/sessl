@@ -15,7 +15,7 @@ import org.junit.Assert._
     import sessl._
     import sessl.james._
 
-    val exp = new Experiment with Instrumentation with Report with ParallelExecution {
+    val exp = new Experiment with Observation with Report with ParallelExecution {
 
       model = TestJamesExperiments.testModel
       stopTime = 0.5

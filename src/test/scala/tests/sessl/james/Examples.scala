@@ -15,7 +15,7 @@ import org.junit.Assert._
     import sessl._
     import sessl.james._
     execute {
-      new Experiment with Instrumentation {
+      new Experiment with Observation {
         model = "java://examples.sr.LinearChainSystem"
         replications = 10; stopTime = 1.0
         scan("numOfSpecies" <~ (10, 15))
@@ -140,7 +140,7 @@ import org.junit.Assert._
     import sessl.james._
 
     execute {
-      new Experiment with Instrumentation with ParallelExecution {
+      new Experiment with Observation with ParallelExecution {
         model = "file-sr:/./SimpleModel.sr"
         scan("r1" <~ range(.5, .1, 1.4))
         replications = 10
@@ -178,7 +178,7 @@ import org.junit.Assert._
     import sessl.james._
 
     class JamesIITestSetup(simulatorUnderTest: Simulator)
-      extends Experiment with Instrumentation with ParallelExecution with Report with SomeTestSetup {
+      extends Experiment with Observation with ParallelExecution with Report with SomeTestSetup {
       simulator = simulatorUnderTest
       reportName = "Results of " + simulator
     }

@@ -2,7 +2,7 @@ package tests.sessl.james
 
 import org.junit.Test
 import sessl.james.Experiment
-import sessl.james.Instrumentation
+import sessl.james.Observation
 import sessl.james.NextReactionMethod
 import sessl.james.ParallelExecution
 import sessl.james.PerformanceObservation
@@ -36,7 +36,7 @@ import sessl.util.AlgorithmSet
     val repsForEvaluation = 250
 
     //General experiment: what model, what data
-    class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution {
+    class AutoRegExperiment extends Experiment with Observation with ParallelExecution {
       model = "file-sr:/./AutoregulatoryGeneticNetwork.sr"
       stopTime = 20500
       bind("P2") //, "P", "RNA"
@@ -85,7 +85,7 @@ import sessl.util.AlgorithmSet
     import sessl.james._
 
     //General experiment: what model, what data
-    class AutoRegExperiment extends Experiment with Instrumentation with ParallelExecution {
+    class AutoRegExperiment extends Experiment with Observation with ParallelExecution {
       model = "file-sr:/./AutoregulatoryGeneticNetwork.sr"
       replications = 1000
       stopTime = 10500
