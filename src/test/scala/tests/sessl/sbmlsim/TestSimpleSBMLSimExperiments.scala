@@ -44,7 +44,7 @@ import org.junit.Assert._
     import sessl.sbmlsim._
     var runCounter = 0
     var replicationCounter = 0
-    class MyExperiment extends Experiment with ParallelExecution with Instrumentation {
+    class MyExperiment extends Experiment with ParallelExecution with Observation {
 
       model = "./BIOMD0000000002.xml"
       set("kr_0" <~ 8042)

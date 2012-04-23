@@ -5,12 +5,12 @@ import sessl.util.SimpleObservation
 import scala.collection.mutable.ListBuffer
 import sessl.util.Interpolation._
 
-/** Support for 'instrumentation' of SBMLsimulator runs.
+/** Support for observing of SBMLsimulator runs.
  *  It seems the simulators always provide the complete state vector for every computed step,
  *  so this here just implements some kind of sessl-compliant cherry-picking.
  *  @author Roland Ewald
  */
-trait Instrumentation extends SimpleObservation with ResultHandling {
+trait Observation extends SimpleObservation with ResultHandling {
   this: Experiment =>
 
   abstract override def considerResults(runId: Int, assignmentId: Int, results: MultiTable) {
