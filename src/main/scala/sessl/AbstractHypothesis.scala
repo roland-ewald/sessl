@@ -7,6 +7,6 @@ package sessl
  *
  */
 trait AbstractHypothesis extends ExperimentConfiguration {
-  this: AbstractInstrumentation =>
+  this: AbstractObservation =>
   //TODO
 }

@@ -94,9 +94,9 @@ class Experiment extends AbstractExperiment {
         scala.math.min(left.sufficientReplications(ris), right.sufficientReplications(ris))
     }
     case ci: MeanConfidenceReached => {
-      require(this.isInstanceOf[AbstractInstrumentation], "The replication criterion '" + ci +
+      require(this.isInstanceOf[AbstractObservation], "The replication criterion '" + ci +
         "' is specified, which works on observed data, but no instrumentation is defined. Use '... with Instrumentation'.")
-      val self = this.asInstanceOf[AbstractInstrumentation]
+      val self = this.asInstanceOf[AbstractObservation]
       require(self.reverseVariableBindings.contains(ci.varName), "The variable '" + ci.varName +
         "' has not been bound to a model variable yet.")
       val rv = new ConfidenceIntervalCriterion(ci.relativeHalfWidth, ci.confidence, Int.MaxValue, 1, 10, 12345L, //TODO: last two parameters, where are they from?

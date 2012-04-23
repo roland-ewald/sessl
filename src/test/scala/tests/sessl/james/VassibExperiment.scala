@@ -11,7 +11,7 @@ import sessl.james.TauLeaping
 import sessl.execute
 import sessl.stringToDataElementName
 import sessl.stringToVarName
-import sessl.AbstractInstrumentation
+import sessl.AbstractObservation
 import sessl.AllSimulators
 import sessl.range
 import sessl.tools.TrajectorySetsComparator

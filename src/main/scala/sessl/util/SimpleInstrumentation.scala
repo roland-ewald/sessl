@@ -5,13 +5,13 @@ import scala.collection.mutable.Map
 import sessl.InstrumentationReplicationsResultsAspect
 import sessl.TimeStampedData
 import sessl.InstrumentationRunResultsAspect
-import sessl.AbstractInstrumentation
+import sessl.AbstractObservation
 import sessl.AbstractExperiment
 import sessl.Trajectory
 
 /** Provides a simple implementation that supports the general contract of the instrumentation trait.
  */
-trait SimpleInstrumentation extends AbstractInstrumentation {
+trait SimpleInstrumentation extends AbstractObservation {
   this: AbstractExperiment =>
 
   /** A naive specification of an in-memory 'database': just a map from run ID => a map of (internal) variable names to trajectories. */

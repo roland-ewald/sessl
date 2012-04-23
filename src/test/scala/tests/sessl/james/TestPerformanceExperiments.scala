@@ -126,7 +126,7 @@ import sessl.util.CreatableFromVariables
         }
       }
 
-      afterRun { r => println(r.aspectFor(classOf[AbstractInstrumentation])); counter += 1 }
+      afterRun { r => println(r.aspectFor(classOf[AbstractObservation])); counter += 1 }
     }
     execute(exp)
     assertEquals(exp.simulators.size * exp.replications * 4, counter)

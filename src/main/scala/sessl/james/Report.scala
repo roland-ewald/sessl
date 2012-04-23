@@ -10,7 +10,7 @@ import james.resultreport.renderer.rtex.RTexResultReportRenderer
 import james.resultreport.ResultReport
 import james.resultreport.ResultReportGenerator
 import james.resultreport.ResultReportSection
-import sessl.AbstractInstrumentation
+import sessl.AbstractObservation
 import sessl.AbstractReport
 import sessl.BoxPlotView
 import sessl.DataView

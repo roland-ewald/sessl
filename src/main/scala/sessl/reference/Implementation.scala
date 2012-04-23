@@ -1,6 +1,6 @@
 package sessl.reference
 
-import sessl.AbstractInstrumentation
+import sessl.AbstractObservation
 import sessl.AbstractExperiment
 import sessl.AbstractDataSink
 import sessl.AbstractHypothesis
@@ -28,7 +28,7 @@ class EmptyExperiment extends AbstractExperiment with SimpleInstrumentation { de
 class Experiment extends EmptyExperiment
 
 //Instrumentation
-trait Instrumentation extends AbstractInstrumentation {
+trait Instrumentation extends AbstractObservation {
   this: AbstractExperiment =>
 }
 
@@ -39,7 +39,7 @@ trait DataSink extends AbstractDataSink {
 
 //Optimization
 trait Optimization extends AbstractOptimization {
-  this: AbstractExperiment with AbstractInstrumentation =>
+  this: AbstractExperiment with AbstractObservation =>
 }
 
 //Parallel execution

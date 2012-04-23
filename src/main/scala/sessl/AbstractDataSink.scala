@@ -5,7 +5,7 @@ package sessl
  *  @author Roland Ewald
  */
 trait AbstractDataSink extends ExperimentConfiguration {
-  this: AbstractInstrumentation =>
+  this: AbstractObservation =>
 
   /** The data sink to be used. */
   protected[sessl] var dataSinkSpecification: Option[DataSinkSpecification] = None

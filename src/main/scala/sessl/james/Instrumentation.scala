@@ -18,7 +18,7 @@ import model.sr.snapshots.SRSnapshotObserver
 import model.sr.ISRModel
 import sessl.util.ObserverHelper
 import sessl.util.SimpleObserverHelper
-import sessl.AbstractInstrumentation
+import sessl.AbstractObservation
 import sessl.RunResults
 import sessl.VariableAssignment
 import sessl.util.SimpleInstrumentation

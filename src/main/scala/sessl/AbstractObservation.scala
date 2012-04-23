@@ -6,13 +6,13 @@ import scala.collection.mutable.Set
 import sessl.util.MiscUtils
 import sessl.util.ResultOperations
 
-/** Support for instrumentation. The instrumentation trait is also concerned with managing the observed data in simple way,
+/** Support for observation of model output. The observation trait is also concerned with managing the observed data in simple way,
  *  ie. it has to provide read-access to be used across other traits (mixed-in later).
  *
  *  @author Roland Ewald
  *
  */
-abstract trait AbstractInstrumentation extends ExperimentConfiguration {
+abstract trait AbstractObservation extends ExperimentConfiguration {
   this: AbstractExperiment =>
 
   /** The exact times at which the state shall be observed.*/
@@ -44,22 +44,22 @@ abstract trait AbstractInstrumentation extends ExperimentConfiguration {
 
   /** Add event handler that processes observed model output from a single run. */
   def withRunResult(f: InstrumentationRunResultsAspect => Unit) = {
-    afterRun {
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationRunResultsAspect])
+    afterRun {(
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[InstrumentationRunResultsAspect]))
     }
   }
 
   /** Add event handler that processes observed model output from a set of replications. */
   def withReplicationsResult(f: InstrumentationReplicationsResultsAspect => Unit) = {
-    afterReplications {
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationReplicationsResultsAspect])
+    afterReplications {(
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[InstrumentationReplicationsResultsAspect]))
     }
   }
 
   /** Add event handler that processes observed model output from the whole experiment. */
   def withExperimentResult(f: InstrumentationExperimentResultsAspect => Unit) = {
-    afterExperiment {
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractInstrumentation]).get.asInstanceOf[InstrumentationExperimentResultsAspect])
+    afterExperiment {(
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[InstrumentationExperimentResultsAspect]))
     }
   }
 
@@ -152,7 +152,7 @@ sealed case class DataElemName(override val sesslName: String) extends DataElemB
  *  @param assignment the variable assignment that was used
  *  @param data the data recorded for a single run: variable name (in sessl) => trajectory.
  */
-class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends RunResultsAspect(classOf[AbstractInstrumentation]) with ResultOperations {
+class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends RunResultsAspect(classOf[AbstractObservation]) with ResultOperations {
 
   /** Auxiliary constructor to merge two result sets (e.g. recorded by different entities but for the same run).*/
   def this(aspects: (InstrumentationRunResultsAspect, InstrumentationRunResultsAspect)) = {
@@ -197,7 +197,7 @@ class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends
 }
 
 /** Replications results aspect for instrumentation. */
-class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractInstrumentation]) with ResultOperations {
+class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractObservation]) with ResultOperations {
 
   /** Get the *last* recorded value of the specified variable for all runs for which it has been observed. */
   def apply(name: String) = {
@@ -212,7 +212,7 @@ class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect
 }
 
 /** Experiment results aspect for instrumentation. */
-class InstrumentationExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractInstrumentation]) with ResultOperations
+class InstrumentationExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractObservation]) with ResultOperations
   with PartialExperimentResults[InstrumentationExperimentResultsAspect] {
 
   /** Get the last sample for the given variable from all runs. */

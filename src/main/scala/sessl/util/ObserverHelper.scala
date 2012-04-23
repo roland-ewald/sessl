@@ -1,6 +1,6 @@
 package sessl.util
 
-import sessl.AbstractInstrumentation
+import sessl.AbstractObservation
 import sessl.VariableAssignment
 import sessl.TimeStampedData
 import sessl.AbstractExperiment
