@@ -50,7 +50,7 @@ import org.junit.Assert._
       set("kr_0" <~ 8042)
       scan("kf_2" <~ range(30000, 1000, 34000), "kr_2" <~ (650, 750))
       stopTime = .01
-      bind("x" ~ "ILL", "y" ~ "DLL")
+      observe("x" ~ "ILL", "y" ~ "DLL")
       observeAt(range(0, 1e-04, 1e-02))
 
       simulators <~ (DormandPrince54() scan { "stepSize" <~ (1e-06, 2e-06) })

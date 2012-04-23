@@ -34,8 +34,8 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
     timeRange = Some(ValueRange[Double](n.toDouble(r.from), n.toDouble(r.step), n.toDouble(r.to)))
   }
 
-  /** Defines to 'bind' one variable name in sessl to a model/sim-specific ('internal') variable.*/
-  def bind(binds: DataElemBinding*) = {
+  /** Defines what to observe by 'binding' one variable name in sessl to a model/sim-specific ('internal') variable.*/
+  def observe(binds: DataElemBinding*) = {
     for (binding <- binds) {
       val boundSesslNames = bindings.getOrElse(binding.internalName, Set()) += binding.sesslName
       bindings(binding.internalName) = boundSesslNames

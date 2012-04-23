@@ -55,7 +55,7 @@ trait AbstractOptimization extends ExperimentConfiguration {
 
   /** Configure optimization. */
   def optimizeFor(varsInOptFunction: DataElemBinding*)(optFunction: ObjectiveFunction) {
-    varsInOptFunction.map(bind(_))
+    varsInOptFunction.map(observe(_))
     objectiveFunction = Some(optFunction)
   }
 

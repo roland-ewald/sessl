@@ -39,7 +39,7 @@ import sessl.util.AlgorithmSet
     class AutoRegExperiment extends Experiment with Observation with ParallelExecution {
       model = "file-sr:/./AutoregulatoryGeneticNetwork.sr"
       stopTime = 20500
-      bind("P2") //, "P", "RNA"
+      observe("P2") //, "P", "RNA"
       observeAt(range(0, 20, 20000))
       parallelThreads = -1
     }
@@ -89,7 +89,7 @@ import sessl.util.AlgorithmSet
       model = "file-sr:/./AutoregulatoryGeneticNetwork.sr"
       replications = 1000
       stopTime = 10500
-      bind("P2")
+      observe("P2")
       observeAt(range(0, 20, 10000))
       parallelThreads = -1
     }

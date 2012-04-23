@@ -20,7 +20,7 @@ import org.junit.Assert._
       model = TestJamesExperiments.testModel
       stopTime = 0.5
       replications = 10
-      bind("x" ~ "S0", "y" ~ "S1")
+      observe("x" ~ "S0", "y" ~ "S1")
       observeAt(range(0.0, 0.05, 0.5))
 
       //Some reporting: 

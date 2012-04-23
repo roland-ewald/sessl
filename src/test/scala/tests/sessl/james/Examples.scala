@@ -19,7 +19,7 @@ import org.junit.Assert._
         model = "java://examples.sr.LinearChainSystem"
         replications = 10; stopTime = 1.0
         scan("numOfSpecies" <~ (10, 15))
-        bind("x" to "S1", "y" ~ "S5")
+        observe("x" to "S1", "y" ~ "S5")
         observeAt(range(.0, .1, .9))
 
         withRunResult {
@@ -145,7 +145,7 @@ import org.junit.Assert._
         scan("r1" <~ range(.5, .1, 1.4))
         replications = 10
         stopCondition = AfterWallClockTime(seconds = 1) and AfterSimTime(10e4)
-        bind("A")
+        observe("A")
         observeAt(range(100, 50, 9000))
         withRunResult {
           results => println(results ~ "A")
@@ -165,7 +165,7 @@ import org.junit.Assert._
       model = "java://examples.sr.LinearChainSystem"
       replications = 200
       stopTime = 1.5
-      bind("S3")
+      observe("S3")
       observeAt(1.4)
       withExperimentResult { results =>
         reportSection("Results") {
