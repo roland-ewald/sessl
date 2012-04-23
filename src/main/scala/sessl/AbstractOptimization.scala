@@ -13,7 +13,7 @@ trait AbstractOptimization extends ExperimentConfiguration {
   this: AbstractExperiment with AbstractObservation =>
 
   /** The type of the objective function to be used. */
-  type ObjectiveFunction = InstrumentationRunResultsAspect => Number
+  type ObjectiveFunction = ObservationRunResultsAspect => Number
 
   /** The type that specifies how a start configuration looks like. */
   type OptVarConfiguration = List[VarSingleVal]

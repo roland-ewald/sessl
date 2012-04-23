@@ -68,7 +68,7 @@ trait AbstractReport extends ExperimentConfiguration {
 
   /** Checks whether the whole result of a simulation run has been passed, in which case it is retrieved. */
   private[this] def retrieveInstrumentationResult(data: Seq[Any]) = data.head match {
-    case result: InstrumentationRunResultsAspect => require(data.size == 1, "Only single-element result list is allowed."); result.all
+    case result: ObservationRunResultsAspect => require(data.size == 1, "Only single-element result list is allowed."); result.all
     case _ => data
   }
 

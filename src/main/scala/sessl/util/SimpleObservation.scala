@@ -4,7 +4,7 @@ import scala.collection.mutable.Map
 
 import sessl.InstrumentationReplicationsResultsAspect
 import sessl.TimeStampedData
-import sessl.InstrumentationRunResultsAspect
+import sessl.ObservationRunResultsAspect
 import sessl.AbstractObservation
 import sessl.AbstractExperiment
 import sessl.Trajectory
@@ -33,14 +33,14 @@ trait SimpleObservation extends AbstractObservation {
   }
 
   /** Collects run results from 'database'. */
-  override def collectResults(runId: Int, removeData: Boolean = false): InstrumentationRunResultsAspect = {
+  override def collectResults(runId: Int, removeData: Boolean = false): ObservationRunResultsAspect = {
     if (!inMemoryDatabase.contains(runId)) {
       println("Warning: no results were observed (have you configured the observation?)... creating empty results.") //TODO: Use logging here
-      new InstrumentationRunResultsAspect(Map[String, Trajectory]())
+      new ObservationRunResultsAspect(Map[String, Trajectory]())
     } else {
       val runData = if (removeData) inMemoryDatabase.remove(runId).get else inMemoryDatabase(runId)
       val correctlyOrderedData = runData.map(entry => (entry._1, entry._2.reverse))
-      new InstrumentationRunResultsAspect(correctlyOrderedData)
+      new ObservationRunResultsAspect(correctlyOrderedData)
     }
   }
 

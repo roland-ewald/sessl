@@ -59,7 +59,7 @@ trait Optimization extends AbstractOptimization {
         require(results.containsKey(Observation.instrumentationResults),
           "Results should have been packaged in base variable called '" + Observation.instrumentationResults + "'")
         val baseVar = results.get(Observation.instrumentationResults)
-        objectiveFunction.get.apply(baseVar.getValue().asInstanceOf[InstrumentationRunResultsAspect]).doubleValue()
+        objectiveFunction.get.apply(baseVar.getValue().asInstanceOf[ObservationRunResultsAspect]).doubleValue()
       }
       override def getName() = "sessl objective"
     })

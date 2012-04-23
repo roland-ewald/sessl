@@ -1,6 +1,6 @@
 package sessl.tools
 import sessl.InstrumentationReplicationsResultsAspect
-import sessl.InstrumentationRunResultsAspect
+import sessl.ObservationRunResultsAspect
 import sessl.Trajectory
 import james.core.math.statistics.tests.wilcoxon.WilcoxonRankSumTest
 import sessl.util.ScalaToJava._
@@ -26,7 +26,7 @@ object TrajectorySetsComparator {
 
   /** Retrieves list of trajectories from result aspect. */
   private[this] def getTrajectorySet(aspect: InstrumentationReplicationsResultsAspect, varName: String) =
-    aspect.runsResults.map(_._2.asInstanceOf[InstrumentationRunResultsAspect].trajectory(varName))
+    aspect.runsResults.map(_._2.asInstanceOf[ObservationRunResultsAspect].trajectory(varName))
 
   /** 'Slices' a set of trajectories. */
   private[this] def sliceTrajectories(trajectories: Iterable[Trajectory]): Iterable[Iterable[Double]] = {

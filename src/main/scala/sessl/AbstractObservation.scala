@@ -43,9 +43,9 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   }
 
   /** Add event handler that processes observed model output from a single run. */
-  def withRunResult(f: InstrumentationRunResultsAspect => Unit) = {
+  def withRunResult(f: ObservationRunResultsAspect => Unit) = {
     afterRun {(
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[InstrumentationRunResultsAspect]))
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationRunResultsAspect]))
     }
   }
 
@@ -127,7 +127,7 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
    *  @param removeData flag to signal that the data will not be required again (and can hence be dismissed)
    *  @return the result aspect of the run (w.r.t. instrumentation)
    */
-  def collectResults(runID: Int, removeData: Boolean): InstrumentationRunResultsAspect
+  def collectResults(runID: Int, removeData: Boolean): ObservationRunResultsAspect
 
   /** Signals that all results for the given configuration ID have been collected.
    *  Override to clean up auxiliary data structures.
@@ -148,16 +148,16 @@ sealed case class DataElemName(override val sesslName: String) extends DataElemB
   def ~(internalName: String) = to(internalName)
 }
 
-/** The run results aspect for instrumentation.
+/** The run results aspect for observation.
  *  @param assignment the variable assignment that was used
  *  @param data the data recorded for a single run: variable name (in sessl) => trajectory.
  */
-class InstrumentationRunResultsAspect(var data: Map[String, Trajectory]) extends RunResultsAspect(classOf[AbstractObservation]) with ResultOperations {
-
-  /** Auxiliary constructor to merge two result sets (e.g. recorded by different entities but for the same run).*/
-  def this(aspects: (InstrumentationRunResultsAspect, InstrumentationRunResultsAspect)) = {
-    this(aspects._1.data ++ aspects._2.data)
-  }
+class ObservationRunResultsAspect(var data: Map[String, Trajectory]) extends RunResultsAspect(classOf[AbstractObservation]) with ResultOperations {
+  
+    /** Auxiliary constructor to merge two result sets (e.g. recorded by different entities but for the same run).*/
+    def this(aspects: (ObservationRunResultsAspect, ObservationRunResultsAspect)) = {
+      this(aspects._1.data ++ aspects._2.data) 
+    }
 
   /** Get the *last* recorded value of the specified variable. */
   def apply(name: String) = {
@@ -201,7 +201,7 @@ class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect
 
   /** Get the *last* recorded value of the specified variable for all runs for which it has been observed. */
   def apply(name: String) = {
-    val values = runsResults.mapValues(_.asInstanceOf[InstrumentationRunResultsAspect](name)).values.toList
+    val values = runsResults.mapValues(_.asInstanceOf[ObservationRunResultsAspect](name)).values.toList
     values
   }
 
@@ -216,7 +216,7 @@ class InstrumentationExperimentResultsAspect extends ExperimentResultsAspect(cla
   with PartialExperimentResults[InstrumentationExperimentResultsAspect] {
 
   /** Get the last sample for the given variable from all runs. */
-  def apply(name: String) = runsResults.mapValues(_.asInstanceOf[InstrumentationRunResultsAspect](name)).values.toList
+  def apply(name: String) = runsResults.mapValues(_.asInstanceOf[ObservationRunResultsAspect](name)).values.toList
 
   /** Apply name to the result, combine results in *named* tuple.*/
   def ~(name: String) = (name, apply(name))
