@@ -57,9 +57,9 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   }
 
   /** Add event handler that processes observed model output from the whole experiment. */
-  def withExperimentResult(f: InstrumentationExperimentResultsAspect => Unit) = {
+  def withExperimentResult(f: ObservationExperimentResultsAspect => Unit) = {
     afterExperiment {(
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[InstrumentationExperimentResultsAspect]))
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationExperimentResultsAspect]))
     }
   }
 
@@ -117,7 +117,7 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   /** Before the experiment is done, add result aspect for instrumentation. */
   override def collectExperimentResultsAspects() {
     super.collectExperimentResultsAspects()
-    addExperimentResultsAspect(new InstrumentationExperimentResultsAspect())
+    addExperimentResultsAspect(new ObservationExperimentResultsAspect())
   }
 
   /** Collects the results of the indicated run. If the removeData flag is set to true,
@@ -196,7 +196,7 @@ class ObservationRunResultsAspect(var data: Map[String, Trajectory]) extends Run
   override protected def getValuesFor(name: String) = values(name)
 }
 
-/** Replications results aspect for instrumentation. */
+/** Replications results aspect for observation. */
 class ObservationReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractObservation]) with ResultOperations {
 
   /** Get the *last* recorded value of the specified variable for all runs for which it has been observed. */
@@ -211,9 +211,9 @@ class ObservationReplicationsResultsAspect extends ReplicationsResultsAspect(cla
   override protected def getValuesFor(name: String) = apply(name)
 }
 
-/** Experiment results aspect for instrumentation. */
-class InstrumentationExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractObservation]) with ResultOperations
-  with PartialExperimentResults[InstrumentationExperimentResultsAspect] {
+/** Experiment results aspect for observation. */
+class ObservationExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractObservation]) with ResultOperations
+  with PartialExperimentResults[ObservationExperimentResultsAspect] {
 
   /** Get the last sample for the given variable from all runs. */
   def apply(name: String) = runsResults.mapValues(_.asInstanceOf[ObservationRunResultsAspect](name)).values.toList
@@ -223,8 +223,8 @@ class InstrumentationExperimentResultsAspect extends ExperimentResultsAspect(cla
 
   override protected def getValuesFor(name: String) = apply(name)
 
-  override def createPartialResult(runsResults: Map[Int, RunResultsAspect], replicationsResults: Map[Int, ReplicationsResultsAspect]): InstrumentationExperimentResultsAspect = {
-    val aspect = new InstrumentationExperimentResultsAspect
+  override def createPartialResult(runsResults: Map[Int, RunResultsAspect], replicationsResults: Map[Int, ReplicationsResultsAspect]): ObservationExperimentResultsAspect = {
+    val aspect = new ObservationExperimentResultsAspect
     aspect.setResults(runsResults, replicationsResults)
     aspect
   }
