@@ -2,7 +2,7 @@ package sessl.util
 
 import scala.collection.mutable.Map
 
-import sessl.InstrumentationReplicationsResultsAspect
+import sessl.ObservationReplicationsResultsAspect
 import sessl.TimeStampedData
 import sessl.ObservationRunResultsAspect
 import sessl.AbstractObservation
@@ -45,8 +45,8 @@ trait SimpleObservation extends AbstractObservation {
   }
 
   /** Collects replications results from 'database'. */
-  override def collectReplicationsResults(assignId: Int): InstrumentationReplicationsResultsAspect = {
-    new InstrumentationReplicationsResultsAspect()
+  override def collectReplicationsResults(assignId: Int): ObservationReplicationsResultsAspect = {
+    new ObservationReplicationsResultsAspect()
   }
 
 }

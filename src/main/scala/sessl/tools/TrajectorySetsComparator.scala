@@ -1,5 +1,5 @@
 package sessl.tools
-import sessl.InstrumentationReplicationsResultsAspect
+import sessl.ObservationReplicationsResultsAspect
 import sessl.ObservationRunResultsAspect
 import sessl.Trajectory
 import james.core.math.statistics.tests.wilcoxon.WilcoxonRankSumTest
@@ -17,7 +17,7 @@ object TrajectorySetsComparator {
   /** Compares two time series (with equal number of measurements at approximately the same time points) by applying a statistical test to
    *  their empirical distributions for each time point.
    */
-  def compare(referenceData: InstrumentationReplicationsResultsAspect, testData: InstrumentationReplicationsResultsAspect, varName: String) = {
+  def compare(referenceData: ObservationReplicationsResultsAspect, testData: ObservationReplicationsResultsAspect, varName: String) = {
     val referenceSlices = sliceTrajectories(getTrajectorySet(referenceData, varName))
     val testSlices = sliceTrajectories(getTrajectorySet(testData, varName))
     require(referenceSlices.size == testSlices.size, "Number of reference and test slices need to be equal (are all trajectories of the same length?).")
@@ -25,7 +25,7 @@ object TrajectorySetsComparator {
   }
 
   /** Retrieves list of trajectories from result aspect. */
-  private[this] def getTrajectorySet(aspect: InstrumentationReplicationsResultsAspect, varName: String) =
+  private[this] def getTrajectorySet(aspect: ObservationReplicationsResultsAspect, varName: String) =
     aspect.runsResults.map(_._2.asInstanceOf[ObservationRunResultsAspect].trajectory(varName))
 
   /** 'Slices' a set of trajectories. */

@@ -45,7 +45,7 @@ import sessl.util.AlgorithmSet
     }
 
     //Execute reference experiment
-    var referenceResult: InstrumentationReplicationsResultsAspect = null
+    var referenceResult: ObservationReplicationsResultsAspect = null
     execute {
       new AutoRegExperiment {
         replications = repsForReferenceImpl

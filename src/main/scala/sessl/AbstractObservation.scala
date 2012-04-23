@@ -50,9 +50,9 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   }
 
   /** Add event handler that processes observed model output from a set of replications. */
-  def withReplicationsResult(f: InstrumentationReplicationsResultsAspect => Unit) = {
+  def withReplicationsResult(f: ObservationReplicationsResultsAspect => Unit) = {
     afterReplications {(
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[InstrumentationReplicationsResultsAspect]))
+      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationReplicationsResultsAspect]))
     }
   }
 
@@ -132,7 +132,7 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   /** Signals that all results for the given configuration ID have been collected.
    *  Override to clean up auxiliary data structures.
    */
-  def collectReplicationsResults(assignID: Int): InstrumentationReplicationsResultsAspect
+  def collectReplicationsResults(assignID: Int): ObservationReplicationsResultsAspect
 
 }
 
@@ -197,7 +197,7 @@ class ObservationRunResultsAspect(var data: Map[String, Trajectory]) extends Run
 }
 
 /** Replications results aspect for instrumentation. */
-class InstrumentationReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractObservation]) with ResultOperations {
+class ObservationReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractObservation]) with ResultOperations {
 
   /** Get the *last* recorded value of the specified variable for all runs for which it has been observed. */
   def apply(name: String) = {
