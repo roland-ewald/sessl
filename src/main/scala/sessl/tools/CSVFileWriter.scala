@@ -6,12 +6,18 @@ import james.core.util.misc.Strings
 import sessl.util.ScalaToJava
 
 /** Simple utility to store CSV files.
+ *
+ *  @param fileName the name of the file to be written
+ *  @param append whether to append to an existing file with that name or not
+ *
+ *  @see java.io.FileWriter
+ *
  *  @author Roland Ewald
  */
-class CSVFileWriter(fileName: String) {
+class CSVFileWriter(fileName: String, val append: Boolean = true) {
 
   /** The file writer. */
-  val writer = new FileWriter(fileName, true)
+  val writer = new FileWriter(fileName, append)
 
   /** Stores elements in CSV file. */
   def store(elements: Any*) = {

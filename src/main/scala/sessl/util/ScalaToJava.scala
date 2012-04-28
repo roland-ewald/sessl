@@ -1,12 +1,20 @@
 package sessl.util
 
 import java.util.ArrayList
+import com.sun.org.apache.xalan.internal.xsltc.compiler.ForEach
 
 object ScalaToJava {
 
   /** Creates an array list of java Double objects.*/
   def toDoubleList(values: Iterable[Double]): ArrayList[java.lang.Double] = {
     val rv = new ArrayList[java.lang.Double]()
+    values.foreach(v => rv.add(v))
+    rv
+  }
+
+  /** Creates an array list of java Integer objects.*/
+  def toIntegerList(values: Iterable[Int]): ArrayList[java.lang.Integer] = {
+    val rv = new ArrayList[java.lang.Integer]()
     values.foreach(v => rv.add(v))
     rv
   }

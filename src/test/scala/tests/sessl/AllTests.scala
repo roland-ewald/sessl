@@ -29,6 +29,4 @@ import tests.sessl.james.Examples
   classOf[TestDataSink], classOf[TestBiBJamesExperiment], classOf[TestReport], classOf[TestStoppingConditions],
   classOf[TestReplicationConditions], classOf[TestPerformanceExperiments],
   classOf[TestVariable], classOf[TestSimpleInstrumentation], classOf[ParamBlockGeneratorTest], classOf[TestSimpleSBMLSimExperiments]))
-class AllTests {
-
-}
+class AllTests
