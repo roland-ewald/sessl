@@ -1,7 +1,6 @@
 package sessl.util
 
 import java.util.ArrayList
-import com.sun.org.apache.xalan.internal.xsltc.compiler.ForEach
 
 object ScalaToJava {
 
