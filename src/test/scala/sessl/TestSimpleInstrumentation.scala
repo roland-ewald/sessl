@@ -2,7 +2,6 @@ package sessl
 
 import org.junit.Test
 import junit.framework.Assert._
-import com.sun.media.sound.SimpleInstrument
 import sessl.reference.EmptyExperiment
 
 /**
