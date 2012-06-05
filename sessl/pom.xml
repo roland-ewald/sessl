@@ -1,65 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.sessl</groupId>
-	<artifactId>sessl-pom</artifactId>
-	<packaging>pom</packaging>
+	<groupId>sessl</groupId>
+	<artifactId>sessl</artifactId>
+	<packaging>jar</packaging>
 	<version>0.7-SNAPSHOT</version>
 	<name>Simulation Experiment Specification via a Scala Layer</name>
 	<url>http://</url>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<maven.test.error.ignore>true</maven.test.error.ignore>
 	</properties>
 
-	<scm>
-		<connection>scm:hg:https://bitbucket.org/roland_ewald/sessl</connection>
-		<url>https://bitbucket.org/roland_ewald/sessl</url>
-	</scm>
-
-	<issueManagement>
-		<system>Bitbucket</system>
-		<url>https://bitbucket.org/roland_ewald/sessl/issues</url>
-	</issueManagement>
-
-	<licenses>
-		<license>
-			<name>Apache 2</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-	
-	<developers>
-		<developer>
-			<id>Roland_Ewald</id>
-			<name>Roland Ewald</name>
-			<email>roland.ewald@acm.org</email>
-			<roles>
-				<role>Project Lead</role>
-			</roles>
-			<organization>University of Rostock</organization>
-		</developer>
-	</developers>
-	
-	<!-- Use local Maven repository -->
 	<repositories>
 		<repository>
-			<id>sessl-repo</id>
-			<name>sessl-repo</name>
-			<url>file://${project.basedir}/repo</url>
-			<releases>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-		<!--<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
-		</repository> TODO: Check -->
+		</repository>
 	</repositories>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>scala-tools.org</id>
@@ -68,8 +30,8 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<dependencyManagement>
-		<dependencies>
+	<!-- DEPENDENCIES -->
+	<dependencies>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-compiler</artifactId>
@@ -91,13 +53,48 @@
 			<version>4.8</version>
 			<scope>test</scope>
 		</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
-	<modules>
-		<module>sessl</module>
-	</modules>
-	
+		<!-- To support performance observation and all/any-simulator execution 
+			modes: -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>sasf</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>sr</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
+		</dependency>
+		<!-- To support report generation: -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>resultreports</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
+		</dependency>
+		<!-- To support optimization (this is not released yet - components based 
+			on this cannot be released either): -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>experiment</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- SBMLsim dependencies -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>sbmlsim</groupId>
+			<artifactId>sbmlsim</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+
+	</dependencies>
+
 	<!-- BUILDING -->
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
@@ -167,7 +164,7 @@
 				<version>2.2.1</version>
 				<configuration>
 					<descriptors>
-						<descriptor>release-assembly.xml</descriptor>
+						<descriptor>full.xml</descriptor>
 					</descriptors>
 					<finalName>sessl-${project.version}</finalName>
 				</configuration>
@@ -182,8 +179,8 @@
 				</executions>
 			</plugin>
 
-			<!-- Include tests classes (in extra JAR file) -->
 			<plugin>
+				<!-- Include tests classes (in extra JAR file) -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
