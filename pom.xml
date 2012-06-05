@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.sessl</groupId>
-	<artifactId>sessl-pom</artifactId>
+	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
 	<version>0.7-SNAPSHOT</version>
 	<name>Simulation Experiment Specification via a Scala Layer</name>
