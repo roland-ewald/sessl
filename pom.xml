@@ -5,8 +5,8 @@
 	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
 	<version>0.7-SNAPSHOT</version>
-	<name>Simulation Experiment Specification via a Scala Layer</name>
-	<url>http://</url>
+	<name>SESSL</name>
+	<url>http://sessl.org</url>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
