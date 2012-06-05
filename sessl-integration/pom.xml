@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sessl-integration</artifactId>
+	<packaging>jar</packaging>
+	<version>0.7-SNAPSHOT</version>
+	<name>SESSL Integration Examples and Tests</name>
+
+ <parent>
+    <groupId>org.sessl</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>0.7-SNAPSHOT</version>
+    <relativePath>../.</relativePath>
+ </parent>
+ 
+	<dependencies>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james2</artifactId>
+			<version>0.7-SNAPSHOT</version>
+		</dependency>
+				<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james2</artifactId>
+			<version>0.7-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>
