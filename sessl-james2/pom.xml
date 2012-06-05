@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sessl-james2</artifactId>
+	<packaging>jar</packaging>
+	<version>0.7-SNAPSHOT</version>
+	<name>SESSL Binding for JAMES II</name>
+
+ <parent>
+    <groupId>org.sessl</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>0.7-SNAPSHOT</version>
+    <relativePath>../.</relativePath>
+ </parent>
+ 
+	<dependencies>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+		</dependency>
+		<!-- To support performance observation and all/any-simulator execution 
+			modes: -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>sasf</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
+		</dependency>
+		<!-- To support instrumentation of SR models: -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>sr</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
+		</dependency>
+		<!-- To support report generation: -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>resultreports</artifactId>
+			<version>0.8.6-SNAPSHOT</version>
+		</dependency>
+		<!-- To support optimization (this is not released yet - components based 
+			on this cannot be released either): -->
+		<dependency>
+			<groupId>james2</groupId>
+			<artifactId>experiment</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

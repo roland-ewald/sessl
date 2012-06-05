@@ -43,6 +43,12 @@
 		</developer>
 	</developers>
 	
+		
+	<modules>
+		<module>sessl</module>
+		<module>sessl-james2</module>
+	</modules>
+	
 	<!-- Use local Maven repository -->
 	<repositories>
 		<repository>
@@ -70,6 +76,15 @@
 
 	<dependencyManagement>
 		<dependencies>
+		<!-- Internal dependencies: -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+			<version>0.7-SNAPSHOT</version>
+		</dependency>
+		
+		
+		<!-- External dependencies: -->
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-compiler</artifactId>
@@ -93,10 +108,6 @@
 		</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
-	<modules>
-		<module>sessl</module>
-	</modules>
 	
 	<!-- BUILDING -->
 	<build>
