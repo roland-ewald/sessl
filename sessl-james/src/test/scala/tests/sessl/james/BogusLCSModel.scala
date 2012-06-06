@@ -1,10 +1,7 @@
 package tests.sessl.james
 
-import james.core.base.INamedEntity
 import examples.sr.LinearChainSystem
-import james.core.model.AccessRestriction
-import james.core.observe.IMediator
-import tests.sessl.TestCounter
+import sessl.util.test.TestCounter
 
 /**
  * LCS Model enhanced by calls to TestCounter.

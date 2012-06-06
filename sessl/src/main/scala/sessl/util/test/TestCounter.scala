@@ -1,7 +1,8 @@
-package tests.sessl
+package sessl.util.test
 
-import sessl.util.JavaToScala._
 import scala.collection.mutable.ListBuffer
+
+import sessl.util.JavaToScala.toScala
 
 /** Simple counter of executed parameter setups to check correctness of experiment implementations.
  *

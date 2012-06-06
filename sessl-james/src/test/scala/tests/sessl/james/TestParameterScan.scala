@@ -1,8 +1,9 @@
 package tests.sessl.james
 
-import tests.sessl.TestCounter
+
 import org.junit.Test
 import org.junit.Assert._
+import sessl.util.test.TestCounter
 
 /** Tests parameter scanning experiment with some extras.
  *  @author Roland Ewald
