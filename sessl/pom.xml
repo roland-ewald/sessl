@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>sessl</artifactId>
 	<packaging>jar</packaging>
-	<version>0.7-SNAPSHOT</version>
 	<name>SESSL Core</name>
 
  <parent>
