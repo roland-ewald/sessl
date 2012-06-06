@@ -1,9 +1,17 @@
 package tests.sessl.sbmlsim
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert._
 
-/** Tests for the integration of SBMLsimulator.
+import sessl.execute
+import sessl.stopConditionToCombinedCondition
+import sessl.sbmlsim.Experiment
+import sessl.AfterWallClockTime
+import sessl.MeanConfidenceReached
+import sessl.Never
+
+/**
+ * Tests for the integration of SBMLsimulator.
  *
  *  @author Roland Ewald
  */
@@ -39,40 +47,21 @@ import org.junit.Assert._
     }
   }
 
+  /** Tests a simple experiment. */
   @Test def testSimpleExperiments() {
     import sessl._
     import sessl.sbmlsim._
+
     var runCounter = 0
     var replicationCounter = 0
-    class MyExperiment extends Experiment with ParallelExecution with Observation {
 
-      model = "./BIOMD0000000002.xml"
-      set("kr_0" <~ 8042)
-      scan("kf_2" <~ range(30000, 1000, 34000), "kr_2" <~ (650, 750))
-      stopTime = .01
-      observe("x" ~ "ILL", "y" ~ "DLL")
-      observeAt(range(0, 1e-04, 1e-02))
-
-      simulators <~ (DormandPrince54() scan { "stepSize" <~ (1e-06, 2e-06) })
+    class MyExperiment extends sessl.util.test.sbmlsim.SimpleTestExperiment {
       afterRun { r => { runCounter += 1 } }
       afterReplications { r => { replicationCounter += 1 } }
     }
+
     execute(new MyExperiment)
     assertEquals("There should be 20 runs.", 20, runCounter)
     assertEquals("There should be 10 variable assignments", 10, replicationCounter)
-
-    //This experiment shows how to *combine* features of simulation systems!
-    execute {
-      new MyExperiment with sessl.james.Report {
-        reportName = "SBMLsimulator Report"
-        withRunResult { r =>
-          {
-            reportSection("Run Number " + r.id) {
-              linePlot(r ~ "x", r ~ "y")(title = "Integration Results")
-            }
-          }
-        }
-      }
-    }
   }
 }

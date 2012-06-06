@@ -2,7 +2,8 @@ package tests.sessl
 
 import org.junit.Test
 
-/** @author Roland Ewald
+/**
+ * @author Roland Ewald
  */
 @Test class MultiSimSystemsExample {
 
@@ -41,6 +42,26 @@ import org.junit.Test
           //...
         }
       })
+  }
+
+  @Test def integrateSimSystems() = {
+    import sessl._
+    import sessl.sbmlsim._
+
+    //This experiment shows how to *combine* features of simulation systems!
+    execute {
+      new sessl.util.test.sbmlsim.SimpleTestExperiment with sessl.james.Report {
+        reportName = "SBMLsimulator Report"
+        withRunResult { r =>
+          {
+            reportSection("Run Number " + r.id) {
+              linePlot(r ~ "x", r ~ "y")(title = "Integration Results")
+            }
+          }
+        }
+      }
+    }
+
   }
 
 }
