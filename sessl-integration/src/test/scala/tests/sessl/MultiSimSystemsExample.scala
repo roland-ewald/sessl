@@ -1,4 +1,5 @@
 package tests.sessl
+
 import org.junit.Test
 
 /** @author Roland Ewald
