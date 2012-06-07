@@ -1,11 +1,13 @@
-package sessl.tools
+package sessl.james.tools
+
+import sessl.Trajectory
 import sessl.ObservationReplicationsResultsAspect
 import sessl.ObservationRunResultsAspect
-import sessl.Trajectory
+import sessl.ObservationReplicationsResultsAspect
 import james.core.math.statistics.tests.wilcoxon.WilcoxonRankSumTest
-import sessl.util.ScalaToJava._
 
-/** Simple component to compare two sets of trajectories.
+/**
+ * Simple component to compare two sets of trajectories.
  *
  *  @author Roland Ewald
  */
@@ -14,7 +16,8 @@ object TrajectorySetsComparator {
   /** A 'slice' of a trajectory set, i.e. the empirical distribution at a given point in time. */
   type Slice = List[Double]
 
-  /** Compares two time series (with equal number of measurements at approximately the same time points) by applying a statistical test to
+  /**
+   * Compares two time series (with equal number of measurements at approximately the same time points) by applying a statistical test to
    *  their empirical distributions for each time point.
    */
   def compare(referenceData: ObservationReplicationsResultsAspect, testData: ObservationReplicationsResultsAspect, varName: String) = {

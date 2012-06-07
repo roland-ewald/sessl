@@ -12,7 +12,7 @@ import scala.collection.mutable.ListBuffer
 package object james {
 
   /** The basic factory type.  */
-  type Factory = _root_.james.core.factories.Factory
+  type Factory = _root_.james.core.factories.Factory[_]
 
   /** The abstract factory type. */
   type AbstractFactory[T <: Factory] = _root_.james.core.factories.AbstractFactory[T]

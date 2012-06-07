@@ -26,26 +26,26 @@
 		<dependency>
 			<groupId>james2</groupId>
 			<artifactId>sasf</artifactId>
-			<version>0.8.6-SNAPSHOT</version>
+			<version>0.8.7-SNAPSHOT</version>
 		</dependency>
 		<!-- To support instrumentation of SR models: -->
 		<dependency>
 			<groupId>james2</groupId>
 			<artifactId>sr</artifactId>
-			<version>0.8.6-SNAPSHOT</version>
+			<version>0.8.7-SNAPSHOT</version>
 		</dependency>
 		<!-- To support report generation: -->
 		<dependency>
 			<groupId>james2</groupId>
 			<artifactId>resultreports</artifactId>
-			<version>0.8.6-SNAPSHOT</version>
+			<version>0.8.7-SNAPSHOT</version>
 		</dependency>
 		<!-- To support optimization (this is not released yet - components based 
 			on this cannot be released either): -->
 		<dependency>
 			<groupId>james2</groupId>
 			<artifactId>experiment</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

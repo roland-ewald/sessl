@@ -1,6 +1,5 @@
 package sessl.util
 
-import james.SimSystem
 import java.util.logging.Level
 import java.io.File
 

@@ -1,29 +1,21 @@
 package sessl.james
 
-import java.util.ArrayList
 import java.util.HashMap
-import scala.collection.mutable.ListBuffer
+
 import james.core.experiments.instrumentation.computation.plugintype.ComputationInstrumenterFactory
 import james.core.experiments.instrumentation.computation.IComputationInstrumenter
 import james.core.experiments.optimization.parameter.instrumenter.IResponseObsSimInstrumenter
 import james.core.experiments.optimization.parameter.IResponseObserver
 import james.core.experiments.tasks.IComputationTask
-import james.core.experiments.IComputationTaskConfiguration
-import james.core.experiments.SimulationRunConfiguration
 import james.core.model.variables.BaseVariable
-import james.core.model.IModel
 import james.core.observe.Mediator
 import james.core.parameters.ParameterBlock
-import model.sr.snapshots.SRSnapshotObserver
 import model.sr.ISRModel
-import sessl.util.ObserverHelper
 import sessl.util.SimpleObserverHelper
-import sessl.AbstractObservation
-import sessl.RunResults
-import sessl.VariableAssignment
 import sessl.util.SimpleObservation
 
-/** Configuring James II for observation.
+/**
+ * Configuring James II for observation.
  *
  *  @author Roland Ewald
  *
@@ -53,11 +45,11 @@ case class SESSLCompInstrFactory(val instrConfig: SimpleObservation) extends Com
 /** The computation task instrumenter. */
 class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObsSimInstrumenter {
 
-  val observers = new java.util.ArrayList[IResponseObserver]()
+  val observers = new java.util.ArrayList[IResponseObserver[_]]()
 
   private[this] var myRunID: Option[Int] = None
 
-  override def getInstantiatedObservers(): java.util.List[_ <: IResponseObserver] = observers
+  override def getInstantiatedObservers(): java.util.List[_ <: IResponseObserver[_]] = observers
 
   /** Copies instrumented data into response, which can be processed by experiment steerers, like optimization algorithms. */
   override def getObservedResponses(): java.util.Map[String, _ <: BaseVariable[_]] = {
@@ -76,7 +68,7 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
 
     //TODO: This is currently FORMALISM-SPECIFIC (should be replaced by general instrumentation mechanism)
     require(computation.getProcessorInfo().getLocal().getModel().isInstanceOf[ISRModel], "Only SR models are supported so far!")
-    
+
     val model = computation.getProcessorInfo().getLocal().getModel().asInstanceOf[ISRModel]
 
     computation.getConfig().getParameters() //TODO: Manage parameters explicitly!

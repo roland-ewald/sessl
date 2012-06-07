@@ -1,4 +1,4 @@
-package sessl.tools
+package sessl.james.tools
 
 import java.io.FileWriter
 import scala.collection.mutable.ListBuffer

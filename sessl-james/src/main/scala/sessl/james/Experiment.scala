@@ -3,51 +3,67 @@ package sessl.james
 import java.net.URI
 import java.util.logging.Level
 import java.util.ArrayList
+import scala.collection.mutable.ListBuffer
+import james.core.experiments.replication.ConfidenceIntervalCriterion
+import james.core.experiments.replication.IReplicationCriterion
+import james.core.experiments.replication.ReplicationNumberCriterion
+import james.core.experiments.taskrunner.parallel.ParallelComputationTaskRunnerFactory
+import james.core.experiments.taskrunner.plugintype.TaskRunnerFactory
 import james.core.experiments.taskrunner.ITaskRunner
 import james.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
 import james.core.experiments.tasks.stoppolicy.steps.StepCountStopFactory
 import james.core.experiments.tasks.stoppolicy.EmptyStopConditionStopPolicyFactory
-import james.core.simulationrun.stoppolicy.CompositeCompTaskStopPolicyFactory
-import james.core.simulationrun.stoppolicy.ConjunctiveSimRunStopPolicyFactory
-import james.core.simulationrun.stoppolicy.DisjunctiveSimRunStopPolicyFactory
-import james.core.simulationrun.stoppolicy.WallClockTimeStopFactory
-import james.core.simulationrun.stoppolicy.SimTimeStopFactory
 import james.core.experiments.variables.modifier.IVariableModifier
 import james.core.experiments.variables.modifier.IncrementModifierDouble
 import james.core.experiments.variables.modifier.IncrementModifierInteger
 import james.core.experiments.variables.modifier.SequenceModifier
 import james.core.experiments.variables.ExperimentVariable
-import james.core.experiments.steering.SteeredExperimentVariables
 import james.core.experiments.BaseExperiment
 import james.core.experiments.ComputationTaskRuntimeInformation
-import james.core.model.IModel
+import james.core.experiments.IComputationTaskConfiguration
+import james.core.experiments.RunInformation
+import james.core.experiments.SimulationRunConfiguration
+import james.core.math.random.generators.plugintype.RandomGeneratorFactory
+import james.core.model.variables.BaseVariable
 import james.core.parameters.ParameterizedFactory
 import james.core.processor.plugintype.ProcessorFactory
-import james.core.experiments.replication.ReplicationNumberCriterion
-import james.core.experiments.replication.ConfidenceIntervalCriterion
-import james.core.experiments.replication.IReplicationCriterion
-import james.core.experiments.RunInformation
-import james.core.experiments.steering.IExperimentSteerer
-import james.core.experiments.variables.ExperimentVariables
-import james.core.experiments.steering.VariablesAssignment
+import james.core.simulationrun.stoppolicy.CompositeCompTaskStopPolicyFactory
+import james.core.simulationrun.stoppolicy.ConjunctiveSimRunStopPolicyFactory
+import james.core.simulationrun.stoppolicy.DisjunctiveSimRunStopPolicyFactory
+import james.core.simulationrun.stoppolicy.SimTimeStopFactory
+import james.core.simulationrun.stoppolicy.WallClockTimeStopFactory
 import james.SimSystem
-import james.core.experiments.steering.ExperimentSteererVariable
-import simspex.exploration.simple.SimpleSimSpaceExplorer
-import james.core.experiments.IComputationTaskConfiguration
-import james.core.experiments.SimulationRunConfiguration
-import james.core.model.variables.BaseVariable
-import james.core.parameters.ParameterBlock
-import scala.collection.mutable.ListBuffer
+import sessl.VariableAssignment
+import sessl.stringToParamName
 import sessl.util.AlgorithmSet
-import james.core.experiments.taskrunner.parallel.ParallelComputationTaskRunnerFactory
-import james.core.experiments.taskrunner.plugintype.TaskRunnerFactory
-import simspex.adaptiverunner.AdaptiveTaskRunnerFactory
+import sessl.VarRange
+import sessl.AbstractExperiment
+import sessl.AbstractObservation
+import sessl.AfterSimSteps
+import sessl.AfterSimTime
+import sessl.AfterWallClockTime
+import sessl.AllSimulators
+import sessl.AnySimulator
+import sessl.ConjunctiveReplicationCondition
+import sessl.ConjunctiveStoppingCondition
+import sessl.DisjunctiveReplicationCondition
+import sessl.DisjunctiveStoppingCondition
+import sessl.FixedNumber
+import sessl.MeanConfidenceReached
+import sessl.MultipleVars
+import sessl.Never
+import sessl.Param
+import sessl.ReplicationCondition
+import sessl.Simulator
+import sessl.StoppingCondition
+import sessl.VarSeq
+import sessl.Variable
 import simspex.adaptiverunner.policies.EpsilonGreedyDecrInitFactory
+import simspex.adaptiverunner.AdaptiveTaskRunnerFactory
+import james.core.model.IModel
 
-import sessl._
-import sessl.james._
-
-/** Encapsulates the BaseExperiment.
+/**
+ * Encapsulates the BaseExperiment.
  *
  *  @see james.core.experiments.BaseExperiment
  *
@@ -164,7 +180,8 @@ class Experiment extends AbstractExperiment {
   def useFirstSetupAsProcessor() =
     setProcessorParameters(ParamBlockGenerator.createParamBlock(simulators.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
 
-  /** Configure experiment to use the adaptive task runner.
+  /**
+   * Configure experiment to use the adaptive task runner.
    *
    *  @param threads
    *          the number of threads to be used
@@ -198,8 +215,8 @@ class Experiment extends AbstractExperiment {
   /** Configure random number generation. */
   def configureRNG() = if (randomNumberGenerator.isDefined) {
     val customRNG = randomNumberGenerator.get.asInstanceOf[SimpleJamesIIRNG]
-    SimSystem.getRNGGenerator().setRngFactoryName(customRNG.factory.getClass.getCanonicalName)
-    SimSystem.getRNGGenerator().setInitialSeed(customRNG.seed)
+    SimSystem.getRNGGenerator().setRNGFactory(new ParameterizedFactory[RandomGeneratorFactory](customRNG.factory));
+    SimSystem.getRNGGenerator().setSeed(customRNG.seed)
   }
 
   override def executeExperiment() = {
@@ -208,7 +225,8 @@ class Experiment extends AbstractExperiment {
     experimentDone()
   }
 
-  /** Adds the execution listener.
+  /**
+   * Adds the execution listener.
    *  @param exp the James II experiment
    */
   private def addExecutionListener(exp: BaseExperiment) = { //TODO: THIS IS IMPORTANT FOR INTEGRATING OTHER SYSTEMS --- DOCUMENT THIS!
@@ -254,7 +272,8 @@ class Experiment extends AbstractExperiment {
       exp.getFixedModelParameters().put(v._1, v._2)
   }
 
-  /** Creates the experiment variable.
+  /**
+   * Creates the experiment variable.
    *
    *  @param variable the variable to be scanned
    *  @return the experiment variable
@@ -265,7 +284,8 @@ class Experiment extends AbstractExperiment {
     case x => throw new IllegalArgumentException("'" + x + "' is unknown, cannot be converted to experiment variable.")
   }
 
-  /** Creates an experiment variable for a sequence.
+  /**
+   * Creates an experiment variable for a sequence.
    *
    *  @param sequence the given sequence
    *  @return the experiment variable
@@ -278,7 +298,8 @@ class Experiment extends AbstractExperiment {
     new ExperimentVariable(sequence.name, sequence.values.head, createSequenceModifier(elems))
   }
 
-  /** Creates a sequence modifier for a given list of elements.
+  /**
+   * Creates a sequence modifier for a given list of elements.
    *
    *  @param <T>
    *            the type of the list elements (and the returned modifier)
@@ -288,7 +309,8 @@ class Experiment extends AbstractExperiment {
    */
   def createSequenceModifier[T](elements: java.util.List[T]) = new SequenceModifier[T](elements)
 
-  /** Checks whether all values in the gives sequence are of the same type.
+  /**
+   * Checks whether all values in the gives sequence are of the same type.
    *
    *  @param values
    *            the values
@@ -298,7 +320,8 @@ class Experiment extends AbstractExperiment {
     x: Any => report(Level.SEVERE, "Type of '" + x + "' (" + x.getClass() + ") does not match type of first element: " + values.head.getClass())
   }
 
-  /** Creates an experiment variable for a range variable.
+  /**
+   * Creates an experiment variable for a range variable.
    *
    *  @param <T>
    *            the type of the variable's values
@@ -310,7 +333,8 @@ class Experiment extends AbstractExperiment {
     new ExperimentVariable[T](varRange.name, varRange.from, createIncrementModifier(varRange))
   }
 
-  /** Creates the increment modifier for a given range.
+  /**
+   * Creates the increment modifier for a given range.
    *
    *  @param <T>
    *            the type of the variable's values (has to be Int, Double, or Long)

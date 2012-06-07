@@ -5,13 +5,13 @@
 	<packaging>jar</packaging>
 	<name>SESSL Binding for SBMLsimulator</name>
 
- <parent>
-    <groupId>org.sessl</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>0.7-SNAPSHOT</version>
-    <relativePath>../.</relativePath>
- </parent>
- 
+	<parent>
+		<groupId>org.sessl</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>0.7-SNAPSHOT</version>
+		<relativePath>../.</relativePath>
+	</parent>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.sessl</groupId>
@@ -21,5 +21,17 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>sbmlsim</groupId>
+			<artifactId>sbmlsim</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 	</dependencies>
 </project>
