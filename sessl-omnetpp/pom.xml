@@ -17,6 +17,9 @@
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl</artifactId>
 		</dependency>
-		<!-- You also need a pre-installed version of OMNeT++ (http://www.omnetpp.org/) -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
 	</dependencies>
 </project>
