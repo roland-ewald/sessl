@@ -14,9 +14,9 @@ import sessl.stringToVarName
 import sessl.AbstractObservation
 import sessl.AllSimulators
 import sessl.range
-import sessl.tools.TrajectorySetsComparator
-import sessl.tools.CSVFileWriter
 import sessl.util.AlgorithmSet
+import sessl.james.tools.CSVFileWriter
+import sessl.james.tools.TrajectorySetsComparator
 
 /** Simple experiment to produce some test data for VASSiB.
  *  @author Roland Ewald
