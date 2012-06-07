@@ -1,7 +1,8 @@
 package sessl.james
 
 import java.util.HashMap
-
+import sessl.util.SimpleObserverHelper
+import sessl.util.SimpleObservation
 import james.core.experiments.instrumentation.computation.plugintype.ComputationInstrumenterFactory
 import james.core.experiments.instrumentation.computation.IComputationInstrumenter
 import james.core.experiments.optimization.parameter.instrumenter.IResponseObsSimInstrumenter
@@ -11,8 +12,9 @@ import james.core.model.variables.BaseVariable
 import james.core.observe.Mediator
 import james.core.parameters.ParameterBlock
 import model.sr.ISRModel
-import sessl.util.SimpleObserverHelper
-import sessl.util.SimpleObservation
+import model.sr.snapshots.SRSnapshotObserver
+import james.core.observe.IObservable
+
 
 /**
  * Configuring James II for observation.
@@ -45,11 +47,11 @@ case class SESSLCompInstrFactory(val instrConfig: SimpleObservation) extends Com
 /** The computation task instrumenter. */
 class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObsSimInstrumenter {
 
-  val observers = new java.util.ArrayList[IResponseObserver[_]]()
+  val observers = new java.util.ArrayList[IResponseObserver[_ <: IObservable]]()
 
   private[this] var myRunID: Option[Int] = None
 
-  override def getInstantiatedObservers(): java.util.List[_ <: IResponseObserver[_]] = observers
+  override def getInstantiatedObservers(): java.util.List[_ <: IResponseObserver[_ <: IObservable]] = observers
 
   /** Copies instrumented data into response, which can be processed by experiment steerers, like optimization algorithms. */
   override def getObservedResponses(): java.util.Map[String, _ <: BaseVariable[_]] = {
@@ -81,7 +83,7 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
     val bindings = instrConfig.variableBindings
     val varsToBeObserved = instrConfig.varsToBeObserved
 
-    val observer = new SRSnapshotObserver(obsTimes, 1000) with SimpleObserverHelper[SimpleObservation] {
+    val observer = new SRSnapshotObserver[ISRModel](obsTimes, 1000) with SimpleObserverHelper[SimpleObservation] {
 
       registerCompTask(computation)
 
