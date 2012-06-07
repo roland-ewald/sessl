@@ -6,6 +6,8 @@ import sessl.ObservationRunResultsAspect
 import sessl.ObservationReplicationsResultsAspect
 import james.core.math.statistics.tests.wilcoxon.WilcoxonRankSumTest
 
+import sessl.util.ScalaToJava._
+
 /**
  * Simple component to compare two sets of trajectories.
  *
