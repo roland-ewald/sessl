@@ -47,15 +47,13 @@ trait StoppingCondition
 /** Never really stop the simulation run (it has to stop on its own).*/
 case object Never extends StoppingCondition
 
-/** Stop after a given amount of simulation time.
- *  @param time the simulation time after which the simulation can be stopped
- */
-case class AfterSimTime(time: Double) extends StoppingCondition
+/** Stop after a given amount of simulation time. */
+case class AfterSimTime(override val time: Double = 0., days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with Duration
 
-/** Stop after a given amount of wall-clock time.
- *  @param time the wall-clock time after which the simulation can be stopped
- */
+/** Stop after a given amount of wall-clock time. */
 case class AfterWallClockTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with Duration
+
+case class AfterCPUTime()
 
 /** Stop after a given number of simulation steps.
  *  @param steps the number of steps after which the simulation can be stopped

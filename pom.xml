@@ -12,8 +12,27 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<maven.test.error.ignore>true</maven.test.error.ignore>
+		<repo.path>file://${project.basedir}/repo</repo.path>
 	</properties>
 
+	<!-- Use local Maven repository -->
+	<repositories>
+		<repository>
+			<id>sessl-repo</id>
+			<name>sessl-repo</name>
+			<url>${repo.path}</url>
+			<releases>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
+		<!--<repository>
+			<id>scala-tools.org</id>
+			<name>Scala-tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository> TODO: Check -->
+	</repositories>
+
+	
 	<scm>
 		<connection>scm:hg:https://bitbucket.org/roland_ewald/sessl</connection>
 		<url>https://bitbucket.org/roland_ewald/sessl</url>
@@ -51,24 +70,7 @@
 		<module>sessl-omnetpp</module>
 		<module>sessl-integration</module>
 	</modules>
-	
-	<!-- Use local Maven repository -->
-	<repositories>
-		<repository>
-			<id>sessl-repo</id>
-			<name>sessl-repo</name>
-			<url>file://${project.basedir}/repo</url>
-			<releases>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-		<!--<repository>
-			<id>scala-tools.org</id>
-			<name>Scala-tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</repository> TODO: Check -->
-	</repositories>
-	
+		
 	<pluginRepositories>
 		<pluginRepository>
 			<id>scala-tools.org</id>

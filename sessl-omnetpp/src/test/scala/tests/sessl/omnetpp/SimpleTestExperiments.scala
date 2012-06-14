@@ -2,10 +2,9 @@ package tests.sessl.omnetpp
 
 import org.junit.Test
 
-/**
- * Some tests for the OMNeT++ binding.
+/** Some tests for the OMNeT++ binding.
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  */
 @Test class SimpleTestExperiments {
 
@@ -26,6 +25,7 @@ import org.junit.Test
     execute {
       new Experiment {
         model = "./test.bat"
+        stopCondition = AfterSimTime(hours = 10) or AfterWallClockTime(seconds = 10)
       }
     }
   }

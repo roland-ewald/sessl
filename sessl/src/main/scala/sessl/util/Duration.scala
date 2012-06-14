@@ -5,6 +5,9 @@ package sessl.util
  */
 trait Duration {
 
+  /** Unit-less time. Will be ignored for the calculations, unless it is non-zero. */
+  def time: Double = 0.
+
   /** The number of days. */
   def days: Int
 
@@ -28,4 +31,6 @@ trait Duration {
     (days * toH * toM * toS * toMS) + (hours * toM * toS * toMS) + (minutes * toS * toMS) + (seconds * toMS)
   }
 
+  /** Get the amount of seconds or the unit-less time (if > 0). */
+  def asMilliSecondsOrUnitless = if (time > 0) time.toLong else toMilliSeconds
 }
