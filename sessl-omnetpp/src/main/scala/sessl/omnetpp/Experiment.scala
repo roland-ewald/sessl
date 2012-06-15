@@ -31,6 +31,7 @@ class Experiment extends AbstractExperiment {
     configureModel()
     configureStopping()
     configureFixedVariables()
+    configureVariablesToScan()
     fileWriter.get.close
   }
 
@@ -87,6 +88,21 @@ class Experiment extends AbstractExperiment {
     value match {
       case str: String => "\"" + str + "\""
       case x => x.toString()
+    }
+  }
+
+  /** Configures all variables for which the values shall be scanned. */
+  def configureVariablesToScan(): Unit = {
+
+    val assignments = createVariableSetups()
+
+    //Merge all values to be assigned to a variable to a single list 
+    val varValuesLists = assignments.foldLeft(Map[String, List[Any]]()) {
+      (m1, m2) => m2.map(x => (x._1, x._2 :: m1.getOrElse(x._1, List())))
+    }.map(x => (x._1, x._2.reverse))
+
+    for (varValues <- varValuesLists) {
+      write(varValues._1, "${" + varValues._2.mkString(",") + "}")
     }
   }
 

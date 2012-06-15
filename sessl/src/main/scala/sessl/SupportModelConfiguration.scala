@@ -30,12 +30,19 @@ trait SupportModelConfiguration {
       }
   }
 
+  /** Creates variable setups (or list with single empty map, if none are defined). */
+  private[sessl] def createVariableSetups(): List[Map[String, Any]] = {
+    if (!variablesToScan.isEmpty)
+      Variable.createVariableSetups(variablesToScan).toList
+    else List(Map())
+  }
+
   /** Get all defined variables that shall be scanned.*/
   protected lazy val variablesToScan = varsToScan.toList
 
   /** Get all defined variables that shall be fixed.*/
   protected lazy val variablesToSet = varsToSet.toList
-  
+
   /** Get all defined variables that shall be fixed as a map. */
   protected lazy val fixedVariables = variablesToSet.map(v => (v.name, v.value)).toMap
 

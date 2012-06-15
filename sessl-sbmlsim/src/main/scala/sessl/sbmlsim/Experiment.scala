@@ -80,13 +80,6 @@ class Experiment extends AbstractExperiment with ResultHandling {
     experimentDone()
   }
 
-  /** Creates variable setups (or list with single empty map, if none are defined). */
-  def createVariableSetups(): List[Map[String, Any]] = {
-    if (!variablesToScan.isEmpty)
-      Variable.createVariableSetups(variablesToScan).toList
-    else List(Map())
-  }
-
   /** Executes the given list of jobs. */
   def executeJobs(jobs: List[JobDescription]) = jobs.map(executeJob)
 
