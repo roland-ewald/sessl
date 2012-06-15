@@ -1,12 +1,14 @@
 package sessl.omnetpp
 
-import sessl.AbstractExperiment
 import java.io.File
 import java.io.FileWriter
+
+import sessl.AbstractExperiment
 import sessl.AfterSimTime
 import sessl.AfterWallClockTime
-import sessl.StoppingCondition
 import sessl.DisjunctiveStoppingCondition
+import sessl.FixedNumber
+import sessl.StoppingCondition
 
 /** Integrates OMNeT++ 4.2 (http://www.omnetpp.org/) by producing <code>omnetpp.ini</code> files.
  *  @author Roland Ewald
@@ -30,6 +32,7 @@ class Experiment extends AbstractExperiment {
     initializeExperimentConfigFile()
     configureModel()
     configureStopping()
+    configureReplications()
     configureFixedVariables()
     configureVariablesToScan()
     fileWriter.get.close
@@ -103,6 +106,14 @@ class Experiment extends AbstractExperiment {
 
     for (varValues <- varValuesLists) {
       write(varValues._1, "${" + varValues._2.mkString(",") + "}")
+    }
+  }
+
+  /** Configures the number of replications. */
+  def configureReplications(): Unit = {
+    checkAndGetReplicationCondition() match {
+      case fixed: FixedNumber => write("repeat", fixed.replications.toString)
+      case x => throw new IllegalArgumentException("Only a fixed number of replications is supported.")
     }
   }
 
