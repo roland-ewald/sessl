@@ -30,6 +30,7 @@ class Experiment extends AbstractExperiment {
     initializeExperimentConfigFile()
     configureModel()
     configureStopping()
+    configureFixedVariables()
     fileWriter.get.close
   }
 
@@ -50,13 +51,15 @@ class Experiment extends AbstractExperiment {
 
   /** Configure the model to be simulated. */
   def configureModel(): Unit = {
-    write("network",modelLocation.get)
+    write("network", modelLocation.get)
   }
 
   /** Configure stop condition. */
   def configureStopping(): Unit = {
     writeStoppingCondition(checkAndGetStoppingCondition())
   }
+
+  /** Writes a stopping condition into the next line. */
   def writeStoppingCondition(c: StoppingCondition): Unit = {
     c match {
       case st: AfterSimTime => write("sim-time-limit", st.asMilliSecondsOrUnitless + "ms")
@@ -66,6 +69,24 @@ class Experiment extends AbstractExperiment {
         writeStoppingCondition(or.right)
       }
       case x => throw new IllegalArgumentException("Stopping criterion '" + c + "' not supported.")
+    }
+  }
+
+  /** Configures all fixed variables. */
+  def configureFixedVariables(): Unit = {
+    fixedVariables.foreach(writeVariableDefinition)
+  }
+
+  /** Writes a variable definition. */
+  def writeVariableDefinition(element: (String, AnyRef)): Unit = {
+    write(element._1, variableValueAsString(element._2))
+  }
+
+  /** Returns string representation of a value. */
+  def variableValueAsString(value: AnyRef): String = {
+    value match {
+      case str: String => "\"" + str + "\""
+      case x => x.toString()
     }
   }
 

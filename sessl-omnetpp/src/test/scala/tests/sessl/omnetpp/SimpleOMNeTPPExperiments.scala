@@ -6,7 +6,7 @@ import org.junit.Test
  *
  *  @author Roland Ewald
  */
-@Test class SimpleTestExperiments {
+@Test class SimpleOMNeTPPExperiments {
 
   @Test(expected = classOf[IllegalArgumentException])
   def testInvalidModel() {
@@ -25,6 +25,7 @@ import org.junit.Test
     execute {
       new Experiment {
         model = "./test.bat"
+        set("Network.numHosts" <~ 15, "Network.host[*].app.typename" <~ "PingApp")
         stopCondition = AfterSimTime(hours = 10) or AfterWallClockTime(seconds = 10)
       }
     }
