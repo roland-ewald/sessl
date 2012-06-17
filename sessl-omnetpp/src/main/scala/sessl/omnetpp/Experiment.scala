@@ -130,8 +130,8 @@ class Experiment extends AbstractExperiment {
       (m1, m2) => m2.map(x => (x._1, x._2 :: m1.getOrElse(x._1, List())))
     }.map(x => (x._1, x._2.reverse))
 
-    for (varValues <- varValuesLists) {
-      write(varValues._1, "${" + varValues._2.mkString(",") + "}")
+    for (varValues <- varValuesLists.zipWithIndex) {
+      write(varValues._1._1, "${v" + varValues._2 + "= " + varValues._1._2.mkString(",") + { if (varValues._2 == 0) "}" else " ! v0}" })
     }
   }
 
