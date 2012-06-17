@@ -2,11 +2,23 @@ package tests.sessl.omnetpp
 
 import org.junit.Test
 
-/** Some tests for the OMNeT++ binding.
+/**
+ * Some tests for the OMNeT++ binding.
  *
  *  @author Roland Ewald
  */
 @Test class SimpleOMNeTPPExperiments {
+
+  @Test(expected = classOf[UnsupportedOperationException])
+  def testCallToInvalidModelSetter() {
+    import sessl._
+    import sessl.omnetpp._
+    execute {
+      new Experiment {
+        model = "tictoc.exe"
+      }
+    }
+  }
 
   @Test(expected = classOf[IllegalArgumentException])
   def testInvalidModel() {
@@ -14,7 +26,7 @@ import org.junit.Test
     import sessl.omnetpp._
     execute {
       new Experiment {
-        model = "test"
+        model = ("tictoc.exe" -> "TictocNetworkThatDoesNotExist")
       }
     }
   }
@@ -24,11 +36,11 @@ import org.junit.Test
     import sessl.omnetpp._
     execute {
       new Experiment {
-        model = "./test.bat"
+        model = ("omnetpp-sample/tictoc.exe" -> "Tictoc1")
         replications = 2
-        set("Network.numHosts" <~ 15, "Network.host[*].app.typename" <~ "PingApp")
-        stopCondition = AfterSimTime(hours = 10) or AfterWallClockTime(seconds = 10)
-        scan("upperVar" <~ (1, 2), "testDouble" <~ range(1., 1., 10.) and "testInt" <~ range(21, 1, 30) and "testLong" <~ range(31L, 1L, 40L))
+        set("Network.host[*].app.typename" <~ "TicTocApp")
+        stopCondition = AfterSimTime(hours = 1000) or AfterWallClockTime(seconds = 10)
+        scan("tic.out.dely" <~ range(100, 100, 1000), "tic.in.delay" <~ range(20, 20, 100) and "Network.numHosts" <~ range(20, 20, 100))
       }
     }
   }

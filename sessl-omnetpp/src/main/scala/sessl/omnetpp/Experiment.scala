@@ -2,15 +2,17 @@ package sessl.omnetpp
 
 import java.io.File
 import java.io.FileWriter
-
 import sessl.AbstractExperiment
 import sessl.AfterSimTime
 import sessl.AfterWallClockTime
 import sessl.DisjunctiveStoppingCondition
 import sessl.FixedNumber
 import sessl.StoppingCondition
+import java.net.URI
+import sessl.util.MiscUtils
 
-/** Integrates OMNeT++ 4.2 (http://www.omnetpp.org/) by producing <code>omnetpp.ini</code> files.
+/**
+ * Integrates OMNeT++ 4.2 (http://www.omnetpp.org/) by producing <code>omnetpp.ini</code> files.
  *  @author Roland Ewald
  */
 class Experiment extends AbstractExperiment {
@@ -27,6 +29,9 @@ class Experiment extends AbstractExperiment {
   /** The file writer for the experiment configuration. */
   private[this] var fileWriter: Option[FileWriter] = None
 
+  /** The executable file. */
+  private[this] var executableFile: Option[File] = None
+
   /** Generates the corresponding omnetpp.ini file. */
   def basicConfiguration(): Unit = {
     initializeExperimentConfigFile()
@@ -35,17 +40,38 @@ class Experiment extends AbstractExperiment {
     configureReplications()
     configureFixedVariables()
     configureVariablesToScan()
-    fileWriter.get.close
   }
+
+  /** Free file handle after the experiment is done. */
+  override def finishExperiment() = {
+    if (fileWriter.isDefined)
+      fileWriter.get.close
+  }
+
+  /** The only valid way to set a model is by also giving the executable to simulate it.*/
+  def model_=(execAndNetwork: (String, String)) {
+    executableFile = Some(new File(execAndNetwork._1))
+    modelLocation = Some(execAndNetwork._2)
+  }
+
+  override def model_=(modelLocation: String) = throw new UnsupportedOperationException
+  override def model_=(modelLocation: URI) = throw new UnsupportedOperationException
 
   /** Initializes the experiment configuration file. */
   def initializeExperimentConfigFile(): Unit = {
-    //Check model file
-    val modelFile = new File(modelLocation.get)
-    require(modelFile.exists && modelFile.isFile && modelFile.canExecute, "File '" + modelFile.getAbsolutePath + "' not found or not executable (permissions OK?).")
+    checkExecutable()
+    initializeConfFileWriter()
+  }
 
-    //Initialize experiment configuration file
-    workingDirectory = Some(modelFile.getParentFile)
+  /** Checks whether given executable and model file can be used. */
+  private[this] def checkExecutable(): Unit = {
+    require(executableFile.isDefined && modelLocation.isDefined, "Simulator executable and model need to be defined. Use model = (\"simulator/executable\" -> \"Network\")")
+    require({ val e = executableFile.get; e.exists && e.isFile && e.canExecute }, "Simulator execitable '" + executableFile.get.getAbsolutePath + "' not found or not executable.")
+  }
+
+  /** Initialize experiment configuration file. */
+  private[this] def initializeConfFileWriter() = {
+    workingDirectory = Some(new File(executableFile.get.getAbsolutePath).getParentFile)
     val expConfFile = new File(workingDirectory.get.getAbsolutePath + File.separator + expConfFileName)
     if (expConfFile.exists)
       require(expConfFile.delete, "Could not delete previous experiment configuration file: '" + expConfFile.getAbsolutePath + "'.")
