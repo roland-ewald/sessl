@@ -35,7 +35,7 @@ import org.junit.Test
     import sessl._
     import sessl.omnetpp._
     execute {
-      new Experiment with EventLogRecording {
+      new Experiment with EventLogRecording with Observation {
         model = ("omnetpp-sample/tictoc.exe" -> "Tictoc1")
         replications = 2
         set("Network.host[*].app.typename" <~ "TicTocApp")
