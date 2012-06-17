@@ -76,7 +76,7 @@ class Experiment extends AbstractExperiment with SBMLSimResultHandling {
     executeJobs(jobs.zipWithIndex)
 
     //Check if the experiment went well, and finish it
-    checkResultHandlingCorrectness("ConsiderResults(...)")
+    checkResultHandlingCorrectness("considerResults(...)")
     experimentDone()
   }
 
