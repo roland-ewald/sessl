@@ -3,18 +3,16 @@ package sessl.omnetpp
 import sessl.AbstractObservation
 import sessl.ObservationReplicationsResultsAspect
 import sessl.ObservationRunResultsAspect
+import sessl.util.SimpleObservation
 
 /**
- * Result observation support in SESSL.
+ * Result observation support for OMNeT++.
  *
  * @author Roland Ewald
  *
  */
-trait Observation extends AbstractObservation {
+trait Observation extends SimpleObservation {
   this: Experiment =>
 
-  def collectResults(runID: Int, removeData: Boolean): ObservationRunResultsAspect = { null }
-
-  def collectReplicationsResults(assignID: Int): ObservationReplicationsResultsAspect = { null }
-
+    
 }

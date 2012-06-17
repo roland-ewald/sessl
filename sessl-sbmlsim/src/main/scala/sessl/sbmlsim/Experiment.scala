@@ -20,7 +20,7 @@ import sessl.sbmlsim._
  *
  *  @author Roland Ewald
  */
-class Experiment extends AbstractExperiment with ResultHandling {
+class Experiment extends AbstractExperiment with SBMLSimResultHandling {
 
   /** Describes a variable assignment (first element) and its id (second element). */
   type AssignmentDescription = (Map[String, Any], Int)
@@ -76,7 +76,7 @@ class Experiment extends AbstractExperiment with ResultHandling {
     executeJobs(jobs.zipWithIndex)
 
     //Check if the experiment went well, and finish it
-    require(isConsiderResultsCalled, "ConsiderResults(...) call chain has not been invoked correctly, some mix-in violates its contract!")
+    checkResultHandlingCorrectness("ConsiderResults(...)")
     experimentDone()
   }
 

@@ -10,7 +10,7 @@ import sessl.util.Interpolation._
  *  so this here just implements some kind of sessl-compliant cherry-picking.
  *  @author Roland Ewald
  */
-trait Observation extends SimpleObservation with ResultHandling {
+trait Observation extends SimpleObservation with SBMLSimResultHandling {
   this: Experiment =>
 
   abstract override def considerResults(runId: Int, assignmentId: Int, results: MultiTable) {
