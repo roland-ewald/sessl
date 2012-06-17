@@ -43,7 +43,6 @@ class Experiment extends AbstractExperiment {
     configureReplications()
     configureFixedVariables()
     configureVariablesToScan()
-    fileWriter.get.close
   }
 
   /** Free file handle after the experiment is done. */
@@ -168,8 +167,11 @@ class Experiment extends AbstractExperiment {
   }
 
   /** Alias for brevity. */
-  private[this] def write(content: String): Unit = fileWriter.get.write(content + '\n')
+  private[this] def write(content: String): Unit = {
+    fileWriter.get.write(content + '\n')
+    fileWriter.get.flush
+  }
 
   /** Alias for brevity. */
-  private[this] def write(key: String, value: String): Unit = write(key + " = " + value)
+  private[omnetpp] def write(key: String, value: String): Unit = write(key + " = " + value)
 }
