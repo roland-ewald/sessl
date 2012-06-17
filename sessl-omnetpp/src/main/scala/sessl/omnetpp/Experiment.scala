@@ -32,6 +32,9 @@ class Experiment extends AbstractExperiment {
   /** The executable file. */
   private[this] var executableFile: Option[File] = None
 
+  /** The list of distinct parameter assignments. */
+  private[this] var assignments = List[Map[String, Any]]()
+
   /** Generates the corresponding omnetpp.ini file. */
   def basicConfiguration(): Unit = {
     initializeExperimentConfigFile()
@@ -40,6 +43,7 @@ class Experiment extends AbstractExperiment {
     configureReplications()
     configureFixedVariables()
     configureVariablesToScan()
+    fileWriter.get.close
   }
 
   /** Free file handle after the experiment is done. */
@@ -123,13 +127,14 @@ class Experiment extends AbstractExperiment {
   /** Configures all variables for which the values shall be scanned. */
   def configureVariablesToScan(): Unit = {
 
-    val assignments = createVariableSetups()
+    assignments = createVariableSetups()
 
     //Merge all values to be assigned to a variable to a single list 
     val varValuesLists = assignments.foldLeft(Map[String, List[Any]]()) {
       (m1, m2) => m2.map(x => (x._1, x._2 :: m1.getOrElse(x._1, List())))
     }.map(x => (x._1, x._2.reverse))
 
+    //Define all variables to be set up in parallel
     for (varValues <- varValuesLists.zipWithIndex) {
       write(varValues._1._1, "${v" + varValues._2 + "= " + varValues._1._2.mkString(",") + { if (varValues._2 == 0) "}" else " ! v0}" })
     }
@@ -143,9 +148,23 @@ class Experiment extends AbstractExperiment {
     }
   }
 
-  /** Executes OMNeT++ experiment. */
-  def executeExperiment(): Unit = {
-    //TODO
+  /** Executes OMNeT++ experiment by repeatedly execution the executable file. */
+  def executeExperiment() = {
+    val numOfReps = fixedReplications.get
+    val numOfJobs = assignments.length
+    //TODO: Maybe add *parallel* replications via collections ?
+    for (assignmentId <- Range(0, numOfJobs)) {
+      for (repNum <- Range(0, numOfReps)) {
+        val runId = assignmentId * numOfReps + repNum
+        addAssignmentForRun(runId, assignmentId, assignments(assignmentId).toList)
+        //TODO 1. Execute run with given number
+        OMNeTPPExecutor.execute(workingDirectory.get, executableFile.get, runId)
+        //TODO 2. Retrieve results
+        runDone(runId)
+      }
+      replicationsDone(assignmentId)
+    }
+    experimentDone()
   }
 
   /** Alias for brevity. */
