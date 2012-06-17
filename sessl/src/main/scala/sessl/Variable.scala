@@ -1,4 +1,5 @@
-/** Basic support for variables.
+/**
+ * Basic support for variables.
  *  @author Roland Ewald
  */
 package sessl
@@ -20,7 +21,8 @@ sealed trait Variable {
 /** Methods applicable to variables*/
 object Variable {
 
-  /** Creates the setups for multiple variables.
+  /**
+   * Creates the setups for multiple variables.
    *
    *  @param variables the list of variables
    *  @param givenSetups the given setups
@@ -28,7 +30,7 @@ object Variable {
    */
   def createMultipleVarsSetups(variables: List[Variable], givenSetups: Seq[Map[String, Any]] = Seq(Map())) = {
     val allNewSetups = variables.map(v => createVariableSetups(Seq(v), Seq(Map[String, AnyRef]())))
-    require(!allNewSetups.isEmpty && allNewSetups.forall(_.length == allNewSetups(0).length), "The number of generated setups needs to be the same.")
+    require(!allNewSetups.isEmpty && allNewSetups.forall(_.length == allNewSetups(0).length), "The number of generated values needs to be the same for variables: " + variables.map(_.name).mkString(","))
 
     val newSetups = allNewSetups(0).toArray
     for (newSetup <- allNewSetups.tail; i <- newSetup.indices)
@@ -37,7 +39,8 @@ object Variable {
     createCombinations(givenSetups, newSetups)
   }
 
-  /** Creates all defined variable setups.
+  /**
+   * Creates all defined variable setups.
    *
    *  @param variablesToScan the variables to scan
    *  @return the sequence of defined setups
@@ -47,7 +50,8 @@ object Variable {
     createVariableSetups(variablesToScan, Seq(Map()))
   }
 
-  /** Creates the variable setups.
+  /**
+   * Creates the variable setups.
    *
    *  @param variables the list of all variables
    *  @param givenSetups the setups already given
@@ -69,7 +73,8 @@ object Variable {
     createVariableSetups(variables.tail, rv)
   }
 
-  /** Yields all combinations of two sequences of maps.
+  /**
+   * Yields all combinations of two sequences of maps.
    *  @param seq1 the first sequence of maps
    *  @param seq2 the second sequence of maps
    *  @return a sequence with all combinations of maps
@@ -92,7 +97,8 @@ case class VarName(name: String) {
   }
 }
 
-/** This represents a range of possible values (for a variable).
+/**
+ * This represents a range of possible values (for a variable).
  *
  *  @param from
  *            the lower boundary
@@ -103,7 +109,8 @@ case class VarName(name: String) {
  */
 case class ValueRange[T <: AnyVal](from: T, step: T, to: T) {
 
-  /** Converts a range to a list of values.
+  /**
+   * Converts a range to a list of values.
    *
    *  @param <T> the generic type
    *  @param r the range
@@ -140,7 +147,8 @@ object range {
   def apply[T <: AnyVal](from: T, to: T)(implicit n: Numeric[T]) = ValueRange(from, n.one, to)
 }
 
-/** A variable associated with a range of values.
+/**
+ * A variable associated with a range of values.
  *
  *  @param <T>
  *            the generic type
@@ -187,7 +195,8 @@ case class MultipleVars(value: List[Variable]) extends Variable {
 
   override def name = value.map(_.name).mkString(", ")
 
-  /** Adding two (lists of) variables yields a new list of variables (a concatenation).
+  /**
+   * Adding two (lists of) variables yields a new list of variables (a concatenation).
    *  @param that the other variable
    */
   def and(that: MultipleVars) = new MultipleVars(this.value ::: that.value)
