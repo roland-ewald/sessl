@@ -9,7 +9,10 @@ import sessl.AbstractObservation
 import sessl.AbstractExperiment
 import sessl.Trajectory
 
-/** Provides a simple observation mechanism that supports the general contract of the observation trait.
+/**
+ * Provides a simple observation mechanism that supports the general contract of the observation trait.
+ *
+ * @author Roland Ewald
  */
 trait SimpleObservation extends AbstractObservation {
   this: AbstractExperiment =>
@@ -17,7 +20,8 @@ trait SimpleObservation extends AbstractObservation {
   /** A naive specification of an in-memory 'database': just a map from run ID => a map of (internal) variable names to trajectories. */
   private[this] val inMemoryDatabase = Map[Int, Map[String, Trajectory]]()
 
-  /** Adds value to the internal in-memory 'database'.
+  /**
+   * Adds value to the internal in-memory 'database'.
    *
    *  @param runID the ID of the simulation run
    *  @param internalName the internal (model/sim-specific) name of the variable

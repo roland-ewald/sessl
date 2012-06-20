@@ -36,7 +36,7 @@ import org.junit.Test
     import sessl.omnetpp._
     execute {
       new Experiment with EventLogRecording with Observation {
-        model = ("omnetpp-sample/tictoc.exe" -> "Tictoc1")
+        model = ("omnetpp-samples/tictoc/tictoc.exe" -> "Tictoc1")
         replications = 2
         set("Network.host[*].app.typename" <~ "TicTocApp")
         stopCondition = AfterSimTime(minutes = 10) or AfterWallClockTime(seconds = 10)
