@@ -145,6 +145,14 @@ object range {
 
   /** Simplifying constructor, sets step size to one. */
   def apply[T <: AnyVal](from: T, to: T)(implicit n: Numeric[T]) = ValueRange(from, n.one, to)
+
+  /** Special factory method to create string sequences for a range of values. For the string argument, the printf syntax applies. */
+  def apply[T <: AnyVal](printString: String, from: T, step: T, to: T): Seq[String] = {
+    VarRange.toList(VarRange("", from, step, to)).map(v => printString.format(v))
+  }
+
+  /** Simplifying constructor, sets step size to one. */
+  def apply[T <: AnyVal](printString: String, from: T, to: T)(implicit n: Numeric[T]): Seq[String] = range(printString, from, n.one, to)
 }
 
 /**
