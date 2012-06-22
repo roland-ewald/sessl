@@ -23,6 +23,9 @@ object ResultReader {
       println(currentLine)
       currentLine = reader.readLine
     }
+    
+    val parser = new OMNeTPPResultFileParser()
+    parser.parseAll(p, in)
   }
 
   def readScalarFile(runId: Int) = {
@@ -35,9 +38,12 @@ object ResultReader {
  * See Appendix (ch. 25) in http://omnetpp.org/doc/omnetpp/manual/usman.html.
  */
 class OMNeTPPResultFileParser extends JavaTokenParsers {
-  def value = stringLiteral | floatingPointNumber | wholeNumber
-  def versionEntry = "version" ~ wholeNumber ~ "\n"
-  def runEntry = "run" ~ wholeNumber ~ "\n"
+  def integer = wholeNumber ^^ (_.toInt)
+  def value = stringLiteral | floatingPointNumber ^^ (_.toDouble) | integer   
+  def versionEntry = "version" ~ integer ~ "\n"
+  def runEntry = "run" ~ integer ~ "\n"
   def vectorEntry = wholeNumber //...
+  def line = versionEntry | runEntry | vectorEntry
+  def file = rep(line)
   def entryType = "run" | "attr" | "param" | "scalar" | "vector" | "file" | "statistic" | "field" | "bin"
 }
