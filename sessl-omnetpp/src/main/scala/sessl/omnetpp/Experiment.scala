@@ -39,10 +39,16 @@ class Experiment extends AbstractExperiment with OMNeTPPResultHandler {
   /** Generates the corresponding omnetpp.ini file. */
   def basicConfiguration(): Unit = {
     initializeExperimentConfigFile()
+    
+    writeComment("Basic Experiment Setup")
     configureModel()
     configureStopping()
     configureReplications()
+    
+    writeComment("Fixed Model Variables")
     configureFixedVariables()
+    
+    writeComment("Parameter Scan Setup")
     configureVariablesToScan()
   }
 
@@ -150,10 +156,10 @@ class Experiment extends AbstractExperiment with OMNeTPPResultHandler {
 
   /** Executes OMNeT++ experiment by repeatedly execution the executable file. */
   def executeExperiment() = {
-    
+
     val numOfReps = fixedReplications.get
     val numOfJobs = assignments.length
-    
+
     //TODO: Maybe add *parallel* replications via collections ?
     for (assignmentId <- Range(0, numOfJobs)) {
       for (repNum <- Range(0, numOfReps)) {
@@ -177,4 +183,7 @@ class Experiment extends AbstractExperiment with OMNeTPPResultHandler {
 
   /** Alias for brevity. */
   private[omnetpp] def write(key: String, value: String): Unit = write(key + " = " + value)
+
+  /** Writes comment. */
+  private[omnetpp] def writeComment(comment: String) = write("\n# " + comment)
 }

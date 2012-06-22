@@ -12,6 +12,7 @@ trait EventLogRecording extends AbtractEventLogRecording {
   this: Experiment =>
 
   override def configureEventLogRecording() = {
+    writeComment("Event Log Recording")
     write("record-eventlog", "true")
   }
 

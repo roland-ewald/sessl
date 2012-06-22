@@ -15,6 +15,13 @@ import java.io.File
 trait Observation extends SimpleObservation with OMNeTPPResultHandler {
   this: Experiment =>
 
+  override def configure(): Unit = {
+    super.configure()
+    writeComment("Observation Configuration")
+    write("**.scalar-recording", true.toString)
+    write("**.result-recording-modes", "all")
+  }
+
   abstract override def considerResults(runId: Int, workingDir: File) = {
     super.considerResults(runId, workingDir)
     println("I'm considering run " + runId)
