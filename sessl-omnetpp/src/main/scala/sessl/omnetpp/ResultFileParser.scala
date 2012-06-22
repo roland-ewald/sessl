@@ -3,7 +3,7 @@ package sessl.omnetpp
 import scala.util.parsing.combinator._
 
 /**
- * Parser for '.sca' and '.vec' result files, produced by OMNeT++.
+ * Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
  *
  * Note that index files (.vci) hold additional information that is not yet covered, so that they cannot be parsed with this parser.
  *
@@ -38,8 +38,8 @@ class ResultFileParser extends JavaTokenParsers {
   def attributeEntry = "attr" ~ ident ~ value
   def paramEntry = "param" ~ parameterNamePattern ~ value
   def scalarEntry = "scalar" ~ moduleName ~ scalarName ~ value
-  def vectorEntry = "vector" ~ vectorId ~ moduleName ~ vectorName ~ opt(columnSpec)
-  def vectorDataEntry = vectorId ~ rep(numericValue)
+  def vectorEntry = "vector" ~ { (vectorId ~ moduleName ~ vectorName ~ opt(columnSpec)) ^^ (x => VectorEntry(x._1._1._1, x._1._1._2, x._1._2, x._2)) }
+  def vectorDataEntry = (vectorId ~ rep(numericValue)) ^^ (x => VectorDataEntry(x._1, x._2.asInstanceOf[List[Numeric[_]]]))
 
   /** Line and file structure. */
   def line = (
@@ -54,5 +54,17 @@ class ResultFileParser extends JavaTokenParsers {
   def file = rep(line)
 }
 
-case class VersionEntry(version: Int)
+/** The version entry in each file. */
+case class VersionEntry(version: Int) {
+  /** Checks whether this version is supported. */
+  def isSupportedVersion = version == 2
+}
+
+/** Registration data for a vector. */
+case class VectorEntry(vectorId: Int, moduleName: String, vectorName: String, vectorFormat: Option[String]) {
+  /** (T)ime-(V)alue is the default vector format. 'ETV' is also common. */
+  val formatString = vectorFormat.getOrElse("TV")
+}
+
+/** Holds vector data. */
 case class VectorDataEntry(vectorId: Int, values: List[Numeric[_]])
