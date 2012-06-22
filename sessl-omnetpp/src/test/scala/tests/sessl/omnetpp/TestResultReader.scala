@@ -11,7 +11,7 @@ import sessl.omnetpp.ResultReader
 @Test class TestResultReader {
 
   @Test def testResultVectorReading() = {
-    ResultReader.readVectorFile("",0)
+    ResultReader.readVectorFile("./omnetpp-samples/",0)
   }
 
 }
