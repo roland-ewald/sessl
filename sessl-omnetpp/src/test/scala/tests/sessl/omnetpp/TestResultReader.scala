@@ -10,8 +10,8 @@ import sessl.omnetpp.ResultReader
  */
 @Test class TestResultReader {
 
-  @Test def testResultVectorReading() = {
-    ResultReader.readVectorFile("./omnetpp-samples/",0)
+  @Test def testResultVectorReading(): Unit = {
+    ResultReader.readVectorFile("./omnetpp-samples/", 0)
   }
 
 }

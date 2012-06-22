@@ -1,6 +1,7 @@
 package sessl.omnetpp
 
 import scala.util.parsing.combinator._
+import java.io.FileReader
 
 /**
  * Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
@@ -38,7 +39,7 @@ class ResultFileParser extends JavaTokenParsers {
   def attributeEntry = "attr" ~ ident ~ value
   def paramEntry = "param" ~ parameterNamePattern ~ value
   def scalarEntry = "scalar" ~ moduleName ~ scalarName ~ value
-  def vectorEntry = "vector" ~ { (vectorId ~ moduleName ~ vectorName ~ opt(columnSpec)) ^^ (x => VectorEntry(x._1._1._1, x._1._1._2, x._1._2, x._2)) }
+  def vectorEntry = ("vector" ~ vectorId ~ moduleName ~ vectorName ~ opt(columnSpec)) ^^ (x => VectorEntry(x._1._1._1._2, x._1._1._2, x._1._2, x._2))
   def vectorDataEntry = (vectorId ~ rep(numericValue)) ^^ (x => VectorDataEntry(x._1, x._2.asInstanceOf[List[Numeric[_]]]))
 
   /** Line and file structure. */
@@ -52,19 +53,27 @@ class ResultFileParser extends JavaTokenParsers {
     | versionEntry) <~ opt(eol)
 
   def file = rep(line)
+
+  /** Parse a whole file. */
+  def parse(fileName: String) = parseAll(file, new FileReader(fileName))
 }
 
+/** Marker trait for all result data to be considered. */
+trait ResultElement
+
 /** The version entry in each file. */
-case class VersionEntry(version: Int) {
+case class VersionEntry(version: Int) extends ResultElement {
+  /** The supported version. */
+  val supportedVersion = 2
   /** Checks whether this version is supported. */
-  def isSupportedVersion = version == 2
+  def isSupportedVersion = version == supportedVersion
 }
 
 /** Registration data for a vector. */
-case class VectorEntry(vectorId: Int, moduleName: String, vectorName: String, vectorFormat: Option[String]) {
+case class VectorEntry(id: Int, moduleName: String, vectorName: String, vectorFormat: Option[String]) extends ResultElement {
   /** (T)ime-(V)alue is the default vector format. 'ETV' is also common. */
   val formatString = vectorFormat.getOrElse("TV")
 }
 
 /** Holds vector data. */
-case class VectorDataEntry(vectorId: Int, values: List[Numeric[_]])
+case class VectorDataEntry(id: Int, values: List[Numeric[_]]) extends ResultElement 

@@ -43,12 +43,10 @@ import junit.framework.TestCase
   def testParserWithString(content: String) = parser.parseAll(parser.file, content)
 
   @Test def parserTestSampleFiles = {
-    testFiles.par.map(testFileDirectory + _).filterNot(testParserWithFile(_).successful).foreach(
+    testFiles.par.map(testFileDirectory + _).filterNot(parser.parse(_).successful).foreach(
       fileName => {
-        println(testParserWithFile(fileName))
+        println(parser.parse(fileName))
         fail("Could not parse file " + fileName)
       })
   }
-  def testParserWithFile(fileName: String) = parser.parseAll(parser.file, new FileReader(fileName))
-
 }
