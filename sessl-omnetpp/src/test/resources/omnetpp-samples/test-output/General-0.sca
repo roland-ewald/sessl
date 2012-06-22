@@ -1,0 +1,86 @@
+version 2
+run General-0-20120622-10:25:30-7500
+attr configname General
+attr datetime 20120622-10:25:30
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars "$v0=2, $v1=2s, $v2=2s, $v3=exponential(2s)"
+attr iterationvars2 "$v0=2, $v1=2s, $v2=2s, $v3=exponential(2s), $repetition=0"
+attr measurement "$v0=2, $v1=2s, $v2=2s, $v3=exponential(2s)"
+attr network ClosedQueueingNetA
+attr processid 7500
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+attr v0 2
+attr v1 2s
+attr v2 2s
+attr v3 exponential(2s)
+
+scalar . 	v0 	2
+scalar . 	v1 	2
+attr unit  s
+scalar . 	v2 	2
+attr unit  s
+scalar ClosedQueueingNetA.switch[0].out[0].channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.switch[0].out[0].channel 	messages:count 	5309
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.switch[0].out[1].channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.switch[0].out[1].channel 	messages:count 	5268
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.switch[1].out[0].channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.switch[1].out[0].channel 	messages:count 	5270
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.switch[1].out[1].channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.switch[1].out[1].channel 	messages:count 	5189
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.queue[0].out.channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.queue[0].out.channel 	messages:count 	10581
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.queue[1].out.channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.queue[1].out.channel 	messages:count 	10577
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.queue[2].out.channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.queue[2].out.channel 	messages:count 	10578
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.queue[3].out.channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.queue[3].out.channel 	messages:count 	10457
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.queue[4].out.channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.queue[4].out.channel 	messages:count 	10459
+attr interpolationmode  none
+attr source  constant1(messageSent)
+scalar ClosedQueueingNetA.queue[5].out.channel 	messagesDiscarded:count 	0
+attr interpolationmode  none
+attr source  constant1(messageDiscarded)
+scalar ClosedQueueingNetA.queue[5].out.channel 	messages:count 	10459
+attr interpolationmode  none
+attr source  constant1(messageSent)
