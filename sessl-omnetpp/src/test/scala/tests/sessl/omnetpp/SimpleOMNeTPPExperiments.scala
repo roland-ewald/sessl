@@ -51,10 +51,11 @@ import org.junit.Test
     execute {
       new Experiment with EventLogRecording with Observation {
         model = ("omnetpp-samples/cqn/cqn.exe" -> "ClosedQueueingNetA")
+        set("*.numTandems" <~ 2, "*.numQueuesPerTandem" <~ 3)
         replications = 2
         stopCondition = AfterSimTime(hours = 10) or AfterWallClockTime(seconds = 10)
         scan("*.queue[*].numInitialJobs" <~ (2, 4, 8),
-          "*.sDelay" <~ range("%ds", 2, 2, 10) and "*.queue[*].serviceTime" <~ range("exponential(%ds)", 2, 2, 10))
+          "*.sDelay" <~ range("%ds", 2, 2, 10) and "*.qDelay" <~ range("%ds", 2, 2, 10) and "*.queue[*].serviceTime" <~ range("exponential(%ds)", 2, 2, 10))
       }
     }
   }
