@@ -12,7 +12,7 @@ import junit.framework.TestCase
  * @author Roland Ewald
  *
  */
-@Test class TestResulFileParser {
+@Test class TestResultFileParser {
 
   /** The parser to be tested. */
   val parser = new ResultFileParser
