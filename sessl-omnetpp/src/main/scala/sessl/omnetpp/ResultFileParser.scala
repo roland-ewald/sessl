@@ -3,18 +3,17 @@ package sessl.omnetpp
 import scala.util.parsing.combinator._
 import java.io.FileReader
 
-/**
- * Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
+/** Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
  *
- * Note that index files (.vci) hold additional information that is not yet covered, so that they cannot be parsed with this parser.
+ *  Note that index files (.vci) hold additional information that is not yet covered, so that they cannot be parsed with this parser.
  *
- * @see Appendix (ch. 25) in OMNeT++ Manual (http://omnetpp.org/doc/omnetpp/manual/usman.html).
+ *  @see Appendix (ch. 25) in OMNeT++ Manual (http://omnetpp.org/doc/omnetpp/manual/usman.html).
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  */
 class ResultFileParser extends JavaTokenParsers {
 
-  /** Consider end of line. */
+  /** Consider end of line. See */
   override val whiteSpace = """[ \t]+""".r
   def eol: Parser[Any] = """(\r?\n)+""".r
 
@@ -22,8 +21,8 @@ class ResultFileParser extends JavaTokenParsers {
   def string = "[-.$:=()\\[\\]#A-Za-z0-9]*".r
   def int = wholeNumber ^^ (_.toInt)
   def float = floatingPointNumber ^^ (_.toDouble)
-  def numericValue = float | int
-  def value = stringLiteral | string | numericValue
+  def numericValue = int | float
+  def value = stringLiteral | string | numericValue  
 
   /** OMNeT++ identifiers. */
   def parameterNamePattern = "[*.A-Za-z0-9]*".r
@@ -38,7 +37,7 @@ class ResultFileParser extends JavaTokenParsers {
   def runEntry = "run" ~ string
   def attributeEntry = "attr" ~ ident ~ value
   def paramEntry = "param" ~ parameterNamePattern ~ value
-  def scalarEntry = "scalar" ~ moduleName ~ scalarName ~ value
+  def scalarEntry = ("scalar" ~ moduleName ~ scalarName ~ numericValue) ^^ (x => ScalarDataEntry(x._1._1._2, x._1._2, x._2))
   def vectorEntry = ("vector" ~ vectorId ~ moduleName ~ vectorName ~ opt(columnSpec)) ^^ (x => VectorEntry(x._1._1._1._2, x._1._1._2, x._1._2, x._2))
   def vectorDataEntry = (vectorId ~ rep(numericValue)) ^^ (x => VectorDataEntry(x._1, x._2.asInstanceOf[List[Numeric[_]]]))
 
@@ -76,4 +75,12 @@ case class VectorEntry(id: Int, moduleName: String, vectorName: String, vectorFo
 }
 
 /** Holds vector data. */
-case class VectorDataEntry(id: Int, values: List[Numeric[_]]) extends ResultElement 
+case class VectorDataEntry(id: Int, values: List[Numeric[_]]) extends ResultElement
+
+/** Holds scalar data. */
+case class ScalarDataEntry(moduleName: String, scalarName: String, value: Any) extends ResultElement {
+  /** The separator between module and scalar name. */
+  val defaultModuleScalarNameSeparator = '.'
+  /** The name under which the data can be accessed by te user. */
+  val name = moduleName + defaultModuleScalarNameSeparator + scalarName
+}
