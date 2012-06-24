@@ -1,5 +1,4 @@
 package sessl
-import sessl.util.Duration
 
 /** Support for configuring the conditions at which a simulation run should stop.
  *  @author Roland Ewald
@@ -48,10 +47,10 @@ trait StoppingCondition
 case object Never extends StoppingCondition
 
 /** Stop after a given amount of simulation time. */
-case class AfterSimTime(override val time: Double = 0., days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with Duration
+case class AfterSimTime(override val time: Double = 0., days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with AbstractDuration
 
 /** Stop after a given amount of wall-clock time. */
-case class AfterWallClockTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with Duration
+case class AfterWallClockTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with AbstractDuration
 
 case class AfterCPUTime()
 

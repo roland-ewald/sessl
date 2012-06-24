@@ -1,19 +1,19 @@
 package sessl.omnetpp
 
-import sessl.AbstractObservation
-import sessl.ObservationReplicationsResultsAspect
-import sessl.ObservationRunResultsAspect
-import sessl.util.SimpleObservation
 import java.io.File
+import sessl.util.SimpleObservation
+import sessl.Duration
 
-/**
- * Result observation support for OMNeT++.
+/** Result observation support for OMNeT++.
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  *
  */
 trait Observation extends SimpleObservation with OMNeTPPResultHandler {
   this: Experiment =>
+
+  /** The warm-up phase. */
+  var warmUpPhase = Duration()
 
   override def configure(): Unit = {
     super.configure()

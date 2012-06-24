@@ -2,7 +2,6 @@ package sessl
 
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Map
-import sessl.util.Duration
 
 /** Support for optimization.
  *
@@ -117,7 +116,7 @@ trait OptimizationStopCondition
 case class OptMaxAssignments(number: Int) extends OptimizationStopCondition
 
 /** Stop after a certain amount of time has been consumed. */
-case class OptMaxTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends OptimizationStopCondition with Duration
+case class OptMaxTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends OptimizationStopCondition with AbstractDuration
 
 /** Use two policies (combined with AND). */
 case class ConjunctiveOptimizationStopCondition(left: OptimizationStopCondition, right: OptimizationStopCondition) extends OptimizationStopCondition

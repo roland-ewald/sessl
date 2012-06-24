@@ -60,5 +60,4 @@ package object sessl {
    *  @param exps the experiments to be executed
    */
   def execute(exps: AbstractExperiment*) = AbstractExperiment.execute(exps: _*)
-
 }

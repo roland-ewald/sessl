@@ -1,9 +1,9 @@
-package sessl.util
+package sessl
 
 /** Represents a duration and provides conversion methods.
  *  @author Roland Ewald
  */
-trait Duration {
+trait AbstractDuration {
 
   /** Unit-less time. Will be ignored for the calculations, unless it is non-zero. */
   def time: Double = 0.
@@ -34,3 +34,7 @@ trait Duration {
   /** Get the amount of seconds or the unit-less time (if > 0). */
   def asMilliSecondsOrUnitless = if (time > 0) time.toLong else toMilliSeconds
 }
+
+/** Default duration (zero). */
+case class Duration(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends AbstractDuration
+
