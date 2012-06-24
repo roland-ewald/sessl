@@ -13,6 +13,7 @@
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<maven.test.error.ignore>true</maven.test.error.ignore>
 		<repo.path>file://${project.basedir}/repo</repo.path>
+		<scala.version>2.9.2</scala.version>
 	</properties>
 
 	<!-- Use local Maven repository -->
@@ -25,11 +26,11 @@
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
 		</repository>
-		<!--<repository>
+		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
-		</repository> TODO: Check -->
+		</repository> 
 	</repositories>
 
 	
@@ -93,17 +94,17 @@
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-compiler</artifactId>
-			<version>2.9.2</version>
+			<version>${scala.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
-			<version>2.9.2</version>
+			<version>${scala.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scalap</artifactId>
-			<version>2.9.2</version>
+			<version>${scala.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
