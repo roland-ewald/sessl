@@ -22,7 +22,7 @@ object ResultReader {
   private val resultLocationAndPrefix = "results/General-"
 
   /** Reads vector file for a given run. */
-  def readVectorFile(workingDirectory: String, runId: Int): Map[Int, VectorData] = {
+  def readVectorFile(workingDirectory: String, runId: Int): Map[Long, VectorData] = {
     processFile(retrieveFileName(workingDirectory, runId, "vec"))(processVectorFileResults)
   }
 
@@ -44,7 +44,7 @@ object ResultReader {
 
   /** Process results from a vector data file. */
   private def processVectorFileResults(fileName: String, results: List[Product]) = {
-    val rv = scala.collection.mutable.Map[Int, VectorData]()
+    val rv = scala.collection.mutable.Map[Long, VectorData]()
     results.foreach {
       _ match {
         case ver: VersionEntry => checkVersion(fileName, ver)
@@ -70,11 +70,15 @@ object ResultReader {
     results.foreach {
       case ver: VersionEntry => checkVersion(fileName, ver)
       case sca: ScalarDataEntry => {
-        require(!rv.contains(sca.name), "Scalar with name '" + sca.name + "' already set!")
-        if (sca.value.isInstanceOf[Int]) {
-          //TODO 
-        } else println("Warning: could not include non-numeric value '" + sca.value + "' for scalar '" + sca.name + "'")
-        //TODO: logging
+        require(!rv.contains(sca.name), "Scalar with name '" + sca.name + "' is already set!")
+        if (sca.value.isInstanceOf[Double]) {
+          rv(sca.name) = sca.value.asInstanceOf[Double]
+        } else if (sca.value.isInstanceOf[Long]) {
+          rv(sca.name) = sca.value.asInstanceOf[Long]
+        } else {
+          //TODO: use logging here
+          println("Warning: could not include non-numeric value '" + sca.value + "' for scalar '" + sca.name + "'")
+        }
       }
       case x => throw new IllegalArgumentException("Unsupported element in file '" + fileName + "': " + x)
     }

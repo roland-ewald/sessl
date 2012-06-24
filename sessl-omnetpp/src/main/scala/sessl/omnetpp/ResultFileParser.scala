@@ -19,10 +19,10 @@ class ResultFileParser extends JavaTokenParsers {
 
   /** Basic values. */
   def string = "[-.$:=()\\[\\]#A-Za-z0-9]*".r
-  def int = wholeNumber ^^ (_.toInt)
-  def float = floatingPointNumber ^^ (_.toDouble)
-  def numericValue = int | float
-  def value = stringLiteral | string | numericValue  
+  def long = wholeNumber ^^ (_.toLong)
+  def double = floatingPointNumber ^^ (_.toDouble)
+  def numericValue = long | double
+  def value = stringLiteral | string | numericValue
 
   /** OMNeT++ identifiers. */
   def parameterNamePattern = "[*.A-Za-z0-9]*".r
@@ -30,10 +30,10 @@ class ResultFileParser extends JavaTokenParsers {
   def scalarName = string
   def vectorName = string
   def columnSpec = "[ETV]+".r
-  def vectorId = int
+  def vectorId = long
 
   /** Possible line formats. */
-  def versionEntry = ("version" ~ int) ^^ (x => VersionEntry(x._2))
+  def versionEntry = ("version" ~ long) ^^ (x => VersionEntry(x._2))
   def runEntry = "run" ~ string
   def attributeEntry = "attr" ~ ident ~ value
   def paramEntry = "param" ~ parameterNamePattern ~ value
@@ -61,7 +61,7 @@ class ResultFileParser extends JavaTokenParsers {
 trait ResultElement
 
 /** The version entry in each file. */
-case class VersionEntry(version: Int) extends ResultElement {
+case class VersionEntry(version: Long) extends ResultElement {
   /** The supported version. */
   val supportedVersion = 2
   /** Checks whether this version is supported. */
@@ -69,13 +69,13 @@ case class VersionEntry(version: Int) extends ResultElement {
 }
 
 /** Registration data for a vector. */
-case class VectorEntry(id: Int, moduleName: String, vectorName: String, vectorFormat: Option[String]) extends ResultElement {
+case class VectorEntry(id: Long, moduleName: String, vectorName: String, vectorFormat: Option[String]) extends ResultElement {
   /** (T)ime-(V)alue is the default vector format. 'ETV' is also common. */
   val formatString = vectorFormat.getOrElse("TV")
 }
 
 /** Holds vector data. */
-case class VectorDataEntry(id: Int, values: List[Numeric[_]]) extends ResultElement
+case class VectorDataEntry(id: Long, values: List[Numeric[_]]) extends ResultElement
 
 /** Holds scalar data. */
 case class ScalarDataEntry(moduleName: String, scalarName: String, value: Any) extends ResultElement {
