@@ -87,7 +87,6 @@ import sessl.util.test.TestCounter
     execute {
       new Experiment {
         model = TestJamesExperiments.testCounterModel
-        set("x" <~ 2, "y" <~ "anotherParamValue")
         scan("x" <~ (1, 17), "y" <~ range(1.1, 1, 10.1) and "z" <~ range(21, 1, 30))
         stopTime = 1
         replications = 2
