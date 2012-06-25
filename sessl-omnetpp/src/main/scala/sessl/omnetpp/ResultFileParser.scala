@@ -72,8 +72,8 @@ trait ResultElement {
   val eventCountCharacter = 'E'
   /** (T)ime-(V)alue is the default vector format. 'ETV' is also common. */
   val defaultVectorFormat = timeCharacter.toString + valueCharacter
-  /** The separator between module and scalar name. */
-  val defaultModuleScalarNameSeparator = '/'
+  /** The separator between module and scalar/vector name. */
+  val defaultModuleScalarNameSeparator = '.'
 }
 
 /** The version entry in each file. */
@@ -115,6 +115,6 @@ case class VectorDataEntry(id: Long, values: List[AnyVal]) extends ResultElement
 
 /** Holds scalar data. */
 case class ScalarDataEntry(moduleName: String, scalarName: String, value: Any) extends ResultElement {
-  /** The name under which the data can be accessed by te user. */
+  /** The name under which the data can be accessed by the user. */
   val name = moduleName + defaultModuleScalarNameSeparator + scalarName
 }

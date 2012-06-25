@@ -67,7 +67,7 @@
 	<modules>
 		<module>sessl</module>
 		<module>sessl-james</module>
-		<module>sessl-sbmlsim</module>
+		<module>sessl-sbmlsim</module>		
 		<module>sessl-omnetpp</module>
 		<module>sessl-integration</module>
 	</modules>
