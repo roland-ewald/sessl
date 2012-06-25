@@ -3,7 +3,8 @@ package sessl.omnetpp
 import scala.util.parsing.combinator._
 import java.io.FileReader
 
-/** Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
+/**
+ * Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
  *
  *  Note that index files (.vci) hold additional information that is not yet covered, so that they cannot be parsed with this parser.
  *
@@ -42,7 +43,7 @@ class ResultFileParser extends JavaTokenParsers {
   def paramEntry = "param" ~ parameterNamePattern ~ value
   def scalarEntry = ("scalar" ~ moduleName ~ scalarName ~ numericValue) ^^ (x => ScalarDataEntry(x._1._1._2, x._1._2, x._2))
   def vectorEntry = ("vector" ~ vectorId ~ moduleName ~ vectorName ~ opt(columnSpec)) ^^ (x => VectorEntry(x._1._1._1._2, x._1._1._2, x._1._2, x._2))
-  def vectorDataEntry = (vectorId ~ rep(numericValue)) ^^ (x => VectorDataEntry(x._1, x._2.asInstanceOf[List[Numeric[_]]]))
+  def vectorDataEntry = (vectorId ~ rep(numericValue)) ^^ (x => VectorDataEntry(x._1, x._2))
 
   /** Line and file structure. */
   def line = (
@@ -60,8 +61,19 @@ class ResultFileParser extends JavaTokenParsers {
   def parse(fileName: String) = parseAll(file, new FileReader(fileName))
 }
 
-/** Marker trait for all result data to be considered. */
-trait ResultElement
+/** Super trait for all result data to be considered. */
+trait ResultElement {
+  /** The character in the vector format string that represents the time column. */
+  val timeCharacter = 'T'
+  /** The character in the vector format string that represents the value column. */
+  val valueCharacter = 'V'
+  /** The character in the vector format string that represents the event counter column. */
+  val eventCountCharacter = 'E'
+  /** (T)ime-(V)alue is the default vector format. 'ETV' is also common. */
+  val defaultVectorFormat = timeCharacter.toString + valueCharacter
+  /** The separator between module and scalar name. */
+  val defaultModuleScalarNameSeparator = '/'
+}
 
 /** The version entry in each file. */
 case class VersionEntry(version: Long) extends ResultElement {
@@ -73,17 +85,35 @@ case class VersionEntry(version: Long) extends ResultElement {
 
 /** Registration data for a vector. */
 case class VectorEntry(id: Long, moduleName: String, vectorName: String, vectorFormat: Option[String]) extends ResultElement {
-  /** (T)ime-(V)alue is the default vector format. 'ETV' is also common. */
-  val formatString = vectorFormat.getOrElse("TV")
+  /** The format string for this vector. */
+  val formatString = vectorFormat.getOrElse(defaultVectorFormat)
+
+  // Both time and value are required:
+  require(formatString.indexOf(timeCharacter) >= 0 && formatString.indexOf(valueCharacter) >= 0,
+    "Vector '" + vectorName + "' in module '" + moduleName + "' with id '" + id + "' needs to specify both time and value.")
+
+  /** The index at which the current time is written. */
+  lazy val timeIndex = formatString.indexOf(timeCharacter)
+  /** The index at which the current value is written. */
+  lazy val valueIndex = formatString.indexOf(valueCharacter)
+  /** The index at which the current event count is written. */
+  lazy val eventCountIndex = formatString.indexOf(eventCountCharacter)
 }
 
 /** Holds vector data. */
-case class VectorDataEntry(id: Long, values: List[Numeric[_]]) extends ResultElement
+case class VectorDataEntry(id: Long, values: List[AnyVal]) extends ResultElement {
+  /** Get the time of this entry. */
+  def time(v: VectorEntry): Double = values(v.timeIndex).asInstanceOf[Double]
+  /** Get the value of this entry. */
+  def value(v: VectorEntry): AnyVal = values(v.valueIndex)
+  def eventCount(v: VectorEntry): Long = {
+    require(v.eventCountIndex >= 0, "The vector with id '" + v.id + "' does not contain an event counter.")
+    values(v.eventCountIndex).asInstanceOf[Long]
+  }
+}
 
 /** Holds scalar data. */
 case class ScalarDataEntry(moduleName: String, scalarName: String, value: Any) extends ResultElement {
-  /** The separator between module and scalar name. */
-  val defaultModuleScalarNameSeparator = '.'
   /** The name under which the data can be accessed by te user. */
   val name = moduleName + defaultModuleScalarNameSeparator + scalarName
 }
