@@ -13,15 +13,18 @@ import java.io.FileReader
  */
 class ResultFileParser extends JavaTokenParsers {
 
-  /** Consider end of line. See */
-  override val whiteSpace = """[ \t]+""".r
+  /** End-of-line segments the input. */
   def eol: Parser[Any] = """(\r?\n)+""".r
+  /** Do not consider end of line as whitespace. */
+  override val whiteSpace = """[ \t]+""".r
+  /** In this format, floats _always_ need to have a '.'. */
+  override def floatingPointNumber = """-?(\d*\.\d+)([eE][+-]?\d+)?[fFdD]?""".r
 
   /** Basic values. */
   def string = "[-.$:=()\\[\\]#A-Za-z0-9]*".r
   def long = wholeNumber ^^ (_.toLong)
   def double = floatingPointNumber ^^ (_.toDouble)
-  def numericValue = long | double
+  def numericValue = double | long
   def value = stringLiteral | string | numericValue
 
   /** OMNeT++ identifiers. */
