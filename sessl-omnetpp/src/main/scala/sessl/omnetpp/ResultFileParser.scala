@@ -1,7 +1,8 @@
 package sessl.omnetpp
 
-import scala.util.parsing.combinator._
 import java.io.FileReader
+
+import scala.util.parsing.combinator._
 
 /**
  * Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
@@ -103,7 +104,7 @@ case class VectorEntry(id: Long, moduleName: String, vectorName: String, vectorF
 /** Holds vector data. */
 case class VectorDataEntry(id: Long, values: List[AnyVal]) extends ResultElement {
   /** Get the time of this entry. */
-  def time(v: VectorEntry): Double = values(v.timeIndex).asInstanceOf[Double]
+  def time(v: VectorEntry): Double = values(v.timeIndex).asInstanceOf[Number].doubleValue
   /** Get the value of this entry. */
   def value(v: VectorEntry): AnyVal = values(v.valueIndex)
   def eventCount(v: VectorEntry): Long = {

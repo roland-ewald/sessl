@@ -13,11 +13,19 @@ import sessl.omnetpp.ResultReader
 
   @Test def testResultVectorReading(): Unit = {
     val resultData = ResultReader.readVectorFile("./omnetpp-samples/", 0)
+
+    //Checks data for each kind of vector in the test file
     for (vectorId <- Range(0, 5)) {
       val (metaData, rawDataEntries) = resultData(vectorId)
       assertEquals("ETV", metaData.formatString)
-      for (rawData <- rawDataEntries) {
+
+      //Checks that all entries are in the correct temporal order
+      var previousRawData = rawDataEntries.head
+      for (rawData <- rawDataEntries.drop(1)) {
         assertEquals(3, rawData.values.length)
+        assertTrue(previousRawData.time(metaData) <= rawData.time(metaData))
+        assertTrue(previousRawData.eventCount(metaData) <= rawData.eventCount(metaData))
+        previousRawData = rawData
       }
     }
   }
