@@ -1,8 +1,12 @@
 package tests.sessl.omnetpp
 
 import org.junit.Test
+import org.junit.Assert._
+import sessl.reference.Report
+import scala.collection.mutable.ListBuffer
 
-/** Some tests for the OMNeT++ binding.
+/**
+ * Some tests for the OMNeT++ binding.
  *
  *  @author Roland Ewald
  */
@@ -33,36 +37,62 @@ import org.junit.Test
   @Test def testTicTocExperiment() {
     import sessl._
     import sessl.omnetpp._
+    var resultCounter = 0
     execute {
       new Experiment with EventLogRecording with Observation {
         model = ("omnetpp-samples/tictoc/tictoc.exe" -> "Tictoc1")
         replications = 2
         set("Network.host[*].app.typename" <~ "TicTocApp")
         stopCondition = AfterSimTime(minutes = 10) or AfterWallClockTime(seconds = 10)
-        scan("tic.out.delay" <~ range(100, 100, 1000), "tic.in.delay" <~ range(20, 20, 100) and "Network.numHosts" <~ range(20, 20, 100))
-        afterExperiment {
-          results => println("") //TODO: read out scalar value
+        scan("tic.out.delay" <~ range(100, 100, 200), "tic.in.delay" <~ range(20, 20, 100) and "Network.numHosts" <~ range(20, 20, 100))
+        afterRun {
+          r => resultCounter += 1
         }
       }
     }
+    assertEquals(20, resultCounter)
   }
 
   @Test def testClosedQueueingNetwork() {
+
     import sessl._
     import sessl.omnetpp._
+
+    val recordedTrajectories = ListBuffer[Trajectory]()
+    val q1VarName = "length_Q1"
+    val q2VarName = "ClosedQueueingNetA.queue[2].queueLength"
+    val observationRange = range(1000, 100, 30000)
+
     execute {
-      new Experiment with EventLogRecording with Observation {
+      new Experiment with Observation {
         model = ("omnetpp-samples/cqn/cqn.exe" -> "ClosedQueueingNetA")
-        warmUpPhase = Duration(seconds = 20)
-        observeAt(range(1000, 100, 30000))
-        observe("length_Q1" ~ "ClosedQueueingNetA.queue[0].queueLength", "length_Q5" ~ "ClosedQueueingNetA.queue[5].queueLength")
+        warmup = Duration(seconds = 20)
+        observeAt(observationRange)
+        observe(q1VarName ~ "ClosedQueueingNetA.queue[0].queueLength", "ClosedQueueingNetA.queue[*].queueLength")
         set("*.numTandems" <~ 2, "*.numQueuesPerTandem" <~ 3)
         replications = 2
         stopCondition = AfterSimTime(hours = 10) or AfterWallClockTime(seconds = 10)
-        scan("*.queue[*].numInitialJobs" <~ (2, 4, 8),
-          "*.sDelay" <~ range("%ds", 2, 2, 10) and "*.qDelay" <~ range("%ds", 2, 2, 10) and "*.queue[*].serviceTime" <~ range("exponential(%ds)", 2, 2, 10))
+        scan("*.queue[*].numInitialJobs" <~ (2),
+          "*.sDelay" <~ range("%ds", 2, 2, 8) and "*.qDelay" <~ range("%ds", 2, 2, 8) and "*.queue[*].serviceTime" <~ range("exponential(%ds)", 2, 2, 8))
+        withRunResult { r =>
+          recordedTrajectories += (r ~ q1VarName)._2
+          recordedTrajectories += (r ~ q2VarName)._2
+          println((r ~ q2VarName)._2.take(10))
+        }
       }
     }
+
+    recordedTrajectories.toList.foreach(t => assertEquals(observationRange.toList.length, t.length))
+
+    // If corresponding binding is included, this works as well (when mixing in sessl.james.Report):
+    //        reportName = "OMNeT++ Report"
+    //        withRunResult { r =>
+    //          {
+    //            reportSection("Run Number " + r.id) {
+    //              linePlot(r ~ "length_Q1", r ~ "length_Q5")(title = "Queue lengths")
+    //            }
+    //          }
+    //        }
   }
 
 }

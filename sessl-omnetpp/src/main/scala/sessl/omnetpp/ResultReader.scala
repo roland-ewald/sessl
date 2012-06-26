@@ -5,12 +5,19 @@ import java.io.FileReader
 import java.io.BufferedReader
 import java.io.File
 
-/** Read results from the output files.
+/**
+ * Read results from the output files.
  *
  *  @author Roland Ewald
  *
  */
 object ResultReader {
+
+  /** The ending of vector data files. */
+  val fileEndingVectorData = "vec"
+
+  /** The ending of scalar data files. */
+  val fileEndingScalarData = "sca"
 
   /** The representation of vector data. */
   type VectorData = (VectorEntry, List[VectorDataEntry])
@@ -19,20 +26,32 @@ object ResultReader {
   private val rfParser = new ResultFileParser
 
   /** The path (relative to working directory) where the results can be found. */
-  private val resultLocationAndPrefix = "results/General-"
+  private val resultLocationAndPrefix = "/results/General-"
+
+  /** Checks whether vector data is available. */
+  def isVectorDataAvailable(workingDirectory: String, runId: Int) = (new File(getVectorFileName(workingDirectory, runId))).canRead
+
+  /** Checks whether scalar data is available. */
+  def isScalarDataAvailable(workingDirectory: String, runId: Int) = (new File(getScalarFileName(workingDirectory, runId))).canRead
+
+  /** Get name of the vector data file. */
+  def getVectorFileName(workingDirectory: String, runId: Int) = retrieveFileName(workingDirectory, runId, fileEndingVectorData)
+
+  /** Get name of the scalar data file. */
+  def getScalarFileName(workingDirectory: String, runId: Int) = retrieveFileName(workingDirectory, runId, fileEndingScalarData)
 
   /** Reads vector file for a given run. */
   def readVectorFile(workingDirectory: String, runId: Int): Map[Long, VectorData] = {
-    processFile(retrieveFileName(workingDirectory, runId, "vec"))(processVectorFileResults)
+    processFile(getVectorFileName(workingDirectory, runId), processVectorFileResults)
   }
 
   /** Reads scalar file for a given run. */
   def readScalarFile(workingDirectory: String, runId: Int): Map[String, AnyVal] = {
-    processFile(retrieveFileName(workingDirectory, runId, "sca"))(processScalarFileResults)
+    processFile(getScalarFileName(workingDirectory, runId), processScalarFileResults)
   }
 
   /** Parses a file and processes the results. */
-  private def processFile[X](fileName: String)(resultProcessing: (String, List[Product]) => X): X = {
+  private def processFile[X](fileName: String, resultProcessing: (String, List[Product]) => X): X = {
     val result = rfParser.parse(fileName)
     require(result.successful, "An error occurred while parsing file '" + fileName + "'.")
     resultProcessing(fileName, result.get.filter(_.isInstanceOf[ResultElement]))

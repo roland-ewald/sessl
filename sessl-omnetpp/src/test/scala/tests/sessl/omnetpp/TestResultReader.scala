@@ -12,7 +12,7 @@ import sessl.omnetpp.ResultReader
 @Test class TestResultReader {
 
   @Test def testResultVectorReading(): Unit = {
-    val resultData = ResultReader.readVectorFile("./omnetpp-samples/", 0)
+    val resultData = ResultReader.readVectorFile("./omnetpp-samples", 0)
 
     //Checks data for each kind of vector in the test file
     for (vectorId <- Range(0, 5)) {
@@ -31,7 +31,7 @@ import sessl.omnetpp.ResultReader
   }
 
   @Test def testResultScalarReading(): Unit = {
-    val resultData = ResultReader.readScalarFile("./omnetpp-samples/", 0)
+    val resultData = ResultReader.readScalarFile("./omnetpp-samples", 0)
     assertEquals(2L, resultData("..v0"))
     assertEquals(10457L, resultData("ClosedQueueingNetA.queue[3].out.channel/messages:count"))
   }
