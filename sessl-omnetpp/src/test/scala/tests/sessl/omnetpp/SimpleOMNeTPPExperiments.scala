@@ -2,8 +2,7 @@ package tests.sessl.omnetpp
 
 import org.junit.Test
 
-/**
- * Some tests for the OMNeT++ binding.
+/** Some tests for the OMNeT++ binding.
  *
  *  @author Roland Ewald
  */
@@ -41,6 +40,9 @@ import org.junit.Test
         set("Network.host[*].app.typename" <~ "TicTocApp")
         stopCondition = AfterSimTime(minutes = 10) or AfterWallClockTime(seconds = 10)
         scan("tic.out.delay" <~ range(100, 100, 1000), "tic.in.delay" <~ range(20, 20, 100) and "Network.numHosts" <~ range(20, 20, 100))
+        afterExperiment {
+          results => println("") //TODO: read out scalar value
+        }
       }
     }
   }

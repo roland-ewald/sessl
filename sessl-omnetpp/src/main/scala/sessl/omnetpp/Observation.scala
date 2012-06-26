@@ -4,12 +4,11 @@ import java.io.File
 import sessl.util.SimpleObservation
 import sessl.Duration
 
-/**
- * Result observation support for OMNeT++.
+/** Result observation support for OMNeT++.
  *
- * Limitations:
- * - only numeric observations are supported
- * - all recording modes and intervals are activated for each variable to be observed
+ *  Limitations:
+ *  - only numeric observations are supported
+ *  - all recording modes and intervals are activated for each variable to be observed
  *
  *  @author Roland Ewald
  *
@@ -37,9 +36,15 @@ trait Observation extends SimpleObservation with OMNeTPPResultHandler {
           configureRecording(varName, true, true)
           defineRecordedData(varName)
       }
-      require(warmUpPhase.asSecondsOrUnitless <= observationTimes.head,
-        "Warm-up phase " + warmUpPhase + " overlaps with smallest observation time, " + observationTimes.head + ".")
+      configureWarmUpPhase()
     }
+  }
+
+  /** Configures warm-up phase. */
+  def configureWarmUpPhase() = {
+    require(warmUpPhase.asSecondsOrUnitless <= observationTimes.head,
+      "Warm-up phase " + warmUpPhase + " overlaps with smallest observation time, " + observationTimes.head + ".")
+    write("warmup-period", if (warmUpPhase.time > 0) warmUpPhase.time.toString else warmUpPhase.toSeconds + "s")
   }
 
   /** (De-)activate scalar recording for a given variable name. */
@@ -56,18 +61,42 @@ trait Observation extends SimpleObservation with OMNeTPPResultHandler {
 
   abstract override def considerResults(runId: Int, workingDir: File) = {
     super.considerResults(runId, workingDir)
-    println("I'm considering run " + runId)
 
-    for (observationTime <- observationTimes) {
+    val currentBindings = variableBindings
 
+    //Read in vector data
+    ResultReader.readVectorFile(workingDir.toString(), runId).values.foreach {
+      vectorData =>
+        {
+          val vectorName = vectorData._1.name
+          //If the vector is recorded but not found in the bindings, a wildcard pattern was used and
+          // the matched name should be added
+          if (!currentBindings.contains(vectorName)) {
+            observe(vectorName)
+          }
+          addVectorValuesFor(runId, vectorName, vectorData._2)
+        }
     }
 
-    //TODO Add options: 
-    //warmup-period = 20s
+    //TODO: scalars
+    ResultReader.readScalarFile(workingDir.toString(), runId).values.foreach {
+      scalarData =>
+        {
+          val x = scalarData
+        }
+    }
+  }
 
-    //TODO: Map from observerAt(...) elements to this
-    // -wildcards: a mechanism is required to 'resolve' wildcards, i.e. to register new matching variables at runtime (internal = external name) 
-    //  (for this AbstractObservation#bindings needs to be updated)
+  private def observeIfNecessary(registeredNames: Set[String], varName: String) = {
+
+  }
+
+  def addVectorValuesFor(runId: Int, internalName: String, recordedData: List[VectorDataEntry]) {
+    //TODO
+    //Read vector data:
+    for (observationTime <- observationTimes) {
+    }
+    //addValueFor(runId)          
   }
 
 }

@@ -4,8 +4,7 @@ import java.io.FileReader
 
 import scala.util.parsing.combinator._
 
-/**
- * Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
+/** Parser for '.sca' and '.vec' result files, as produced by OMNeT++.
  *
  *  Note that index files (.vci) hold additional information that is not yet covered, so that they cannot be parsed with this parser.
  *
@@ -73,7 +72,7 @@ trait ResultElement {
   /** (T)ime-(V)alue is the default vector format. 'ETV' is also common. */
   val defaultVectorFormat = timeCharacter.toString + valueCharacter
   /** The separator between module and scalar/vector name. */
-  val defaultModuleScalarNameSeparator = '.'
+  val defaultModuleNameSeparator = '.'
 }
 
 /** The version entry in each file. */
@@ -88,6 +87,8 @@ case class VersionEntry(version: Long) extends ResultElement {
 case class VectorEntry(id: Long, moduleName: String, vectorName: String, vectorFormat: Option[String]) extends ResultElement {
   /** The format string for this vector. */
   val formatString = vectorFormat.getOrElse(defaultVectorFormat)
+  /** The full name of the vector. */
+  val name = moduleName + defaultModuleNameSeparator + vectorName
 
   // Both time and value are required:
   require(formatString.indexOf(timeCharacter) >= 0 && formatString.indexOf(valueCharacter) >= 0,
@@ -116,5 +117,5 @@ case class VectorDataEntry(id: Long, values: List[AnyVal]) extends ResultElement
 /** Holds scalar data. */
 case class ScalarDataEntry(moduleName: String, scalarName: String, value: Any) extends ResultElement {
   /** The name under which the data can be accessed by the user. */
-  val name = moduleName + defaultModuleScalarNameSeparator + scalarName
+  val name = moduleName + defaultModuleNameSeparator + scalarName
 }
