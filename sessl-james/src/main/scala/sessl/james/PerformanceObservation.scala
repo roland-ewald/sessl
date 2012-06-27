@@ -19,7 +19,8 @@ import simspex.gui.SimSpExPerspective
 import james.perfdb.util.HibernateConnectionData
 import simspex.util.DBConfiguration._
 
-/** Support for performance observation in James II.
+/**
+ * Support for performance observation in James II.
  *  @author Roland Ewald
  */
 trait PerformanceObservation extends AbstractPerformanceObservation {
@@ -64,10 +65,11 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
       runPerformances.remove(runId)
     else
       runPerformances.get(runId)
-    runPerformance.getOrElse({
-      println("Warning: no performance result for run with id '" + runId +
+
+    runPerformance.getOrElse {
+      logger.warn("No performance result for run with id '" + runId +
         "' - returning special results aspect to signal the failure."); new PerfObsRunResultsAspect(null, -1)
-    }) //TODO: use logging here!
+    }
   }
 
   /** Configures, instantiates and starts the performance recorder for the James II performance database. */

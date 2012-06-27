@@ -5,13 +5,14 @@ import sessl._
 import org.junit.Assert._
 import org.junit.Test
 import sessl.util.AlgorithmSet
+import sessl.util.Logging
 
-/** Tests for {@link ParamBlockGenerator}.
+/**
+ * Tests for {@link ParamBlockGenerator}.
  *
  *  @author Roland Ewald
  */
-@Test
-class ParamBlockGeneratorTest {
+@Test class ParamBlockGeneratorTest extends Logging {
 
   /** Tests the conversion of sessl algorithm setups to parameter blocks. */
   @Test def testAlgorithmSetConversion() {
@@ -27,7 +28,7 @@ class ParamBlockGeneratorTest {
     testSize(nrSetups.size, nrParamBlocks.size)
     testFactoryClassSetup(NextReactionMethod().factory, nrParamBlocks)
     testFactoryClassInSubBlocks(classOf[EventQueueFactory].getName(), nrParamBlocks)
-    println(nrParamBlocks.mkString(", "))
+    logger.info(nrParamBlocks.mkString(", "))
   }
 
   /** Compare the size of algorithm- and parameter block set. */

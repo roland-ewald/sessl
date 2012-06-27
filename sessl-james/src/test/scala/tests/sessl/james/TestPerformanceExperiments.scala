@@ -5,7 +5,8 @@ import org.junit.Test
 
 import sessl.util.CreatableFromVariables
 
-/** Some tests for performance experiments.
+/**
+ * Some tests for performance experiments.
  *  @author Roland Ewald
  */
 @Test class TestPerformanceExperiments {
@@ -109,7 +110,7 @@ import sessl.util.CreatableFromVariables
       executionMode = AllSimulators
       parallelThreads = -1
 
-      withRunPerformance { r => println("Runtime:" + r.runtime) }
+      withRunPerformance { r => logger.info("Runtime:" + r.runtime) }
       withReplicationsPerformance { r =>
         reportSection("Results for assignment " + r.results.id) {
           scatterPlot(r.runtimesFor(NextReactionMethod(eventQueue = LinkedList())),
@@ -126,7 +127,7 @@ import sessl.util.CreatableFromVariables
         }
       }
 
-      afterRun { r => println(r.aspectFor(classOf[AbstractObservation])); counter += 1 }
+      afterRun { r => logger.info(r.aspectFor(classOf[AbstractObservation]).toString); counter += 1 }
     }
     execute(exp)
     assertEquals(exp.simulators.size * exp.replications * 4, counter)

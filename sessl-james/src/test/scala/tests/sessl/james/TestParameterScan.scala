@@ -1,11 +1,11 @@
 package tests.sessl.james
 
-
 import org.junit.Test
 import org.junit.Assert._
 import sessl.util.test.TestCounter
 
-/** Tests parameter scanning experiment with some extras.
+/**
+ * Tests parameter scanning experiment with some extras.
  *  @author Roland Ewald
  */
 @Test class TestParameterScan {
@@ -39,7 +39,7 @@ import sessl.util.test.TestCounter
       withRunResult { //specifies what shall be done after each run
         results =>
           {
-            println("Last y-value:" + results("y"))
+            logger.info("Last y-value:" + results("y"))
           }
       }
 
@@ -56,8 +56,8 @@ import sessl.util.test.TestCounter
         results =>
           {
             expDoneCounter += 1
-            println("y-results:" + results("y"))
-            println("Variance of y-results:" + results.variance("y"))
+            logger.info("y-results:" + results("y"))
+            logger.info("Variance of y-results:" + results.variance("y"))
             TestCounter.checkEquality("The size without restrictions should always be the same.", replications * expectedSetups, results("y").size)
             TestCounter.checkEquality("The given restriction should not restrict anything.", replications * expectedSetups, results.having("fixedVar" <~ fixedValue)("y").size)
             TestCounter.checkEquality("Exactly one configuration should have upperVar=1, testInt=25:", replications, results.having("upperVar" <~ 1, "testInt" <~ 25)("y").size)

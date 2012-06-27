@@ -21,6 +21,6 @@ import tests.sessl.james.TestReport
 @RunWith(value = classOf[org.junit.runners.Suite])
 @SuiteClasses(value = Array(classOf[TestPerformanceExperiments], classOf[ParamBlockGeneratorTest],
   classOf[Examples], classOf[TestRNGSetup], classOf[TestParameterScan], classOf[TestOptimization],
-  classOf[TestRNGSetup], classOf[TestOptimization], classOf[TestDataSink], classOf[TestBiBJamesExperiment], classOf[TestReport],
+  classOf[TestRNGSetup], classOf[TestDataSink], classOf[TestBiBJamesExperiment], classOf[TestReport],
   classOf[TestStoppingConditions], classOf[TestReplicationConditions]))
 class AllTests

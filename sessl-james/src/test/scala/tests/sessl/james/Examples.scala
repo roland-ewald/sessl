@@ -2,12 +2,14 @@ package tests.sessl.james
 
 import org.junit.Test
 import org.junit.Assert._
+import sessl.util.Logging
 
-/** Some example experiments to be used in talk(s) and publication(s).
+/**
+ * Some example experiments to be used in talk(s) and publication(s).
  *
  *  @author Roland Ewaldd
  */
-@Test class Examples {
+@Test class Examples extends Logging {
 
   /** Observation example. */
   @Test def testObservation {
@@ -23,16 +25,16 @@ import org.junit.Assert._
         observeAt(range(.0, .1, .9))
 
         withRunResult {
-          result => println("Last y-value:" + result("y"))
+          result => logger.info("Last y-value:" + result("y"))
         }
         withReplicationsResult {
-          result => println("Last y-values:" + result("y"))
+          result => logger.info("Last y-values:" + result("y"))
         }
         withExperimentResult {
           result =>
             {
-              println("Overall variance:" + result.variance("y"))
-              println("Variance on subset:" + result.having("numOfSpecies" <~ 10).variance("y"))
+              logger.info("Overall variance:" + result.variance("y"))
+              logger.info("Variance on subset:" + result.having("numOfSpecies" <~ 10).variance("y"))
             }
         }
       }
@@ -192,8 +194,8 @@ import org.junit.Assert._
 
     ///END
     def someTest(results1: ExperimentResults, results2: ExperimentResults) = {
-      println(results1)
-      println(results2)
+      logger.info(results1.toString)
+      logger.info(results2.toString)
     }
   }
 
@@ -212,8 +214,8 @@ import org.junit.Assert._
         val nrSetups = NextReactionMethod() scan {
           "eventQueue" <~ (BucketQueue(), LinkedList(), Heap(), SortedList())
         }
-        
-        simulators <~ (nrSetups ++ tlSetups)        
+
+        simulators <~ (nrSetups ++ tlSetups)
         executionMode = AllSimulators
 
         performanceDataSink = FilePerformanceDataSink()
