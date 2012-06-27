@@ -6,7 +6,8 @@ import scala.collection.mutable.Set
 import sessl.util.MiscUtils
 import sessl.util.ResultOperations
 
-/** Support for observation of model output. The observation trait is also concerned with managing the observed data in simple way,
+/**
+ * Support for observation of model output. The observation trait is also concerned with managing the observed data in simple way,
  *  ie. it has to provide read-access to be used across other traits (mixed-in later).
  *
  *  @author Roland Ewald
@@ -44,22 +45,25 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
 
   /** Add event handler that processes observed model output from a single run. */
   def withRunResult(f: ObservationRunResultsAspect => Unit) = {
-    afterRun {(
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationRunResultsAspect]))
+    afterRun {
+      (
+        r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationRunResultsAspect]))
     }
   }
 
   /** Add event handler that processes observed model output from a set of replications. */
   def withReplicationsResult(f: ObservationReplicationsResultsAspect => Unit) = {
-    afterReplications {(
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationReplicationsResultsAspect]))
+    afterReplications {
+      (
+        r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationReplicationsResultsAspect]))
     }
   }
 
   /** Add event handler that processes observed model output from the whole experiment. */
   def withExperimentResult(f: ObservationExperimentResultsAspect => Unit) = {
-    afterExperiment {(
-      r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationExperimentResultsAspect]))
+    afterExperiment {
+      (
+        r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractObservation]).get.asInstanceOf[ObservationExperimentResultsAspect]))
     }
   }
 
@@ -71,7 +75,7 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
       else if (timeRange.isDefined)
         timeRange.get.toList
       else {
-        println("Warning: Neither specific times nor a time range is given for observation.") //TODO: Use logging here
+        logger.warn("Neither specific times nor a time range is given for observation.")
         Nil
       }
     }
@@ -120,7 +124,8 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
     addExperimentResultsAspect(new ObservationExperimentResultsAspect())
   }
 
-  /** Collects the results of the indicated run. If the removeData flag is set to true,
+  /**
+   * Collects the results of the indicated run. If the removeData flag is set to true,
    *  the observation sub-system may regard the data as read-out (and hence delete it).
    *
    *  @param runID the ID of the run
@@ -129,7 +134,8 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
    */
   def collectResults(runID: Int, removeData: Boolean): ObservationRunResultsAspect
 
-  /** Signals that all results for the given configuration ID have been collected.
+  /**
+   * Signals that all results for the given configuration ID have been collected.
    *  Override to clean up auxiliary data structures.
    */
   def collectReplicationsResults(assignID: Int): ObservationReplicationsResultsAspect
@@ -148,16 +154,17 @@ sealed case class DataElemName(override val sesslName: String) extends DataElemB
   def ~(internalName: String) = to(internalName)
 }
 
-/** The run results aspect for observation.
+/**
+ * The run results aspect for observation.
  *  @param assignment the variable assignment that was used
  *  @param data the data recorded for a single run: variable name (in sessl) => trajectory.
  */
 class ObservationRunResultsAspect(var data: Map[String, Trajectory]) extends RunResultsAspect(classOf[AbstractObservation]) with ResultOperations {
-  
-    /** Auxiliary constructor to merge two result sets (e.g. recorded by different entities but for the same run).*/
-    def this(aspects: (ObservationRunResultsAspect, ObservationRunResultsAspect)) = {
-      this(aspects._1.data ++ aspects._2.data) 
-    }
+
+  /** Auxiliary constructor to merge two result sets (e.g. recorded by different entities but for the same run).*/
+  def this(aspects: (ObservationRunResultsAspect, ObservationRunResultsAspect)) = {
+    this(aspects._1.data ++ aspects._2.data)
+  }
 
   /** Get the *last* recorded value of the specified variable. */
   def apply(name: String) = {
@@ -174,10 +181,10 @@ class ObservationRunResultsAspect(var data: Map[String, Trajectory]) extends Run
 
   /** Get all data on a given variable name, and includes the name.*/
   def ~(name: String): (String, Trajectory) = (name, getVarData(name))
-  
+
   /** Get all data in a manner that is easy to plot. */
   def all: Seq[(String, Trajectory)] = names.map(this ~ _)
-  
+
   /** Get all times at which the data was observed. */
   def times(name: String): List[Double] = getVarData(name).map(_._1)
 

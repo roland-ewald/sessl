@@ -125,7 +125,7 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
 
 /** The performance aspects of a single simulation run. */
 class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Double) extends RunResultsAspect(classOf[AbstractPerformanceObservation]) {
-  /** Method to request a certain performance metric. TODO: Maybe use scala's (planned) reflection API here in future? Check! */
+  /** Method to request a certain performance metric. If possible, use Scala 2.10's reflection API here in future. */
   def apply(name: String) = name match {
     case "runtime" => runtime
     case x => throw new IllegalArgumentException("Metric '" + x + "' is not supported")

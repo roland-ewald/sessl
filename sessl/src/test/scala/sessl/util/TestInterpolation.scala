@@ -4,7 +4,8 @@ import org.junit.Test
 import org.junit.Assert._
 import Interpolation._
 
-/** Tests for the interpolation utilities.
+/**
+ * Tests for the interpolation utilities.
  *  @author Roland Ewald
  */
 @Test class TestInterpolation {

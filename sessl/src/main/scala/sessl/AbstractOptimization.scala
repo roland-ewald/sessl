@@ -3,7 +3,8 @@ package sessl
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Map
 
-/** Support for optimization.
+/**
+ * Support for optimization.
  *
  *  @author Roland Ewald
  *
@@ -20,7 +21,8 @@ trait AbstractOptimization extends ExperimentConfiguration {
   /** If not specified otherwise, a default observation time at 0.95 * stop time will be configured. */
   val defaultObsStopTimeFactor = 0.95
 
-  /** Defines whether the optimizer operates on the whole parameter space as defined by the variables to be scanned (so this flag is true),
+  /**
+   * Defines whether the optimizer operates on the whole parameter space as defined by the variables to be scanned (so this flag is true),
    *  or if its optimized each single parameter combination (so this flag is false, which is the default).
    */
   protected var optimizeOnAllConfigs = false
@@ -28,7 +30,8 @@ trait AbstractOptimization extends ExperimentConfiguration {
   /** The variables to be optimized. */
   protected val optVariables = ListBuffer[VarRange[_]]()
 
-  /** The configurations from which the optimizer may start.
+  /**
+   * The configurations from which the optimizer may start.
    *  If none is set, one should be generated randomly.
    */
   private[this] val startConfigs = ListBuffer[OptVarConfiguration]()
@@ -66,13 +69,14 @@ trait AbstractOptimization extends ExperimentConfiguration {
     if (!isObservationTimingDefined && fixedStopTime.isDefined) {
       val defaultObsTime = defaultObsStopTimeFactor * stopTime
       observeAt(defaultObsTime)
-      println("Warning: no observation times are set, using " + scala.math.round(defaultObsStopTimeFactor * 100) + "% of stop time: " + defaultObsTime) //TODO: Use logging here
+      logger.warn("No observation times are set, using " + scala.math.round(defaultObsStopTimeFactor * 100) + "% of stop time: " + defaultObsTime)
     }
     require(isObservationTimingDefined, "No times for observation are set (use observeAtTimes(...)), and no fixed stop time is given, ie no default value can be set.")
     super.configure()
   }
 
-  /** Register variables to be optimized.
+  /**
+   * Register variables to be optimized.
    *  @param binding a binding specification between an internal name and a sessl name
    *  @param variableRange the range in which the variable shall be optimized
    */

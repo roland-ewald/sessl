@@ -3,6 +3,7 @@ package sessl
 import scala.collection.mutable.ListBuffer
 import sessl.util.MiscUtils
 import sessl.util.ExperimentObserver
+import sessl.util.Logging
 
 /**
  * Super class for all fundamental experiment classes.
@@ -10,7 +11,7 @@ import sessl.util.ExperimentObserver
  *  @author Roland Ewald
  */
 abstract class AbstractExperiment extends BasicExperimentConfiguration with SupportModelConfiguration
-  with SupportSimulatorConfiguration with SupportRNGSetup with SupportReplicationConditions with SupportStoppingConditions {
+  with SupportSimulatorConfiguration with SupportRNGSetup with SupportReplicationConditions with SupportStoppingConditions with Logging {
 
   /**
    * This flag checks whether the stacked configuration traits have properly called their super methods.

@@ -4,7 +4,8 @@ import scala.collection.mutable.ListBuffer
 
 import sessl.util.MiscUtils._
 
-/** General support for result reports. It lets the user construct a hierarchy of section/dataview elements,
+/**
+ * General support for result reports. It lets the user construct a hierarchy of section/dataview elements,
  *  which are then displayed in this order.
  *
  *  @author Roland Ewald
@@ -124,7 +125,7 @@ trait AbstractReport extends ExperimentConfiguration {
   private def dataIsNumeric(values: List[_]): Boolean = {
     val typesOK = typesConform(classOf[Number], values)
     if (!typesOK)
-      println("Warning: some elements to be ploted are not numbers, hence this plot view is skipped:" + values) //TODO: Use logging here
+      logger.warn("Some elements to be plotted are not numbers, hence this plot view is skipped: " + values)
     typesOK
   }
 

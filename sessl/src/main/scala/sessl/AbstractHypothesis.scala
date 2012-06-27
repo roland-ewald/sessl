@@ -8,5 +8,4 @@ package sessl
  */
 trait AbstractHypothesis extends ExperimentConfiguration {
   this: AbstractObservation =>
-  //TODO
 }

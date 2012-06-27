@@ -3,13 +3,14 @@ import scala.collection.mutable.ListBuffer
 import sessl.Algorithm
 import sessl.Simulator
 
-/** Represents a (multi-)set of sessl algorithm representations. For convenience, the order
+/**
+ * Represents a (multi-)set of sessl algorithm representations. For convenience, the order
  *  with which the elements are added is currently preserved.
  *
  *  @param <T> the type of the algorithm contained in the list
  *  @author Roland Ewald
  */
-case class AlgorithmSet[T <: Algorithm](initialAlgos: Seq[T]) {
+case class AlgorithmSet[T <: Algorithm](initialAlgos: Seq[T]) extends Logging {
 
   /** The list containing the algorithms. */
   private val algorithmList = {
@@ -35,7 +36,7 @@ case class AlgorithmSet[T <: Algorithm](initialAlgos: Seq[T]) {
   lazy val algorithmSet: Set[T] = {
     val set = Set(algorithms: _*)
     if (set.size != algorithms.size)
-      println("Warning: there are duplicated elements in algorithms set:\n" + algorithms.mkString("\n")) //TODO: use logging here!
+      logger.warn("Warning: there are duplicated elements in algorithms set:\n" + algorithms.mkString("\n"))
     set
   }
 

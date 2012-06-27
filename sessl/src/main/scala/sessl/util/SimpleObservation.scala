@@ -33,13 +33,13 @@ trait SimpleObservation extends AbstractObservation {
     val runResults = inMemoryDatabase.getOrElseUpdate(runID, Map())
     for (externalName <- externalNames)
       runResults += ((externalName, value :: runResults.get(externalName).getOrElse(Nil)))
-    //println("Added results for run " + runID + ":" + value) //TODO:Use logging here (log-level:finest!)
+    logger.debug("Added results for run " + runID + ":" + value)
   }
 
   /** Collects run results from 'database'. */
   override def collectResults(runId: Int, removeData: Boolean = false): ObservationRunResultsAspect = {
     if (!inMemoryDatabase.contains(runId)) {
-      println("Warning: no results were observed (have you configured the observation?)... creating empty results.") //TODO: Use logging here
+      logger.warn("Warning: no results were observed (have you configured the observation?)... creating empty results.")
       new ObservationRunResultsAspect(Map[String, Trajectory]())
     } else {
       val runData = if (removeData) inMemoryDatabase.remove(runId).get else inMemoryDatabase(runId)
