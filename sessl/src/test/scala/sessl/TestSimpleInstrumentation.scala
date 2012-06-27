@@ -26,9 +26,8 @@ class TestSimpleInstrumentation {
 
   @Test
   def testSimpleInstr() = {
-    val testObject = new EmptyExperiment //TODO: Make an EmptyExperiment Object out of this!
+    val testObject = EmptyExperiment
     testObject.observe(boundVarName ~ varName)
-
     testObject.addValueFor(runID, varName, (time, value))
     val collectedResults = testObject.collectResults(1)
     assertEquals(value, collectedResults(boundVarName))

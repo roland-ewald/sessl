@@ -16,7 +16,8 @@ import sessl._TauLeaping
 import sessl.ExperimentResults
 import sessl.util.SimpleObservation
 
-/** Empty entities to easily check whether an experiment specification depends on system-specific
+/**
+ * Empty entities to easily check whether an experiment specification depends on system-specific
  *  configuration and components or not. This is a 'formal' reference implementation, i.e. it provides all entities with
  *  correct names and interfaces - but it does not realize any functionality so far.
  *
@@ -24,8 +25,11 @@ import sessl.util.SimpleObservation
  */
 
 //Central entities
-class EmptyExperiment extends AbstractExperiment with SimpleObservation { def executeExperiment() = {}; def basicConfiguration = {} }
-class Experiment extends EmptyExperiment
+class Experiment extends AbstractExperiment with SimpleObservation {
+  def executeExperiment() = {}
+  def basicConfiguration = {}
+}
+object EmptyExperiment extends Experiment
 
 //Instrumentation
 trait Observation extends AbstractObservation {
