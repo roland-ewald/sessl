@@ -1,9 +1,12 @@
 package sessl
 
-/** Support for configuring the number of desired replications.
+import sessl.util.Logging
+
+/**
+ * Support for configuring the number of desired replications.
  *  @author Roland Ewald
  */
-trait SupportReplicationConditions {
+trait SupportReplicationConditions extends Logging {
 
   /** Stores the fixed number of replications to be executed (if one is set). */
   protected[sessl] var fixedReplications: Option[Int] = None
@@ -18,13 +21,14 @@ trait SupportReplicationConditions {
   /** Getting/setting a complex replication condition. */
   def replicationCondition_=(rc: ReplicationCondition) = {
     if (repCondition.isDefined)
-      println("Warning: replication condition has already been defined as '" +
-        repCondition.get + "' - this will now be changed to '" + rc + "'") //TODO: Use logging
+      logger.warn("Replication condition has already been defined as '" +
+        repCondition.get + "' - this will now be changed to '" + rc + "'")
     repCondition = Some(rc)
   }
   def replicationCondition: ReplicationCondition = repCondition.get
 
-  /** Check replication setup and get replication condition.
+  /**
+   * Check replication setup and get replication condition.
    *  @return the replication condition to be used
    */
   protected[sessl] def checkAndGetReplicationCondition() = {
@@ -45,31 +49,36 @@ trait SupportReplicationConditions {
 /** Super type of all replication conditions. */
 trait ReplicationCondition
 
-/** Replicate a fixed number of times.
+/**
+ * Replicate a fixed number of times.
  *  @param replications the number of replications
  */
 case class FixedNumber(replications: Int) extends ReplicationCondition
 
-/** Replicate until a certain confidence in the mean value of a variable is reached.
+/**
+ * Replicate until a certain confidence in the mean value of a variable is reached.
  *  @param varName the (sessl) name of the variable under scrutiny
  *  @param  relativeHalfWidth the desired relative half-width of the confidence interval
  *  @param confidence the confidence in the interval
  */
 case class MeanConfidenceReached(varName: String, relativeHalfWidth: Double = 0.01, confidence: Double = 0.95) extends ReplicationCondition
 
-/** Stop if both given conditions are fulfilled.
+/**
+ * Stop if both given conditions are fulfilled.
  *  @param left the first replication condition
  *  @param right the second replication condition
  */
 case class ConjunctiveReplicationCondition(left: ReplicationCondition, right: ReplicationCondition) extends ReplicationCondition
 
-/** Stop if any of the given conditions is fulfilled.
+/**
+ * Stop if any of the given conditions is fulfilled.
  *  @param left the first replication condition
  *  @param right the second replication condition
  */
 case class DisjunctiveReplicationCondition(left: ReplicationCondition, right: ReplicationCondition) extends ReplicationCondition
 
-/** Combines two replication conditions (either with OR or with AND).
+/**
+ * Combines two replication conditions (either with OR or with AND).
  *  @param left the first replication condition
  */
 case class CombinedReplicationCondition(left: ReplicationCondition) extends ReplicationCondition {

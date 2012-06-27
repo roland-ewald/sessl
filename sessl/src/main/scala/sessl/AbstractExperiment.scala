@@ -11,7 +11,7 @@ import sessl.util.Logging
  *  @author Roland Ewald
  */
 abstract class AbstractExperiment extends BasicExperimentConfiguration with SupportModelConfiguration
-  with SupportSimulatorConfiguration with SupportRNGSetup with SupportReplicationConditions with SupportStoppingConditions with Logging {
+  with SupportSimulatorConfiguration with SupportRNGSetup with SupportReplicationConditions with SupportStoppingConditions {
 
   /**
    * This flag checks whether the stacked configuration traits have properly called their super methods.
