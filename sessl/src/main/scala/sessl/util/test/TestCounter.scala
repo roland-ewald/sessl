@@ -1,15 +1,16 @@
 package sessl.util.test
 
 import scala.collection.mutable.ListBuffer
-
 import sessl.util.JavaToScala.toScala
+import sessl.util.Logging
 
-/** Simple counter of executed parameter setups to check correctness of experiment implementations.
+/**
+ * Simple counter of executed parameter setups to check correctness of experiment implementations.
  *
  *  @author Roland Ewald
  *
  */
-object TestCounter {
+object TestCounter extends Logging {
 
   /** The type of the more detailed data structure for counting. */
   type ParamCounterMap = scala.collection.mutable.Map[Map[String, Object], Int]
@@ -48,7 +49,7 @@ object TestCounter {
   }
 
   def print() {
-    println("#Executions:" + execCounter)
-    println("Parameter-Counts:" + paramCombinations.mkString("\n", "\n", "\n"))
+    logger.info("#Executions:" + execCounter)
+    logger.info("Parameter-Counts:" + paramCombinations.mkString("\n", "\n", "\n"))
   }
 }
