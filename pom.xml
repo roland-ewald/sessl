@@ -91,6 +91,7 @@
 		
 		
 		<!-- External dependencies: -->
+		<!-- Scala -->
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-compiler</artifactId>
@@ -106,6 +107,21 @@
 			<artifactId>scalap</artifactId>
 			<version>${scala.version}</version>
 		</dependency>
+		
+		<!-- SLF4J for Scala -->
+		<dependency>
+			<groupId>com.weiglewilczek.slf4s</groupId>
+			<artifactId>slf4s_2.9.1</artifactId>
+			<version>1.0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.6</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
