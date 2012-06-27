@@ -5,6 +5,7 @@ import org.junit.Assert._
 import org.junit.Test
 import sessl.omnetpp.ResultFileParser
 import junit.framework.TestCase
+import sessl.util.Logging
 
 /**
  * Tests for ResultFileParser.
@@ -12,7 +13,7 @@ import junit.framework.TestCase
  * @author Roland Ewald
  *
  */
-@Test class TestResultFileParser {
+@Test class TestResultFileParser extends Logging {
 
   /** The parser to be tested. */
   val parser = new ResultFileParser
@@ -36,7 +37,7 @@ import junit.framework.TestCase
 
   def testParserWithStrings(content: String*) =
     content.filterNot(testParserWithString(_).successful).foreach(s => {
-      println(testParserWithString(s))
+      logger.error(testParserWithString(s).toString)
       fail("Could not parse string: " + s)
     })
 
@@ -45,7 +46,7 @@ import junit.framework.TestCase
   @Test def parserTestSampleFiles = {
     testFiles.par.map(testFileDirectory + _).filterNot(parser.parse(_).successful).foreach(
       fileName => {
-        println(parser.parse(fileName))
+        logger.error((parser.parse(fileName)).toString)
         fail("Could not parse file " + fileName)
       })
   }

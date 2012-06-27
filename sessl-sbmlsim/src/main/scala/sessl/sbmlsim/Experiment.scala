@@ -11,10 +11,11 @@ import org.sbml.jsbml.xml.stax.SBMLReader
 import sessl.VariableAssignment
 import sessl.StoppingCondition
 import sessl.Variable
-
 import sessl.sbmlsim._
+import sessl.util.Logging
 
-/** Encapsulates the SBMLsimulator (see http://www.ra.cs.uni-tuebingen.de/software/SBMLsimulator).
+/**
+ * Encapsulates the SBMLsimulator (see http://www.ra.cs.uni-tuebingen.de/software/SBMLsimulator).
  *  As only the core is provided at Sourceforge (http://sourceforge.net/projects/sbml-simulator/),
  *  this will be integrated (i.e., no functionality to set up experiments via the GUI is reused here).
  *
@@ -55,7 +56,7 @@ class Experiment extends AbstractExperiment with SBMLSimResultHandling {
   def configureModelLocation() = {
     model = Some((new SBMLReader).readSBML(modelLocation.get).getModel)
     require(model.isDefined, "Reading a model from '" + modelLocation.get + "' failed.")
-    println("Successfully read model from " + modelLocation.get) //TODO: Use logging here
+    logger.info("Successfully read model from " + modelLocation.get)
   }
 
   /** Configure simulator setup. */
@@ -92,8 +93,7 @@ class Experiment extends AbstractExperiment with SBMLSimResultHandling {
     val assignmentId = assignmentDesc._2 + 1
     val runId = jobDesc._2 + 1
 
-    //TODO: Use logging here
-    println("Run #" + runId + " started, it simulates setup " + variableAssignment + " with simulator " + jobDesc._1._2)
+    logger.info("Run #" + runId + " started, it simulates setup " + variableAssignment + " with simulator " + jobDesc._1._2)
 
     //Execute SBMLsimulator
     val theModel = model.get.clone()
@@ -118,7 +118,7 @@ class Experiment extends AbstractExperiment with SBMLSimResultHandling {
 
 }
 
-object Experiment {
+object Experiment extends Logging {
 
   private def assignParameters(assignment: Map[String, Any], model: Model) = {
     assignment.foreach {
@@ -126,12 +126,11 @@ object Experiment {
         {
           val (name, value) = varAssignment
           val parameter = model.getParameter(name)
-          //TODO: Use logging here
           if (parameter == null)
-            println("Model parameter '" + name + "' not defined. The parameters declared by the model are (in (name,value) pairs): " +
+            logger.error("Model parameter '" + name + "' not defined. The parameters declared by the model are (in (name,value) pairs): " +
               createModelParamDesc(model).mkString(","))
           else if (!value.isInstanceOf[Number])
-            println("Value '" + value + "' of parameter '" + name + "' not supported, must be numeric.")
+            logger.error("Value '" + value + "' of parameter '" + name + "' not supported, must be numeric.")
           else
             parameter.setValue(value.asInstanceOf[Number].doubleValue)
         }

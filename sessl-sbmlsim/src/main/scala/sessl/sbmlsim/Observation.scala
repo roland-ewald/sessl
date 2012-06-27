@@ -5,7 +5,8 @@ import sessl.util.SimpleObservation
 import scala.collection.mutable.ListBuffer
 import sessl.util.Interpolation._
 
-/** Support for observing of SBMLsimulator runs.
+/**
+ * Support for observing of SBMLsimulator runs.
  *  It seems the simulators always provide the complete state vector for every computed step,
  *  so this here just implements some kind of sessl-compliant cherry-picking.
  *  @author Roland Ewald
@@ -18,14 +19,15 @@ trait Observation extends SimpleObservation with SBMLSimResultHandling {
     for (v <- varsToBeObserved) {
       val colIndex = results.getColumnIndex(v)
       if (colIndex < 0) {
-        println("Warning: Variable '" + v + "' could not be found, will be ignored.\nVariables defined in the model: " + retrieveVariableNames(results).mkString(","))
+        logger.warn("Variable '" + v + "' could not be found, will be ignored.\nVariables defined in the model: " + retrieveVariableNames(results).mkString(","))
       } else {
         findInterpolationPoints(results.getTimePoints(), observationTimes).foreach(p => addValueForPoint(runId, p, colIndex, v, results))
       }
     }
   }
 
-  /** Adds the observed value for a given interpolation point.
+  /**
+   * Adds the observed value for a given interpolation point.
    *  The overall width of the time interval is (t_2 - t_1), and the observation point (point._2)
    *  has to be somewhere in-between. The weights of the two considered sample values
    *  are adjusted accordingly (linear interpolation).

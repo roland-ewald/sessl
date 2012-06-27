@@ -2,6 +2,7 @@ package sessl.omnetpp
 
 import java.io.File
 import scala.sys.process._
+import sessl.util.Logging
 
 /**
  * Executor for OMNeT++ runs.
@@ -9,12 +10,12 @@ import scala.sys.process._
  * @author Roland Ewald
  *
  */
-object OMNeTPPExecutor {
+object OMNeTPPExecutor extends Logging {
 
   /** Executes a single OMNeT++ simulation run. */
   def execute(workingDir: File, executable: File, runNumber: Int) = {
     val cmd = "cmd /c " + executable.getName + " -u Cmdenv -r " + runNumber
-    println("Executing '" + cmd + "' in " + workingDir.getAbsolutePath) //TODO logging
+    logger.info("Executing '" + cmd + "' in " + workingDir.getAbsolutePath)
     Process(cmd, workingDir)!
   }
 

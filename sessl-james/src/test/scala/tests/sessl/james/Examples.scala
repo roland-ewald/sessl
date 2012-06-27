@@ -150,7 +150,7 @@ import sessl.util.Logging
         observe("A")
         observeAt(range(100, 50, 9000))
         withRunResult {
-          results => println(results ~ "A")
+          results => logger.info((results ~ "A").toString)
         }
       }
     }

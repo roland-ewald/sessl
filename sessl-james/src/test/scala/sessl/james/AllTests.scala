@@ -14,6 +14,7 @@ import tests.sessl.james.TestReplicationConditions
 import tests.sessl.james.TestBiBJamesExperiment
 import tests.sessl.james.TestStoppingConditions
 import tests.sessl.james.TestReport
+
 /**
  * Bundles all tests together (as the Eclipse-JUnit-Runner cannot easily deal with Scala code).
  *  @author Roland Ewald

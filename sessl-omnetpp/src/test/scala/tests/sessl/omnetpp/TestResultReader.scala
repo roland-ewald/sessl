@@ -33,7 +33,7 @@ import sessl.omnetpp.ResultReader
   @Test def testResultScalarReading(): Unit = {
     val resultData = ResultReader.readScalarFile("./omnetpp-samples", 0)
     assertEquals(2L, resultData("..v0"))
-    assertEquals(10457L, resultData("ClosedQueueingNetA.queue[3].out.channel/messages:count"))
+    assertEquals(10457L, resultData("ClosedQueueingNetA.queue[3].out.channel.messages:count"))
   }
 
 }

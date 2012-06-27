@@ -77,7 +77,7 @@ import scala.collection.mutable.ListBuffer
         withRunResult { r =>
           recordedTrajectories += (r ~ q1VarName)._2
           recordedTrajectories += (r ~ q2VarName)._2
-          println((r ~ q2VarName)._2.take(10))
+          logger.info("Some recorded values: " + (r ~ q2VarName)._2.take(10))
         }
       }
     }

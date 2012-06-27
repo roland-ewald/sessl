@@ -4,6 +4,7 @@ import scala.util.parsing.combinator._
 import java.io.FileReader
 import java.io.BufferedReader
 import java.io.File
+import sessl.util.Logging
 
 /**
  * Read results from the output files.
@@ -11,7 +12,7 @@ import java.io.File
  *  @author Roland Ewald
  *
  */
-object ResultReader {
+object ResultReader extends Logging {
 
   /** The ending of vector data files. */
   val fileEndingVectorData = "vec"
@@ -95,8 +96,7 @@ object ResultReader {
         } else if (sca.value.isInstanceOf[Long]) {
           rv(sca.name) = sca.value.asInstanceOf[Long]
         } else {
-          //TODO: use logging here
-          println("Warning: could not include non-numeric value '" + sca.value + "' for scalar '" + sca.name + "'")
+          logger.warn("Could not include non-numeric value '" + sca.value + "' for scalar '" + sca.name + "'")
         }
       }
       case x => throw new IllegalArgumentException("Unsupported element in file '" + fileName + "': " + x)
