@@ -36,16 +36,16 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
   private[this] val copyMethod = this.getClass.getMethods.find(x => x.getName == "copy").get
 
   /** The interpreter needs to regard this as a Product.*/
-  lazy val productionCompletion = new ProductCompletion(this)
+  lazy val productCompletion = new ProductCompletion(this)
 
   /** The names of all specified fields. */
-  lazy val fieldNames = productionCompletion.caseNames
+  lazy val fieldNames = productCompletion.caseNames
 
   /** The set of all specified field names. */
   lazy val fieldNamesSet = fieldNames.toSet
 
   /** The default values of all specified fields. */
-  lazy val defaultValues = productionCompletion.caseFields
+  lazy val defaultValues = productCompletion.caseFields
 
   /** Create instance of class from list of parameters.
    *  @param parameters the parameter list
