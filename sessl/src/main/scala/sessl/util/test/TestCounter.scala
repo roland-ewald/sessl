@@ -1,7 +1,6 @@
 package sessl.util.test
 
 import scala.collection.mutable.ListBuffer
-import sessl.util.JavaToScala.toScala
 import sessl.util.Logging
 
 /**
@@ -23,9 +22,10 @@ object TestCounter extends Logging {
   private val paramCombinations: ParamCounterMap = scala.collection.mutable.Map[Map[String, Object], Int]()
 
   def registerParamCombination(params: java.util.Map[java.lang.String, java.lang.Object]) = {
+    
     synchronized {
       execCounter += 1
-      val scalaMap = toScala(params)
+      val scalaMap = scala.collection.JavaConversions.mapAsScalaMap(params).toMap
       paramCombinations += ((scalaMap, 1 + paramCombinations.get(scalaMap).getOrElse(0)))
     }
   }
