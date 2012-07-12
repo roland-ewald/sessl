@@ -108,8 +108,7 @@ import scala.collection.mutable.ListBuffer
   }
 
   /** Checks whether the tests are running on Windows. */
-  val testEnvironmentIsSuitable = {
-    val propertyIs = { (name: String, desired: String) => java.lang.System.getProperty(name).equals(desired) }
-    propertyIs("os.name", "Windows 7") && propertyIs("os.arch", "amd64")
-  }
+  val testEnvironmentIsSuitable =
+    Seq(("os.name", "Windows 7"), ("os.arch", "amd64")) forall { t => java.lang.System.getProperty(t._1).equals(t._2) }
+
 }
