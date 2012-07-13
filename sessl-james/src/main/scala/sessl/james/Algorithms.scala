@@ -5,37 +5,30 @@ import james.core.math.random.generators.lcg.LCGGeneratorFactory
 import james.core.math.random.generators.mersennetwister.MersenneTwisterGeneratorFactory
 import james.core.math.random.generators.plugintype.RandomGeneratorFactory
 import james.core.processor.plugintype.ProcessorFactory
+import james.core.util.eventset.plugintype.EventQueueFactory
+import james.core.util.eventset.BucketsThresholdEventQueueFactory
+import james.core.util.eventset.HeapEventQueueFactory
+import james.core.util.eventset.LinkedListEventQueueFactory
+import james.core.util.eventset.SimpleEventQueueFactory
+import sessl.util.CreatableFromVariables
+import sessl.Algorithm
+import sessl.EventQueue
+import sessl.Optimizer
+import sessl.RNG
 import sessl.RNGUtils
+import sessl.Simulator
+import sessl._BucketQueue
 import sessl._DirectMethod
-import sessl._HillClimbing
+import sessl._Heap
 import sessl._LCG
+import sessl._LinkedList
 import sessl._MersenneTwister
 import sessl._NextReactionMethod
-import sessl._SimulatedAnnealing
+import sessl._SortedList
 import sessl._TauLeaping
 import simulator.sr.ssa.drm.DirectReactionProcessorVarAFactory
 import simulator.sr.ssa.nrm.NextReactionProcessorVarAFactory
 import simulator.sr.ssa.tau.TauLeapingProcessorFactory
-import steering.configuration.optimization.evolutionary.BFSHillClimbingOptimizerFactory
-import steering.configuration.optimization.simulatedannealing.SimulatedAnnealingOptimizerFactory
-import integrationtest.bogus.simulator.BestSimulatorInTheWorldFactory
-import sessl.Simulator
-import sessl.Optimizer
-import sessl.RNG
-import sessl.util.CreatableFromVariables
-import sessl._Heap
-import sessl.EventQueue
-import james.core.util.eventset.plugintype.EventQueueFactory
-import james.core.util.eventset.HeapEventQueueFactory
-import james.core.util.eventset.SimpleEventQueueFactory
-import sessl._SortedList
-import sessl._MList
-import sessl._CalendarQueue
-import sessl.Algorithm
-import sessl._BucketQueue
-import james.core.util.eventset.LinkedListEventQueueFactory
-import sessl._LinkedList
-import james.core.util.eventset.BucketsThresholdEventQueueFactory
 
 /**
  * Defines all James II algorithms that are accessible via sessl.
@@ -59,15 +52,8 @@ case class MersenneTwister(val seed: Long = RNGUtils.defaultSeed) extends _Merse
   override def factory = new MersenneTwisterGeneratorFactory
 }
 
-//Optimizers - TODO: add parameterization
+//Optimizers
 trait BasicJamesIIOptimizer extends Optimizer with JamesIIAlgo[OptimizationAlgorithmFactory]
-
-case class SimulatedAnnealing() extends _SimulatedAnnealing with BasicJamesIIOptimizer {
-  override def factory = new SimulatedAnnealingOptimizerFactory
-}
-case class HillClimbing() extends _HillClimbing with BasicJamesIIOptimizer {
-  override def factory = new BFSHillClimbingOptimizerFactory
-}
 
 //Event Queues
 trait BasicJamesIIEventQueue extends EventQueue with JamesIIAlgo[EventQueueFactory]
