@@ -15,7 +15,7 @@ class TestDataSink {
     val exp = new Experiment with Observation with DataSink {
       model = TestJamesExperiments.testModel
       stopTime = 0.1
-      dataSink = MySQLDataSink(schema = "test")
+      dataSink = MySQLDataSink(schema = "test", password = "")
     }
     execute(exp)
   }
