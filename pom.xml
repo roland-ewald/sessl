@@ -10,8 +10,6 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.test.failure.ignore>true</maven.test.failure.ignore>
-		<maven.test.error.ignore>true</maven.test.error.ignore>
 		<repo.path>file://${project.basedir}/repo</repo.path>
 		<scala.version>2.9.2</scala.version>
 	</properties>
