@@ -1,9 +1,11 @@
 package sessl.james.tools
 
 import java.io.FileWriter
+
+import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
+
 import james.core.util.misc.Strings
-import sessl.util.ScalaToJava
 
 /** Simple utility to store CSV files.
  *
@@ -35,7 +37,7 @@ class CSVFileWriter(fileName: String, val append: Boolean = true) {
 
   /** Returns a comma-separated string with all elements in a sequence. */
   def elementsToString(elements: Seq[_]): String = {
-    val stringRepresentation = Strings.dispCollection(ScalaToJava.toList(elements))
+    val stringRepresentation = Strings.dispCollection(elements)
     stringRepresentation.slice(1, stringRepresentation.size - 1)
   }
 
