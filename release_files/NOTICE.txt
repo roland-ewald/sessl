@@ -1,12 +1,10 @@
 SESSL - Simulation Experiment Specification via a Scala Layer
 Copyright 2012 Roland Ewald
 
-The software is based on several open-source software:
+The software is based on several open-source projects:
 
-- Scala
+- Scala 2.9.2 (http://scala-lang.org)
 
-- ScalaP
+- JAMES II 0.8.7 (http://jamesii.org), a modeling and simulation framework available under a custom open-source license (see libs/licenses/james2). JAMES II is based on several other open source libraries that are included here as well (e.g. Hibernate, Apache Commons, etc.).
 
-- JAMES II (http://jamesii.org), a modeling and simulation framework available under a custom open-source license (see libs/licenses/james2).
-
-- SBMLsimulator
+- The core of SBMLsimulator version 1.0 (http://sourceforge.net/projects/simulation-core, http://www.ra.cs.uni-tuebingen.de/software/SBMLsimulator), an SBML simulator written in Java and licensed under LGPLv3 (unnecessary code has been stripped from the JAR)
