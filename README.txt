@@ -1,11 +1,10 @@
-References:
+Simulation Experiment Specification via a Scala Layer
+=====================================================
 
+Development requirements: 
+- Scala 2.9.2 (http://scala-lang.org)
+- Maven 3 (http://maven.apache.org/)
 
-Coding Conventions:
+Compile with:
 
-
-Compiling:
-(at first, a mvn install of sessl as such...), then
-mvn clean scala:compile scala:testCompile
-Making a release:
-
+mvn clean scala:compile scala:testCompile install
