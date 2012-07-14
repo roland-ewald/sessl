@@ -10,7 +10,7 @@
   <!-- Include all auxiliary files for release -->
   <fileSets>
     <fileSet>
-      <directory>${project.dir}/src/main/resources</directory>
+      <directory>${basedir}/src/main/resources</directory>
     </fileSet>
   </fileSets>
 
