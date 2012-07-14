@@ -2,16 +2,12 @@ package sessl.util
 
 import java.io.File
 
-/**
- * Some utilities.
- *
+/** Some utilities.
  *  @author Roland Ewald
- *
  */
 object MiscUtils extends Logging {
 
-  /**
-   * 'Safely' applies some arguments to a function. Any exceptions will be caught and logged.
+  /** 'Safely' applies some arguments to a function. Any exceptions will be caught and logged.
    *  @param f the function to be executed
    */
   def saveApply[X, Y](f: X => Y, args: X): Option[Y] = {
@@ -22,8 +18,7 @@ object MiscUtils extends Logging {
     }
   }
 
-  /**
-   * Types are equal.
+  /** Types are equal.
    *
    *  @param values
    *            the values
@@ -37,8 +32,7 @@ object MiscUtils extends Logging {
     nonCompliantValues.isEmpty
   }
 
-  /**
-   * Checks whether types of elements in the sequence are equal to the given type.
+  /** Checks whether types of elements in the sequence are equal to the given type.
    *
    *  @param clazz
    *          the type
@@ -49,8 +43,7 @@ object MiscUtils extends Logging {
   def typesAreEqual(clazz: java.lang.Class[_], values: Seq[Any]): Boolean =
     filterByEqualType(clazz, values).isEmpty
 
-  /**
-   * Checks whether types of elements in the sequence conform to the given type (ie, have the same type or a sub-type).
+  /** Checks whether types of elements in the sequence conform to the given type (ie, have the same type or a sub-type).
    *
    *  @param clazz
    *          the type
@@ -61,8 +54,7 @@ object MiscUtils extends Logging {
   def typesConform(clazz: java.lang.Class[_], values: Seq[Any]): Boolean =
     filterByConformantType(clazz, values).isEmpty
 
-  /**
-   * Filters a list by the type of its elements.
+  /** Filters a list by the type of its elements.
    *
    *  @param clazz
    *          the type
@@ -72,8 +64,7 @@ object MiscUtils extends Logging {
    */
   def filterByEqualType(clazz: java.lang.Class[_], values: Seq[Any]) = values.filter(_.getClass != clazz)
 
-  /**
-   * Filter by conformant types (all elements need to be assignable to the given type).
+  /** Filter by conformant types (all elements need to be assignable to the given type).
    *
    *  @param clazz
    *          the type
@@ -83,8 +74,7 @@ object MiscUtils extends Logging {
    */
   def filterByConformantType(clazz: java.lang.Class[_], values: Seq[Any]) = values.filter(x => !clazz.isAssignableFrom(x.getClass))
 
-  /**
-   * Gets the value or, if it is empty, gets default instead.
+  /** Gets the value or, if it is empty, gets default instead.
    *
    *  @param value
    *          the value
@@ -93,8 +83,7 @@ object MiscUtils extends Logging {
    */
   def getOrEmpty(value: String, default: String) = if (value.isEmpty()) default else value
 
-  /**
-   * Deletes file (and all sub-directories and their files, in case it is a directory) recursively.
+  /** Deletes file (and all sub-directories and their files, in case it is a directory) recursively.
    *
    *  @param f the file to be deleted
    *  @return true, if deletion of all files was successful
@@ -104,8 +93,7 @@ object MiscUtils extends Logging {
     f.delete
   }
 
-  /**
-   * Deletes a file/directory recursively.
+  /** Deletes a file/directory recursively.
    *
    *  @param s the name of the file
    *  @return true, if deletion of all files was successful

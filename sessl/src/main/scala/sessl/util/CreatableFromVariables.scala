@@ -18,6 +18,7 @@ import sessl.MultipleVars
  *  The code relies on the Scala interpreter (requires scalap) to find out the names and default values of the case class this trait is mixed in.
  *
  *  TODO: This currently does not work if a case class is defined in a function. Check whether the custom reflection tools of Scala 2.10 can be used instead.
+ *  It also requires to compile the (see http://stackoverflow.com/q/10312195/109942).
  *
  *  Parts of the code are adapted from or inspired by the following discussions:
  *  http://stackoverflow.com/q/4290955

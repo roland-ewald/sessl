@@ -1,9 +1,7 @@
 package sessl.util
 
-/**
- * This is an auxiliary trait that allows to check whether the result-relying mix-ins have been called correctly.
- *
- * @author Roland Ewald
+/** This is an auxiliary trait that allows to check whether the result-relying mix-ins have been called correctly.
+ *  @author Roland Ewald
  */
 trait ResultHandling {
 

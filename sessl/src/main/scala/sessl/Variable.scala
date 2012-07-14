@@ -18,7 +18,7 @@ sealed trait Variable {
 
 }
 
-/** Methods applicable to variables*/
+/** Methods applicable to variables. */
 object Variable {
 
   /**

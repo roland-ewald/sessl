@@ -7,12 +7,11 @@ import sessl.AbstractExperiment
 import sessl.BasicExperimentConfiguration
 import sessl.ExperimentConfiguration
 
-/**
- * Simple helper trait to mix into observer components.
+/** Simple helper trait to mix into observer components.
  *
- * @param I the required experiment configuration 
+ *  @param I the required experiment configuration
  *
- * @author Roland Ewald
+ *  @author Roland Ewald
  *
  */
 trait ObserverHelper[I <: ExperimentConfiguration] {
@@ -55,10 +54,9 @@ trait ObserverHelper[I <: ExperimentConfiguration] {
 
 }
 
-/**
- * The Interface SimpleObserverHelper.
+/** The Interface SimpleObserverHelper.
  *
- * @param <I>
+ *  @param <I>
  *          the observation type
  */
 trait SimpleObserverHelper[I <: SimpleObservation] extends ObserverHelper[I] {
@@ -72,5 +70,5 @@ trait SimpleObserverHelper[I <: SimpleObservation] extends ObserverHelper[I] {
 class ExperimentObserver extends ObserverHelper[AbstractExperiment] {
   def registerAssignment() {
     sesslObsConfig.asInstanceOf[AbstractExperiment].addAssignmentForRun(sesslRunID, variableAssignmentID, variableAssignment)
-  }  
+  }
 }

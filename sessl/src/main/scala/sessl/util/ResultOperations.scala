@@ -3,7 +3,6 @@ package sessl.util
 import sessl.Trajectory
 
 /** Provides support for some basic operations on result data.
- *
  *  @author Roland Ewald
  */
 trait ResultOperations {
