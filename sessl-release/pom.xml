@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>sessl-release</artifactId>
   <name>SESSL Release</name>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
  <parent>
     <groupId>org.sessl</groupId>
@@ -26,7 +26,7 @@
         <version>2.2.1</version>
         <configuration>
           <descriptors>
-            <descriptor>full.xml</descriptor>
+            <descriptor>release.xml</descriptor>
           </descriptors>
           <finalName>SESSL-${project.version}</finalName>
         </configuration>
