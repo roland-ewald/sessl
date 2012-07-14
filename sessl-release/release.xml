@@ -11,6 +11,7 @@
   <fileSets>
     <fileSet>
       <directory>${basedir}/src/main/resources</directory>
+	  <outputDirectory></outputDirectory>
     </fileSet>
   </fileSets>
 
