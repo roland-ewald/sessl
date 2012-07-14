@@ -20,17 +20,14 @@
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl-james</artifactId>
-			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl-sbmlsim</artifactId>
-			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl-omnetpp</artifactId>
-			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

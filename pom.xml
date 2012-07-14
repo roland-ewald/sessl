@@ -76,15 +76,124 @@
 
 	<dependencyManagement>
 		<dependencies>
+		
 		<!-- Internal dependencies: -->
+		<!-- SESSL core -->
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl</artifactId>
-			<version>0.7-SNAPSHOT</version>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+			<classifier>tests</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+			<classifier>sources</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+			<classifier>test-sources</classifier>
+			<version>${project.version}</version>
+		</dependency>		
+		
+		<!-- JAMES II binding -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james</artifactId>
+			<classifier>tests</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james</artifactId>
+			<classifier>sources</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james</artifactId>
+			<classifier>test-sources</classifier>
+			<version>${project.version}</version>
 		</dependency>
 		
+		<!-- SBMLsimulator binding -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-sbmlsim</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-sbmlsim</artifactId>
+			<classifier>tests</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-sbmlsim</artifactId>
+			<classifier>sources</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-sbmlsim</artifactId>
+			<classifier>test-sources</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!-- OMNeT++ binding -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+			<classifier>tests</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+			<classifier>tests</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+			<classifier>test-sources</classifier>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Integration tests -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-integration</artifactId>
+			<classifier>tests</classifier>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-integration</artifactId>
+			<classifier>test-sources</classifier>
+			<version>${project.version}</version>
+		</dependency>
 		
 		<!-- External dependencies: -->
+		
 		<!-- Scala -->
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -191,28 +300,7 @@
 				</configuration>
 			</plugin>
 
-			<!--<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptors>
-						<descriptor>release-assembly.xml</descriptor>
-					</descriptors>
-					<finalName>sessl-${project.version}</finalName>
-				</configuration>
-				<executions>
-					<execution>
-						<id>dist-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>-->
-
-			<!-- Include tests classes (in extra JAR file) -->
+			<!-- Include tests classes -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -225,6 +313,24 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!-- Bundle source files -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+							<goal>test-jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 

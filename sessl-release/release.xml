@@ -8,12 +8,11 @@
   </formats>
 
   <!-- Include all auxiliary files for release -->
-  <!--<fileSets>
+  <fileSets>
     <fileSet>
-      <directory>${project.dir}</directory>
-      <outputDirectory>bin</outputDirectory>
+      <directory>${project.dir}/src/main/resources</directory>
     </fileSet>
-  </fileSets>-->
+  </fileSets>
 
   <!-- Include all required libraries and all generated JAR files -->
   <dependencySets>
@@ -21,34 +20,15 @@
     <dependencySet>
       <outputDirectory>libs</outputDirectory>
       <excludes>
+	    <exclude>org.scala-lang:*</exclude>
         <exclude>org.sessl:*</exclude>
       </excludes>
+	  <outputFileNameMapping>${artifact.groupId}-${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
     </dependencySet>
 
     <dependencySet>
-      <outputDirectory>bin</outputDirectory>
       <includes>
-        <include>org.sessl:*:jar</include>
-      </includes>
-      <excludes>
-        <exclude>org.sessl:*:jar:sources</exclude>
-        <exclude>org.sessl:*:jar:tests</exclude>
-        <exclude>org.sessl:*:jar:test-sources</exclude>
-      </excludes>
-    </dependencySet>
-
-    <dependencySet>
-      <outputDirectory>src</outputDirectory>
-      <includes>
-        <include>org.sessl:*:jar:sources</include>
-      </includes>
-    </dependencySet>
-
-    <dependencySet>
-      <outputDirectory>test</outputDirectory>
-      <includes>
-        <include>org.sessl:*:jar:tests</include>
-        <include>org.sessl:*:jar:test-sources</include>
+        <include>org.sessl:*</include>
       </includes>
     </dependencySet>
 
