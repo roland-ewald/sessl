@@ -10,19 +10,14 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<repo.path>file://${project.basedir}/repo</repo.path>
 		<scala.version>2.9.2</scala.version>
 	</properties>
 
-	<!-- Use local Maven repository -->
 	<repositories>
 		<repository>
 			<id>sessl-repo</id>
 			<name>sessl-repo</name>
-			<url>${repo.path}</url>
-			<releases>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
+			<url>http://sessl.org/maven</url>
 		</repository>
 		<repository>
 			<id>scala-tools.org</id>
@@ -68,6 +63,7 @@
 		<module>sessl-sbmlsim</module>		
 		<module>sessl-omnetpp</module>
 		<module>sessl-integration</module>
+		<module>sessl-release</module>
 	</modules>
 		
 	<pluginRepositories>
