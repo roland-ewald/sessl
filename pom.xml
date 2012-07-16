@@ -78,7 +78,6 @@
 		<dependencies>
 		
 		<!-- Internal dependencies: -->
-		<!-- SESSL core -->
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl</artifactId>
@@ -86,49 +85,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sessl</groupId>
-			<artifactId>sessl</artifactId>
-			<classifier>tests</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl</artifactId>
-			<classifier>sources</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl</artifactId>
-			<classifier>test-sources</classifier>
-			<version>${project.version}</version>
-		</dependency>		
-		
-		<!-- JAMES II binding -->
-		<dependency>
-			<groupId>org.sessl</groupId>
 			<artifactId>sessl-james</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-james</artifactId>
-			<classifier>tests</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-james</artifactId>
-			<classifier>sources</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-james</artifactId>
-			<classifier>test-sources</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<!-- SBMLsimulator binding -->
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl-sbmlsim</artifactId>
@@ -136,62 +95,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sessl</groupId>
-			<artifactId>sessl-sbmlsim</artifactId>
-			<classifier>tests</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-sbmlsim</artifactId>
-			<classifier>sources</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-sbmlsim</artifactId>
-			<classifier>test-sources</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<!-- OMNeT++ binding -->
-		<dependency>
-			<groupId>org.sessl</groupId>
 			<artifactId>sessl-omnetpp</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-omnetpp</artifactId>
-			<classifier>tests</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-omnetpp</artifactId>
-			<classifier>tests</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-omnetpp</artifactId>
-			<classifier>test-sources</classifier>
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Integration tests -->
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-integration</artifactId>
-			<classifier>tests</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-integration</artifactId>
-			<classifier>test-sources</classifier>
-			<version>${project.version}</version>
-		</dependency>
-		
 		<!-- External dependencies: -->
 		
 		<!-- Scala -->

@@ -18,14 +18,24 @@
   <!-- Include all required libraries and all generated JAR files -->
   <dependencySets>
 
+    <!-- Add all dependencies except from SESSL, Scala and JAMES II -->
     <dependencySet>
       <outputDirectory>libs</outputDirectory>
       <excludes>
-	    <exclude>org.scala-lang:*</exclude>
         <exclude>org.sessl:*</exclude>
+	    <exclude>org.scala-lang:*</exclude>
+        <exclude>james2:*</exclude>
       </excludes>
-	  <outputFileNameMapping>${artifact.groupId}-${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
     </dependencySet>
+    
+    <!-- Rename JAMES II artifacty to james2-* -->
+    <dependencySet>
+      <outputDirectory>libs</outputDirectory>
+      <includes>
+        <include>james2:*</include>
+      </includes>
+      <outputFileNameMapping>${artifact.groupId}-${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+	</dependencySet>
 
     <dependencySet>
       <includes>
