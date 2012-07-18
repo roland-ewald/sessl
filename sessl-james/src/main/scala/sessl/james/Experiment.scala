@@ -244,7 +244,7 @@ class Experiment extends AbstractExperiment {
     exp.execute()
     exp.synchronized {
       if (!experimentStopped)
-        wait;
+        exp.wait;
     }
   }
 
@@ -269,7 +269,7 @@ class Experiment extends AbstractExperiment {
         exp.synchronized {
           experimentDone()
           experimentStopped = true
-          notifyAll
+          exp.notifyAll
         }
       }
     })
