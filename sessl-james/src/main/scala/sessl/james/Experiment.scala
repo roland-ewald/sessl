@@ -242,10 +242,10 @@ class Experiment extends AbstractExperiment {
   override def executeExperiment() = {
     addExecutionListener(exp)
     exp.execute()
+    //This additional synchronization is necessary because JAMES II does currently not guarantee to call the 
+    //ExperimentExecutionListener#experimentExecutionStopped(...) before BaseExperiment#execute(...) returns:
     exp.synchronized {
-      logger.info("execExp: checking if experiment is done")
       if (!experimentStopped) {
-        logger.info("execExp: starting to wait")
         exp.wait
       }
     }
@@ -269,12 +269,9 @@ class Experiment extends AbstractExperiment {
           replicationsDone(crti.getComputationTask.getConfig.getNumber)
       }
       override def experimentExecutionStopped(be: BaseExperiment): Unit = {
-        logger.info("execlistener: attempting to synchronize")
         exp.synchronized {
-          logger.info("execlistener: marking experiment as done")
           experimentDone()
           experimentStopped = true
-          logger.info("execlistener: notifying other threads")
           exp.notifyAll
         }
       }
