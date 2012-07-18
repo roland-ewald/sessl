@@ -243,8 +243,11 @@ class Experiment extends AbstractExperiment {
     addExecutionListener(exp)
     exp.execute()
     exp.synchronized {
-      if (!experimentStopped)
-        exp.wait;
+      logger.info("execExp: checking if experiment is done")
+      if (!experimentStopped) {
+        logger.info("execExp: starting to wait")
+        exp.wait
+      }
     }
   }
 
@@ -252,8 +255,8 @@ class Experiment extends AbstractExperiment {
    * Adds the execution listener.
    *  @param exp the James II experiment
    */
-  private def addExecutionListener(exp: BaseExperiment) = {
-    exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
+  private def addExecutionListener(experiment: BaseExperiment) = {
+    experiment.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
       override def simulationInitialized(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation) = {
         val configSetup = Experiment.taskConfigToAssignment(crti.getComputationTask.getConfig)
@@ -265,10 +268,13 @@ class Experiment extends AbstractExperiment {
         if (jobDone)
           replicationsDone(crti.getComputationTask.getConfig.getNumber)
       }
-      override def experimentExecutionStopped(exp: BaseExperiment): Unit = {
+      override def experimentExecutionStopped(be: BaseExperiment): Unit = {
+        logger.info("execlistener: attempting to synchronize")
         exp.synchronized {
+          logger.info("execlistener: marking experiment as done")
           experimentDone()
           experimentStopped = true
+          logger.info("execlistener: notifying other threads")
           exp.notifyAll
         }
       }
