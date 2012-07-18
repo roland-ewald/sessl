@@ -237,7 +237,6 @@ class Experiment extends AbstractExperiment {
   override def executeExperiment() = {
     addExecutionListener(exp)
     exp.execute()
-    exp.getExecutionController.removeExecutionListener(exp)
     experimentDone()
   }
 
