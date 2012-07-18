@@ -168,6 +168,7 @@
 				<configuration>
 					<forkMode>once</forkMode>
 					<useFile>false</useFile>
+					<failIfNoTests>false</failIfNoTests>
 					<forkedProcessTimeoutInSeconds>600</forkedProcessTimeoutInSeconds>
 					<workingDirectory>${project.build.testOutputDirectory}</workingDirectory>
 					<runOrder>random</runOrder>
