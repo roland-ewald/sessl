@@ -1,18 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl.james
 
 import java.net.URI
@@ -85,6 +87,9 @@ import james.core.model.IModel
  *  @author Roland Ewald
  */
 class Experiment extends AbstractExperiment {
+
+  /** Flag to check whether the experiment has been stopped properly already. */
+  private[this] var experimentStopped = false
 
   /** Encapsulated base experiment. */
   val exp = new BaseExperiment
@@ -237,14 +242,17 @@ class Experiment extends AbstractExperiment {
   override def executeExperiment() = {
     addExecutionListener(exp)
     exp.execute()
-    experimentDone()
+    synchronized {
+      if (!experimentStopped)
+        wait;
+    }
   }
 
   /**
    * Adds the execution listener.
    *  @param exp the James II experiment
    */
-  private def addExecutionListener(exp: BaseExperiment) = { 
+  private def addExecutionListener(exp: BaseExperiment) = {
     exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
       override def simulationInitialized(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation) = {
@@ -255,8 +263,15 @@ class Experiment extends AbstractExperiment {
         crti: ComputationTaskRuntimeInformation, jobDone: Boolean) = {
         runDone(crti.getComputationTaskID.toString.hashCode)
         if (jobDone)
-          replicationsDone(crti.getComputationTask.getConfig.getNumber) 
-      }      
+          replicationsDone(crti.getComputationTask.getConfig.getNumber)
+      }
+      override def experimentExecutionStopped(exp: BaseExperiment): Unit = {
+        synchronized {
+          experimentDone()
+          experimentStopped = true
+          notifyAll
+        }
+      }
     })
   }
 
