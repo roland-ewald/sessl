@@ -242,7 +242,7 @@ class Experiment extends AbstractExperiment {
   override def executeExperiment() = {
     addExecutionListener(exp)
     exp.execute()
-    synchronized {
+    exp.synchronized {
       if (!experimentStopped)
         wait;
     }
@@ -266,7 +266,7 @@ class Experiment extends AbstractExperiment {
           replicationsDone(crti.getComputationTask.getConfig.getNumber)
       }
       override def experimentExecutionStopped(exp: BaseExperiment): Unit = {
-        synchronized {
+        exp.synchronized {
           experimentDone()
           experimentStopped = true
           notifyAll
