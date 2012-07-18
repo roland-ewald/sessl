@@ -3,7 +3,7 @@
 	<groupId>org.sessl</groupId>
 	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
-	<version>0.7</version>
+	<version>0.8-SNAPSHOT</version>
 	<name>SESSL</name>
 	<url>http://sessl.org</url>
 	
