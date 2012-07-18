@@ -237,6 +237,7 @@ class Experiment extends AbstractExperiment {
   override def executeExperiment() = {
     addExecutionListener(exp)
     exp.execute()
+    exp.getExecutionController.removeExecutionListener(exp)
     experimentDone()
   }
 
@@ -244,7 +245,7 @@ class Experiment extends AbstractExperiment {
    * Adds the execution listener.
    *  @param exp the James II experiment
    */
-  private def addExecutionListener(exp: BaseExperiment) = { //TODO: THIS IS IMPORTANT FOR INTEGRATING OTHER SYSTEMS --- DOCUMENT THIS!
+  private def addExecutionListener(exp: BaseExperiment) = { 
     exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
       override def simulationInitialized(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation) = {
@@ -255,8 +256,8 @@ class Experiment extends AbstractExperiment {
         crti: ComputationTaskRuntimeInformation, jobDone: Boolean) = {
         runDone(crti.getComputationTaskID.toString.hashCode)
         if (jobDone)
-          replicationsDone(crti.getComputationTask.getConfig.getNumber) //TODO: This is important - EXTRACT AS METHODS!!! 
-      }
+          replicationsDone(crti.getComputationTask.getConfig.getNumber) 
+      }      
     })
   }
 
