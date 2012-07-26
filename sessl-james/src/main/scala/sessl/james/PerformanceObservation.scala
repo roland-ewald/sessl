@@ -57,6 +57,8 @@ trait PerformanceObservation extends AbstractPerformanceObservation {
       val representation = ParameterBlocks.toUniqueString(ParamBlockGenerator.createParamBlock(algo.asInstanceOf[JamesIIAlgo[Factory]]))
       setups(representation) = algo
     })
+    
+    require(setups.nonEmpty, "No simulator setups for performance evaluation have been specified.")
 
     // Fill the run performances map with actual data from the execution listener
     exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter() {
