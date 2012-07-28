@@ -254,12 +254,12 @@ class Experiment extends AbstractExperiment {
   private def addExecutionListener(experiment: BaseExperiment) = {
     experiment.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
 
+      //TODO: Remove as soon as this issue gets resolved in JAMES II
       private[this] var expStoppedCalled = false
       private[this] var runningSimulations = 0
 
       override def simulationInitialized(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation) = {
-        logger.info("Simulation run #" + crti.getComputationTaskID + " run started.")
         val configSetup = Experiment.taskConfigToAssignment(crti.getComputationTask.getConfig)
         addAssignmentForRun(crti.getComputationTaskID.toString.hashCode, configSetup._1, configSetup._2)
         this.synchronized { //TODO: Remove as soon as this issue gets resolved in JAMES II
@@ -268,7 +268,6 @@ class Experiment extends AbstractExperiment {
       }
       override def simulationExecuted(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation, jobDone: Boolean) = {
-        logger.info("Simulation run #" + crti.getComputationTaskID + " done.")
         runDone(crti.getComputationTaskID.toString.hashCode)
         if (jobDone)
           replicationsDone(crti.getComputationTask.getConfig.getNumber)
@@ -290,7 +289,6 @@ class Experiment extends AbstractExperiment {
       private[this] def finishExperimentIfNecessary() = if (experimentFinished) notifyExperimentOnFinish()
 
       private[this] def notifyExperimentOnFinish() = exp.synchronized {
-        logger.info("Notifying experiment on end.")
         experimentDone()
         experimentStopped = true
         exp.notifyAll
