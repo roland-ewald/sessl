@@ -1,19 +1,18 @@
-/**
- * *****************************************************************************
- * Copyright 2012 Roland Ewald
+/** *****************************************************************************
+ *  Copyright 2012 Roland Ewald
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ****************************************************************************
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  ****************************************************************************
  */
 package sessl.james
 
@@ -79,8 +78,7 @@ import simspex.adaptiverunner.policies.EpsilonGreedyDecrInitFactory
 import simspex.adaptiverunner.AdaptiveTaskRunnerFactory
 import james.core.model.IModel
 
-/**
- * Encapsulates the BaseExperiment.
+/** Encapsulates the BaseExperiment.
  *
  *  @see james.core.experiments.BaseExperiment
  *
@@ -200,8 +198,7 @@ class Experiment extends AbstractExperiment {
   def useFirstSetupAsProcessor() =
     setProcessorParameters(ParamBlockGenerator.createParamBlock(simulators.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
 
-  /**
-   * Configure experiment to use the adaptive task runner.
+  /** Configure experiment to use the adaptive task runner.
    *
    *  @param threads
    *          the number of threads to be used
@@ -251,24 +248,26 @@ class Experiment extends AbstractExperiment {
     }
   }
 
-  /**
-   * Adds the execution listener.
+  /** Adds the execution listener.
    *  @param exp the James II experiment
    */
   private def addExecutionListener(experiment: BaseExperiment) = {
     experiment.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
       override def simulationInitialized(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation) = {
+        logger.info("Simulation run #" + crti.getComputationTaskID + " run started.")
         val configSetup = Experiment.taskConfigToAssignment(crti.getComputationTask.getConfig)
         addAssignmentForRun(crti.getComputationTaskID.toString.hashCode, configSetup._1, configSetup._2)
       }
       override def simulationExecuted(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation, jobDone: Boolean) = {
+        logger.info("Simulation run #" + crti.getComputationTaskID + " done.")
         runDone(crti.getComputationTaskID.toString.hashCode)
         if (jobDone)
           replicationsDone(crti.getComputationTask.getConfig.getNumber)
       }
       override def experimentExecutionStopped(be: BaseExperiment): Unit = {
+        logger.info("Notifying experiment on end.")
         exp.synchronized {
           experimentDone()
           experimentStopped = true
@@ -305,8 +304,7 @@ class Experiment extends AbstractExperiment {
       exp.getFixedModelParameters().put(v._1, v._2)
   }
 
-  /**
-   * Creates the experiment variable.
+  /** Creates the experiment variable.
    *
    *  @param variable the variable to be scanned
    *  @return the experiment variable
@@ -317,8 +315,7 @@ class Experiment extends AbstractExperiment {
     case x => throw new IllegalArgumentException("'" + x + "' is unknown, cannot be converted to experiment variable.")
   }
 
-  /**
-   * Creates an experiment variable for a sequence.
+  /** Creates an experiment variable for a sequence.
    *
    *  @param sequence the given sequence
    *  @return the experiment variable
@@ -331,8 +328,7 @@ class Experiment extends AbstractExperiment {
     new ExperimentVariable(sequence.name, sequence.values.head, createSequenceModifier(elems))
   }
 
-  /**
-   * Creates a sequence modifier for a given list of elements.
+  /** Creates a sequence modifier for a given list of elements.
    *
    *  @param <T>
    *            the type of the list elements (and the returned modifier)
@@ -342,8 +338,7 @@ class Experiment extends AbstractExperiment {
    */
   def createSequenceModifier[T](elements: java.util.List[T]) = new SequenceModifier[T](elements)
 
-  /**
-   * Checks whether all values in the gives sequence are of the same type.
+  /** Checks whether all values in the gives sequence are of the same type.
    *
    *  @param values
    *            the values
@@ -353,8 +348,7 @@ class Experiment extends AbstractExperiment {
     x: Any => report(Level.SEVERE, "Type of '" + x + "' (" + x.getClass() + ") does not match type of first element: " + values.head.getClass())
   }
 
-  /**
-   * Creates an experiment variable for a range variable.
+  /** Creates an experiment variable for a range variable.
    *
    *  @param <T>
    *            the type of the variable's values
@@ -366,8 +360,7 @@ class Experiment extends AbstractExperiment {
     new ExperimentVariable[T](varRange.name, varRange.from, createIncrementModifier(varRange))
   }
 
-  /**
-   * Creates the increment modifier for a given range.
+  /** Creates the increment modifier for a given range.
    *
    *  @param <T>
    *            the type of the variable's values (has to be Int, Double, or Long)
