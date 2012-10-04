@@ -1,4 +1,5 @@
-/** *****************************************************************************
+/**
+ * *****************************************************************************
  *  Copyright 2012 Roland Ewald
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,35 +21,35 @@ import java.net.URI
 import java.util.logging.Level
 import java.util.ArrayList
 import scala.collection.mutable.ListBuffer
-import james.core.experiments.replication.ConfidenceIntervalCriterion
-import james.core.experiments.replication.IReplicationCriterion
-import james.core.experiments.replication.ReplicationNumberCriterion
-import james.core.experiments.taskrunner.parallel.ParallelComputationTaskRunnerFactory
-import james.core.experiments.taskrunner.plugintype.TaskRunnerFactory
-import james.core.experiments.taskrunner.ITaskRunner
-import james.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
-import james.core.experiments.tasks.stoppolicy.steps.StepCountStopFactory
-import james.core.experiments.tasks.stoppolicy.EmptyStopConditionStopPolicyFactory
-import james.core.experiments.variables.modifier.IVariableModifier
-import james.core.experiments.variables.modifier.IncrementModifierDouble
-import james.core.experiments.variables.modifier.IncrementModifierInteger
-import james.core.experiments.variables.modifier.SequenceModifier
-import james.core.experiments.variables.ExperimentVariable
-import james.core.experiments.BaseExperiment
-import james.core.experiments.ComputationTaskRuntimeInformation
-import james.core.experiments.IComputationTaskConfiguration
-import james.core.experiments.RunInformation
-import james.core.experiments.SimulationRunConfiguration
-import james.core.math.random.generators.plugintype.RandomGeneratorFactory
-import james.core.model.variables.BaseVariable
-import james.core.parameters.ParameterizedFactory
-import james.core.processor.plugintype.ProcessorFactory
-import james.core.simulationrun.stoppolicy.CompositeCompTaskStopPolicyFactory
-import james.core.simulationrun.stoppolicy.ConjunctiveSimRunStopPolicyFactory
-import james.core.simulationrun.stoppolicy.DisjunctiveSimRunStopPolicyFactory
-import james.core.simulationrun.stoppolicy.SimTimeStopFactory
-import james.core.simulationrun.stoppolicy.WallClockTimeStopFactory
-import james.SimSystem
+import org.jamesii.core.experiments.replication.ConfidenceIntervalCriterion
+import org.jamesii.core.experiments.replication.IReplicationCriterion
+import org.jamesii.core.experiments.replication.ReplicationNumberCriterion
+import org.jamesii.core.experiments.taskrunner.parallel.ParallelComputationTaskRunnerFactory
+import org.jamesii.core.experiments.taskrunner.plugintype.TaskRunnerFactory
+import org.jamesii.core.experiments.taskrunner.ITaskRunner
+import org.jamesii.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
+import org.jamesii.core.experiments.tasks.stoppolicy.steps.StepCountStopFactory
+import org.jamesii.core.experiments.tasks.stoppolicy.EmptyStopConditionStopPolicyFactory
+import org.jamesii.core.experiments.variables.modifier.IVariableModifier
+import org.jamesii.core.experiments.variables.modifier.IncrementModifierDouble
+import org.jamesii.core.experiments.variables.modifier.IncrementModifierInteger
+import org.jamesii.core.experiments.variables.modifier.SequenceModifier
+import org.jamesii.core.experiments.variables.ExperimentVariable
+import org.jamesii.core.experiments.BaseExperiment
+import org.jamesii.core.experiments.ComputationTaskRuntimeInformation
+import org.jamesii.core.experiments.IComputationTaskConfiguration
+import org.jamesii.core.experiments.RunInformation
+import org.jamesii.core.experiments.SimulationRunConfiguration
+import org.jamesii.core.math.random.generators.plugintype.RandomGeneratorFactory
+import org.jamesii.core.model.variables.BaseVariable
+import org.jamesii.core.parameters.ParameterizedFactory
+import org.jamesii.core.processor.plugintype.ProcessorFactory
+import org.jamesii.core.simulationrun.stoppolicy.CompositeCompTaskStopPolicyFactory
+import org.jamesii.core.simulationrun.stoppolicy.ConjunctiveSimRunStopPolicyFactory
+import org.jamesii.core.simulationrun.stoppolicy.DisjunctiveSimRunStopPolicyFactory
+import org.jamesii.core.simulationrun.stoppolicy.SimTimeStopFactory
+import org.jamesii.core.simulationrun.stoppolicy.WallClockTimeStopFactory
+import org.jamesii.SimSystem
 import sessl.VariableAssignment
 import sessl.stringToParamName
 import sessl.util.AlgorithmSet
@@ -74,11 +75,14 @@ import sessl.Simulator
 import sessl.StoppingCondition
 import sessl.VarSeq
 import sessl.Variable
-import simspex.adaptiverunner.policies.EpsilonGreedyDecrInitFactory
-import simspex.adaptiverunner.AdaptiveTaskRunnerFactory
-import james.core.model.IModel
+import org.jamesii.simspex.adaptiverunner.policies.EpsilonGreedyDecrInitFactory
+import org.jamesii.simspex.adaptiverunner.AdaptiveTaskRunnerFactory
+import org.jamesii.core.model.IModel
+import org.jamesii.core.experiments.replication.plugintype.RepCriterionFactory
+import org.jamesii.core.experiments.replication.RepNumberCriterionFactory
 
-/** Encapsulates the BaseExperiment.
+/**
+ * Encapsulates the BaseExperiment.
  *
  *  @see james.core.experiments.BaseExperiment
  *
@@ -110,7 +114,19 @@ class Experiment extends AbstractExperiment {
   }
 
   /** Configure replications. */
-  def configureReplications() = exp.addReplicationCriterion(createReplicationCriterion(checkAndGetReplicationCondition()))
+  def configureReplications() =
+    if (replicationAlreadyConfigured)
+      exp.setReplicationCriterionFactory(
+        createRepCriterionParamFactory(createReplicationCriterion(checkAndGetReplicationCondition())))
+    else logger.warn("Omitting set-up of replication condition " + checkAndGetReplicationCondition + ", as replication condition has already been configured,")
+
+  /** @return true iff experiment replication has already been configured */
+  def replicationAlreadyConfigured = exp.getReplicationCriterionFactory().isInstanceOf[RepNumberCriterionFactory]
+
+  def createRepCriterionParamFactory(r: IReplicationCriterion) =
+    new ParameterizedFactory[RepCriterionFactory](new RepCriterionFactory() {
+      override def create(params: ParamBlock): IReplicationCriterion = r
+    })
 
   /** Create replication criterion. */
   def createReplicationCriterion(r: ReplicationCondition): IReplicationCriterion = r match {
@@ -186,7 +202,8 @@ class Experiment extends AbstractExperiment {
     executionMode match {
       case AllSimulators => {
         val repsPerSetup = fixedReplications.getOrElse(1)
-        exp.addReplicationCriterion(new ReplicationNumberCriterion(repsPerSetup * simulators.size))
+        logger.info("Configuring experiment for " + (repsPerSetup * simulators.size) + " replications")
+        exp.setReplicationCriterionFactory(createRepCriterionParamFactory(new ReplicationNumberCriterion(repsPerSetup * simulators.size)))
         configureAdaptiveRunner(1, simulators, repsPerSetup)
       }
       case AnySimulator => configureAdaptiveRunner(1, simulators)
@@ -198,7 +215,8 @@ class Experiment extends AbstractExperiment {
   def useFirstSetupAsProcessor() =
     setProcessorParameters(ParamBlockGenerator.createParamBlock(simulators.algorithms(0).asInstanceOf[JamesIIAlgo[Factory]]))
 
-  /** Configure experiment to use the adaptive task runner.
+  /**
+   * Configure experiment to use the adaptive task runner.
    *
    *  @param threads
    *          the number of threads to be used
@@ -248,7 +266,8 @@ class Experiment extends AbstractExperiment {
     }
   }
 
-  /** Adds the execution listener.
+  /**
+   * Adds the execution listener.
    *  @param exp the James II experiment
    */
   private def addExecutionListener(experiment: BaseExperiment) = {
@@ -323,7 +342,8 @@ class Experiment extends AbstractExperiment {
       exp.getFixedModelParameters().put(v._1, v._2)
   }
 
-  /** Creates the experiment variable.
+  /**
+   * Creates the experiment variable.
    *
    *  @param variable the variable to be scanned
    *  @return the experiment variable
@@ -334,7 +354,8 @@ class Experiment extends AbstractExperiment {
     case x => throw new IllegalArgumentException("'" + x + "' is unknown, cannot be converted to experiment variable.")
   }
 
-  /** Creates an experiment variable for a sequence.
+  /**
+   * Creates an experiment variable for a sequence.
    *
    *  @param sequence the given sequence
    *  @return the experiment variable
@@ -347,7 +368,8 @@ class Experiment extends AbstractExperiment {
     new ExperimentVariable(sequence.name, sequence.values.head, createSequenceModifier(elems))
   }
 
-  /** Creates a sequence modifier for a given list of elements.
+  /**
+   * Creates a sequence modifier for a given list of elements.
    *
    *  @param <T>
    *            the type of the list elements (and the returned modifier)
@@ -357,7 +379,8 @@ class Experiment extends AbstractExperiment {
    */
   def createSequenceModifier[T](elements: java.util.List[T]) = new SequenceModifier[T](elements)
 
-  /** Checks whether all values in the gives sequence are of the same type.
+  /**
+   * Checks whether all values in the gives sequence are of the same type.
    *
    *  @param values
    *            the values
@@ -367,7 +390,8 @@ class Experiment extends AbstractExperiment {
     x: Any => report(Level.SEVERE, "Type of '" + x + "' (" + x.getClass() + ") does not match type of first element: " + values.head.getClass())
   }
 
-  /** Creates an experiment variable for a range variable.
+  /**
+   * Creates an experiment variable for a range variable.
    *
    *  @param <T>
    *            the type of the variable's values
@@ -379,7 +403,8 @@ class Experiment extends AbstractExperiment {
     new ExperimentVariable[T](varRange.name, varRange.from, createIncrementModifier(varRange))
   }
 
-  /** Creates the increment modifier for a given range.
+  /**
+   * Creates the increment modifier for a given range.
    *
    *  @param <T>
    *            the type of the variable's values (has to be Int, Double, or Long)

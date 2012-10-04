@@ -23,21 +23,21 @@
 		<!-- To support performance observation and all/any-simulator execution 
 			modes: -->
 		<dependency>
-			<groupId>james2</groupId>
+			<groupId>org.jamesii</groupId>
 			<artifactId>sasf</artifactId>
-			<version>0.8.7</version>
+			<version>0.8.8</version>
 		</dependency>
 		<!-- To support instrumentation of SR models: -->
 		<dependency>
-			<groupId>james2</groupId>
+			<groupId>org.jamesii</groupId>
 			<artifactId>sr</artifactId>
-			<version>0.8.7</version>
+			<version>0.8.8</version>
 		</dependency>
 		<!-- To support report generation: -->
 		<dependency>
-			<groupId>james2</groupId>
+			<groupId>org.jamesii</groupId>
 			<artifactId>resultreports</artifactId>
-			<version>0.8.7</version>
+			<version>0.8.8</version>
 		</dependency>
 		<!-- To support optimization (this is not released yet - components based 
 			on this cannot be released either): -->

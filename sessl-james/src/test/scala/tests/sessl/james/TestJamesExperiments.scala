@@ -15,7 +15,7 @@
  ******************************************************************************/
 package tests.sessl.james
 
-import james.core.util.StopWatch
+import org.jamesii.core.util.StopWatch
 import sessl.AbstractExperiment
 
 /** Auxiliary constants and methods for testing the James II bindings for sessl.

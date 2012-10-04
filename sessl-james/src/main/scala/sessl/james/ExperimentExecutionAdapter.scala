@@ -14,10 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 package sessl.james
-import james.core.experiments.IExperimentExecutionListener
-import james.core.experiments.BaseExperiment
-import james.core.experiments.taskrunner.ITaskRunner
-import james.core.experiments.ComputationTaskRuntimeInformation
+import org.jamesii.core.experiments.IExperimentExecutionListener
+import org.jamesii.core.experiments.BaseExperiment
+import org.jamesii.core.experiments.taskrunner.ITaskRunner
+import org.jamesii.core.experiments.ComputationTaskRuntimeInformation
 
 /**
  * An adapter for experiment execution listeners.

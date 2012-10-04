@@ -16,19 +16,19 @@
 package sessl.james
 
 import java.util.HashMap
-import sessl.util.SimpleObserverHelper
-import sessl.util.SimpleObservation
-import james.core.experiments.instrumentation.computation.plugintype.ComputationInstrumenterFactory
-import james.core.experiments.instrumentation.computation.IComputationInstrumenter
-import james.core.experiments.optimization.parameter.instrumenter.IResponseObsSimInstrumenter
-import james.core.experiments.optimization.parameter.IResponseObserver
-import james.core.experiments.tasks.IComputationTask
-import james.core.model.variables.BaseVariable
-import james.core.observe.Mediator
-import james.core.parameters.ParameterBlock
+import org.jamesii.core.experiments.instrumentation.computation.IComputationInstrumenter
+import org.jamesii.core.experiments.instrumentation.computation.plugintype.ComputationInstrumenterFactory
+import org.jamesii.core.experiments.optimization.parameter.IResponseObserver
+import org.jamesii.core.experiments.optimization.parameter.instrumenter.IResponseObsSimInstrumenter
+import org.jamesii.core.experiments.tasks.IComputationTask
+import org.jamesii.core.model.variables.BaseVariable
+import org.jamesii.core.observe.Mediator
+import org.jamesii.core.parameters.ParameterBlock
 import model.sr.ISRModel
 import model.sr.snapshots.SRSnapshotObserver
-import james.core.observe.IObservable
+import sessl.util.SimpleObservation
+import sessl.util.SimpleObserverHelper
+import org.jamesii.core.observe.IObservable
 
 
 /**

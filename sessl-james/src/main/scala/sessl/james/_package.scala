@@ -1,48 +1,49 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl
 
-import _root_.james.core.parameters.ParameterBlock
-import _root_.james.core.factories.Factory
-import _root_.james.core.parameters.ParameterizedFactory
-import _root_.james.core.experiments.tasks.ComputationTaskIDObject
-import _root_.james.SimSystem
-import _root_.james.core.experiments.BaseExperiment
 import java.util.logging.Level
+
 import scala.collection.mutable.ListBuffer
+
+import org.jamesii.SimSystem
+import org.jamesii.core.experiments.tasks.ComputationTaskIDObject
+import org.jamesii.core.parameters.ParameterBlock
 
 package object james {
 
   /** The basic factory type.  */
-  type Factory = _root_.james.core.factories.Factory[_]
+  type Factory = org.jamesii.core.factories.Factory[_]
 
   /** The abstract factory type. */
-  type AbstractFactory[T <: Factory] = _root_.james.core.factories.AbstractFactory[T]
+  type AbstractFactory[T <: Factory] = org.jamesii.core.factories.AbstractFactory[T]
 
   /** The parameter type. */
-  type ParamBlock = _root_.james.core.parameters.ParameterBlock
+  type ParamBlock = org.jamesii.core.parameters.ParameterBlock
 
   /** The parameterized factory. */
-  type ParamFactory[X <: Factory] = _root_.james.core.parameters.ParameterizedFactory[X]
+  type ParamFactory[X <: Factory] = org.jamesii.core.parameters.ParameterizedFactory[X]
 
   /** The stop policy factory. */
-  type StopFactory = _root_.james.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
+  type StopFactory = org.jamesii.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
 
   /** The pair type in James II (there is a pre-defined pair type in Scala).*/
-  type JamesPair[X, Y] = _root_.james.core.util.misc.Pair[X, Y]
+  type JamesPair[X, Y] = org.jamesii.core.util.misc.Pair[X, Y]
 
   /** A reference to the registry. */
   lazy val Registry = SimSystem.getRegistry();
