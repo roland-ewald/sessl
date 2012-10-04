@@ -93,6 +93,14 @@ class Experiment extends AbstractExperiment {
   /** Flag to check whether the experiment has been stopped properly already. */
   private[this] var experimentStopped = false
 
+  /**
+   * Stores all additional replication criteria to e configured configured.
+   * This can be used, for example, by methods that need a certain minimal number of replications but
+   * this does not need to be configured by the experimenter.
+   * Their semantics is conjunctive, i.e. all additional conditions need to be fulfilled for termination.
+   */
+  val additionalReplicationConditions = ListBuffer[ReplicationCondition]()
+
   /** Encapsulated base experiment. */
   val exp = new BaseExperiment
   exp.setBackupEnabled(false)
@@ -115,13 +123,11 @@ class Experiment extends AbstractExperiment {
 
   /** Configure replications. */
   def configureReplications() =
-    if (replicationAlreadyConfigured)
-      exp.setReplicationCriterionFactory(
-        createRepCriterionParamFactory(createReplicationCriterion(checkAndGetReplicationCondition())))
-    else logger.warn("Omitting set-up of replication condition " + checkAndGetReplicationCondition + ", as replication condition has already been configured,")
-
-  /** @return true iff experiment replication has already been configured */
-  def replicationAlreadyConfigured = exp.getReplicationCriterionFactory().isInstanceOf[RepNumberCriterionFactory]
+    exp.setReplicationCriterionFactory(
+      createRepCriterionParamFactory(
+        createReplicationCriterion(
+          additionalReplicationConditions.toList.foldLeft[ReplicationCondition](
+            checkAndGetReplicationCondition())((l, r) => ConjunctiveReplicationCondition(l, r)))))
 
   def createRepCriterionParamFactory(r: IReplicationCriterion) =
     new ParameterizedFactory[RepCriterionFactory](new RepCriterionFactory() {
@@ -203,7 +209,7 @@ class Experiment extends AbstractExperiment {
       case AllSimulators => {
         val repsPerSetup = fixedReplications.getOrElse(1)
         logger.info("Configuring experiment for " + (repsPerSetup * simulators.size) + " replications")
-        exp.setReplicationCriterionFactory(createRepCriterionParamFactory(new ReplicationNumberCriterion(repsPerSetup * simulators.size)))
+        additionalReplicationConditions += FixedNumber(repsPerSetup * simulators.size)
         configureAdaptiveRunner(1, simulators, repsPerSetup)
       }
       case AnySimulator => configureAdaptiveRunner(1, simulators)
