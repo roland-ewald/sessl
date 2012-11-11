@@ -15,10 +15,14 @@
  ******************************************************************************/
 package sessl.james
 
-import james.core.util.eventset.plugintype.EventQueueFactory
-import sessl._
-import org.junit.Assert._
+import org.jamesii.core.util.eventset.plugintype.EventQueueFactory
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
+
+import sessl.range
+import sessl.stringToVarName
 import sessl.util.AlgorithmSet
 import sessl.util.Logging
 

@@ -19,7 +19,7 @@ import sessl.Trajectory
 import sessl.ObservationReplicationsResultsAspect
 import sessl.ObservationRunResultsAspect
 import sessl.ObservationReplicationsResultsAspect
-import james.core.math.statistics.tests.wilcoxon.WilcoxonRankSumTest
+import org.jamesii.core.math.statistics.tests.wilcoxon.WilcoxonRankSumTest
 
 import sessl.util.ScalaToJava._
 

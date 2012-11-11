@@ -1,53 +1,55 @@
-/*******************************************************************************
- * Copyright 2012 Roland Ewald
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
+/**
+ * *****************************************************************************
+ *  Copyright 2012 Roland Ewald
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  ****************************************************************************
+ */
 package sessl.james
 
 import java.net.URI
 import java.util.logging.Level
 import java.util.ArrayList
 import scala.collection.mutable.ListBuffer
-import james.core.experiments.replication.ConfidenceIntervalCriterion
-import james.core.experiments.replication.IReplicationCriterion
-import james.core.experiments.replication.ReplicationNumberCriterion
-import james.core.experiments.taskrunner.parallel.ParallelComputationTaskRunnerFactory
-import james.core.experiments.taskrunner.plugintype.TaskRunnerFactory
-import james.core.experiments.taskrunner.ITaskRunner
-import james.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
-import james.core.experiments.tasks.stoppolicy.steps.StepCountStopFactory
-import james.core.experiments.tasks.stoppolicy.EmptyStopConditionStopPolicyFactory
-import james.core.experiments.variables.modifier.IVariableModifier
-import james.core.experiments.variables.modifier.IncrementModifierDouble
-import james.core.experiments.variables.modifier.IncrementModifierInteger
-import james.core.experiments.variables.modifier.SequenceModifier
-import james.core.experiments.variables.ExperimentVariable
-import james.core.experiments.BaseExperiment
-import james.core.experiments.ComputationTaskRuntimeInformation
-import james.core.experiments.IComputationTaskConfiguration
-import james.core.experiments.RunInformation
-import james.core.experiments.SimulationRunConfiguration
-import james.core.math.random.generators.plugintype.RandomGeneratorFactory
-import james.core.model.variables.BaseVariable
-import james.core.parameters.ParameterizedFactory
-import james.core.processor.plugintype.ProcessorFactory
-import james.core.simulationrun.stoppolicy.CompositeCompTaskStopPolicyFactory
-import james.core.simulationrun.stoppolicy.ConjunctiveSimRunStopPolicyFactory
-import james.core.simulationrun.stoppolicy.DisjunctiveSimRunStopPolicyFactory
-import james.core.simulationrun.stoppolicy.SimTimeStopFactory
-import james.core.simulationrun.stoppolicy.WallClockTimeStopFactory
-import james.SimSystem
+import org.jamesii.core.experiments.replication.ConfidenceIntervalCriterion
+import org.jamesii.core.experiments.replication.IReplicationCriterion
+import org.jamesii.core.experiments.replication.ReplicationNumberCriterion
+import org.jamesii.core.experiments.taskrunner.parallel.ParallelComputationTaskRunnerFactory
+import org.jamesii.core.experiments.taskrunner.plugintype.TaskRunnerFactory
+import org.jamesii.core.experiments.taskrunner.ITaskRunner
+import org.jamesii.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
+import org.jamesii.core.experiments.tasks.stoppolicy.steps.StepCountStopFactory
+import org.jamesii.core.experiments.tasks.stoppolicy.EmptyStopConditionStopPolicyFactory
+import org.jamesii.core.experiments.variables.modifier.IVariableModifier
+import org.jamesii.core.experiments.variables.modifier.IncrementModifierDouble
+import org.jamesii.core.experiments.variables.modifier.IncrementModifierInteger
+import org.jamesii.core.experiments.variables.modifier.SequenceModifier
+import org.jamesii.core.experiments.variables.ExperimentVariable
+import org.jamesii.core.experiments.BaseExperiment
+import org.jamesii.core.experiments.ComputationTaskRuntimeInformation
+import org.jamesii.core.experiments.IComputationTaskConfiguration
+import org.jamesii.core.experiments.RunInformation
+import org.jamesii.core.experiments.SimulationRunConfiguration
+import org.jamesii.core.math.random.generators.plugintype.RandomGeneratorFactory
+import org.jamesii.core.model.variables.BaseVariable
+import org.jamesii.core.parameters.ParameterizedFactory
+import org.jamesii.core.processor.plugintype.ProcessorFactory
+import org.jamesii.core.simulationrun.stoppolicy.CompositeCompTaskStopPolicyFactory
+import org.jamesii.core.simulationrun.stoppolicy.ConjunctiveSimRunStopPolicyFactory
+import org.jamesii.core.simulationrun.stoppolicy.DisjunctiveSimRunStopPolicyFactory
+import org.jamesii.core.simulationrun.stoppolicy.SimTimeStopFactory
+import org.jamesii.core.simulationrun.stoppolicy.WallClockTimeStopFactory
+import org.jamesii.SimSystem
 import sessl.VariableAssignment
 import sessl.stringToParamName
 import sessl.util.AlgorithmSet
@@ -73,9 +75,11 @@ import sessl.Simulator
 import sessl.StoppingCondition
 import sessl.VarSeq
 import sessl.Variable
-import simspex.adaptiverunner.policies.EpsilonGreedyDecrInitFactory
-import simspex.adaptiverunner.AdaptiveTaskRunnerFactory
-import james.core.model.IModel
+import org.jamesii.simspex.adaptiverunner.policies.EpsilonGreedyDecrInitFactory
+import org.jamesii.simspex.adaptiverunner.AdaptiveTaskRunnerFactory
+import org.jamesii.core.model.IModel
+import org.jamesii.core.experiments.replication.plugintype.RepCriterionFactory
+import org.jamesii.core.experiments.replication.RepNumberCriterionFactory
 
 /**
  * Encapsulates the BaseExperiment.
@@ -85,6 +89,17 @@ import james.core.model.IModel
  *  @author Roland Ewald
  */
 class Experiment extends AbstractExperiment {
+
+  /** Flag to check whether the experiment has been stopped properly already. */
+  private[this] var experimentStopped = false
+
+  /**
+   * Stores all additional replication criteria to e configured configured.
+   * This can be used, for example, by methods that need a certain minimal number of replications but
+   * this does not need to be configured by the experimenter.
+   * Their semantics is conjunctive, i.e. all additional conditions need to be fulfilled for termination.
+   */
+  val additionalReplicationConditions = ListBuffer[ReplicationCondition]()
 
   /** Encapsulated base experiment. */
   val exp = new BaseExperiment
@@ -107,7 +122,17 @@ class Experiment extends AbstractExperiment {
   }
 
   /** Configure replications. */
-  def configureReplications() = exp.addReplicationCriterion(createReplicationCriterion(checkAndGetReplicationCondition()))
+  def configureReplications() =
+    exp.setReplicationCriterionFactory(
+      createRepCriterionParamFactory(
+        createReplicationCriterion(
+          additionalReplicationConditions.toList.foldLeft[ReplicationCondition](
+            checkAndGetReplicationCondition())((l, r) => ConjunctiveReplicationCondition(l, r)))))
+
+  def createRepCriterionParamFactory(r: IReplicationCriterion) =
+    new ParameterizedFactory[RepCriterionFactory](new RepCriterionFactory() {
+      override def create(params: ParamBlock): IReplicationCriterion = r
+    })
 
   /** Create replication criterion. */
   def createReplicationCriterion(r: ReplicationCondition): IReplicationCriterion = r match {
@@ -183,7 +208,8 @@ class Experiment extends AbstractExperiment {
     executionMode match {
       case AllSimulators => {
         val repsPerSetup = fixedReplications.getOrElse(1)
-        exp.addReplicationCriterion(new ReplicationNumberCriterion(repsPerSetup * simulators.size))
+        logger.info("Configuring experiment for " + (repsPerSetup * simulators.size) + " replications")
+        additionalReplicationConditions += FixedNumber(repsPerSetup * simulators.size)
         configureAdaptiveRunner(1, simulators, repsPerSetup)
       }
       case AnySimulator => configureAdaptiveRunner(1, simulators)
@@ -237,25 +263,60 @@ class Experiment extends AbstractExperiment {
   override def executeExperiment() = {
     addExecutionListener(exp)
     exp.execute()
-    experimentDone()
+    //This additional synchronization is necessary because JAMES II does currently not guarantee to call the 
+    //ExperimentExecutionListener#experimentExecutionStopped(...) before BaseExperiment#execute(...) returns:
+    exp.synchronized {
+      if (!experimentStopped) {
+        exp.wait
+      }
+    }
   }
 
   /**
    * Adds the execution listener.
    *  @param exp the James II experiment
    */
-  private def addExecutionListener(exp: BaseExperiment) = { //TODO: THIS IS IMPORTANT FOR INTEGRATING OTHER SYSTEMS --- DOCUMENT THIS!
-    exp.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
+  private def addExecutionListener(experiment: BaseExperiment) = {
+    experiment.getExecutionController().addExecutionListener(new ExperimentExecutionAdapter {
+
+      //TODO: Remove as soon as this issue gets resolved in JAMES II
+      private[this] var expStoppedCalled = false
+      private[this] var runningSimulations = 0
+
       override def simulationInitialized(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation) = {
         val configSetup = Experiment.taskConfigToAssignment(crti.getComputationTask.getConfig)
         addAssignmentForRun(crti.getComputationTaskID.toString.hashCode, configSetup._1, configSetup._2)
+        this.synchronized { //TODO: Remove as soon as this issue gets resolved in JAMES II
+          runningSimulations = runningSimulations + 1
+        }
       }
       override def simulationExecuted(taskRunner: ITaskRunner,
         crti: ComputationTaskRuntimeInformation, jobDone: Boolean) = {
         runDone(crti.getComputationTaskID.toString.hashCode)
         if (jobDone)
-          replicationsDone(crti.getComputationTask.getConfig.getNumber) //TODO: This is important - EXTRACT AS METHODS!!! 
+          replicationsDone(crti.getComputationTask.getConfig.getNumber)
+        this.synchronized { //TODO: Remove as soon as this issue gets resolved in JAMES II
+          runningSimulations = runningSimulations - 1
+          finishExperimentIfNecessary()
+        }
+      }
+      override def experimentExecutionStopped(be: BaseExperiment): Unit = {
+        this.synchronized { //TODO: Remove as soon as this issue gets resolved in JAMES II
+          expStoppedCalled = true
+          finishExperimentIfNecessary()
+        }
+      }
+
+      //TODO: Remove the following functions as soon as this issue gets resolved in JAMES II
+      private[this] def experimentFinished = expStoppedCalled && runningSimulations == 0
+
+      private[this] def finishExperimentIfNecessary() = if (experimentFinished) notifyExperimentOnFinish()
+
+      private[this] def notifyExperimentOnFinish() = exp.synchronized {
+        experimentDone()
+        experimentStopped = true
+        exp.notifyAll
       }
     })
   }

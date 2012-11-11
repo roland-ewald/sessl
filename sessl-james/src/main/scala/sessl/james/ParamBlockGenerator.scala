@@ -21,8 +21,8 @@ import sessl.Algorithm
 import sessl.util.AlgorithmSet
 import sessl.util.CreatableFromVariables
 import java.util.logging.Level
-import james.SimSystem
-import james.core.parameters.ParameterBlock
+import org.jamesii.SimSystem
+import org.jamesii.core.parameters.ParameterBlock
 
 /**
  * Utility functions to generate parameter blocks.

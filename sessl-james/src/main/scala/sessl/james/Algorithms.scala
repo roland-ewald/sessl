@@ -17,22 +17,20 @@
  */
 package sessl.james
 
-import james.core.experiments.optimization.algorithm.plugintype.OptimizationAlgorithmFactory
-import james.core.math.random.generators.lcg.LCGGeneratorFactory
-import james.core.math.random.generators.mersennetwister.MersenneTwisterGeneratorFactory
-import james.core.math.random.generators.plugintype.RandomGeneratorFactory
-import james.core.processor.plugintype.ProcessorFactory
-import james.core.util.eventset.plugintype.EventQueueFactory
-import james.core.util.eventset.BucketsThresholdEventQueueFactory
-import james.core.util.eventset.HeapEventQueueFactory
-import james.core.util.eventset.LinkedListEventQueueFactory
-import james.core.util.eventset.SimpleEventQueueFactory
-import sessl.util.CreatableFromVariables
+import org.jamesii.core.experiments.optimization.algorithm.plugintype.OptimizationAlgorithmFactory
+import org.jamesii.core.math.random.generators.lcg.LCGGeneratorFactory
+import org.jamesii.core.math.random.generators.mersennetwister.MersenneTwisterGeneratorFactory
+import org.jamesii.core.math.random.generators.plugintype.RandomGeneratorFactory
+import org.jamesii.core.processor.plugintype.ProcessorFactory
+import org.jamesii.core.util.eventset.BucketsThresholdEventQueueFactory
+import org.jamesii.core.util.eventset.HeapEventQueueFactory
+import org.jamesii.core.util.eventset.LinkedListEventQueueFactory
+import org.jamesii.core.util.eventset.SimpleEventQueueFactory
+import org.jamesii.core.util.eventset.plugintype.EventQueueFactory
 import sessl.Algorithm
 import sessl.EventQueue
 import sessl.Optimizer
 import sessl.RNG
-import sessl.RNGUtils
 import sessl.Simulator
 import sessl._BucketQueue
 import sessl._DirectMethod
@@ -43,9 +41,11 @@ import sessl._MersenneTwister
 import sessl._NextReactionMethod
 import sessl._SortedList
 import sessl._TauLeaping
+import sessl.util.CreatableFromVariables
 import simulator.sr.ssa.drm.DirectReactionProcessorVarAFactory
 import simulator.sr.ssa.nrm.NextReactionProcessorVarAFactory
 import simulator.sr.ssa.tau.TauLeapingProcessorFactory
+import sessl.RNGUtils
 
 /**
  * Defines all James II algorithms that are accessible via sessl.

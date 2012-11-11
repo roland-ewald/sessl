@@ -112,7 +112,7 @@ trait Report extends AbstractReport {
       case v: LinePlotView => new LineChartDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
         v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1).tail: _*))
       case v: StatisticalTestView =>
-        val dataPair = new james.core.util.misc.Pair[Array[java.lang.Double], Array[java.lang.Double]](toDoubleArray(v.firstData._2), toDoubleArray(v.secondData._2))
+        val dataPair = new org.jamesii.core.util.misc.Pair[Array[java.lang.Double], Array[java.lang.Double]](toDoubleArray(v.firstData._2), toDoubleArray(v.secondData._2))
         new StatisticalTestDataView(dataPair, v.caption, v.firstData._1, v.secondData._1, true, true, StatisticalTestDefinition.KOLMOGOROV_SMIRNOV)
       case v: TableView => new TableDataView(to2DTransposedJavaStringArray(v.data: _*), v.caption)
       case _ => throw new IllegalArgumentException("Data view " + view + " not yet supported.")

@@ -14,14 +14,14 @@
  * limitations under the License.
  ******************************************************************************/
 package sessl.james
-import simspex.exploration.simple.SimpleSimSpaceExplorer
-import james.core.experiments.steering.IExperimentSteerer
-import james.core.experiments.steering.SteeredExperimentVariables
-import james.core.experiments.variables.ExperimentVariables
+import org.jamesii.simspex.exploration.simple.SimpleSimSpaceExplorer
+import org.jamesii.core.experiments.steering.IExperimentSteerer
+import org.jamesii.core.experiments.steering.SteeredExperimentVariables
+import org.jamesii.core.experiments.variables.ExperimentVariables
 import sessl.util.AlgorithmSet
-import james.core.experiments.steering.ExperimentSteererVariable
-import james.core.processor.plugintype.ProcessorFactory
-import james.core.experiments.variables.modifier.SequenceModifier
+import org.jamesii.core.experiments.steering.ExperimentSteererVariable
+import org.jamesii.core.processor.plugintype.ProcessorFactory
+import org.jamesii.core.experiments.variables.modifier.SequenceModifier
 
 /** Support for the performance exploration methods provided by James II.
  *

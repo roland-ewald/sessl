@@ -17,8 +17,8 @@ package sessl.james
 
 import datastorage.jdbc.JdbcDataStorageFactory._
 import datastorage.jdbc.JdbcDataStorageFactory
-import james.core.data.storage.plugintype.DataStorageFactory
-import james.core.parameters.ParameterizedFactory
+import org.jamesii.core.data.storage.plugintype.DataStorageFactory
+import org.jamesii.core.parameters.ParameterizedFactory
 import sessl._
 
 /** Support for data sinks.
