@@ -65,6 +65,5 @@ trait SupportModelConfiguration {
   def model_=(modelURI: URI) = { modelLocation = Some(modelURI.toString()) }
   /** Default getters and setters. */
   protected def model_=(modelString: String) = { modelLocation = Some(modelString) }
-  protected def model: String = modelLocation.get
-
+  def model: String = modelLocation.get
 }
