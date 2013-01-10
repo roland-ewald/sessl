@@ -175,7 +175,7 @@ class Experiment extends AbstractExperiment {
   /** Create parameterized stop factory. */
   def createParamStopFactory(s: StoppingCondition): ParameterizedFactory[StopFactory] = s match {
     case Never => new ParamFactory[StopFactory](new EmptyStopConditionStopPolicyFactory(), Param())
-    case st: AfterSimTime => new ParamFactory[StopFactory](new SimTimeStopFactory(), Param() :/ (SimTimeStopFactory.SIMEND ~>> st.time))
+    case st: AfterSimTime => { checkSimTimeValidity(st); new ParamFactory[StopFactory](new SimTimeStopFactory(), Param() :/ (SimTimeStopFactory.SIMEND ~>> st.time)) }
     case ssteps: AfterSimSteps => new ParamFactory[StopFactory](new StepCountStopFactory(), Param() :/ (StepCountStopFactory.TASKEND ~>> ssteps.steps))
     case w: AfterWallClockTime => new ParamFactory[StopFactory](new WallClockTimeStopFactory(), Param() :/ (WallClockTimeStopFactory.SIMEND ~>> w.toMilliSeconds))
     case c: ConjunctiveStoppingCondition =>
@@ -185,6 +185,13 @@ class Experiment extends AbstractExperiment {
       new ParamFactory[StopFactory](new DisjunctiveSimRunStopPolicyFactory(), Param() :/
         (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~>> listParamStopFactories(createParamStopFactory(d.left), createParamStopFactory(d.right))))
     case x => throw new IllegalArgumentException("Stopping criterion '" + s + "' not supported.")
+  }
+
+  def checkSimTimeValidity(st: AfterSimTime) = {
+    require(st.toMilliSeconds == 0,
+      "Duration of simulation time needs to be set via the 'time' property, as it is unit-less in JAMES II (do not use seconds, minutes, etc.).")
+    if (st.time <= 0)
+      logger.warn("Simulation time must is not positive (> 0), but set to:" + st.time)
   }
 
   /** Creates a list of Java objects containing the given parameterized factories. */
