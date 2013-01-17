@@ -41,7 +41,7 @@ object ScalaToJava {
   }
 
   /** Convert list to double array. */
-  def toDoubleArray(values: List[Double]): Array[java.lang.Double] = values.map(_.asInstanceOf[java.lang.Double]).toArray
+  def toDoubleArray(values: Iterable[Double]): Array[java.lang.Double] = values.map(_.asInstanceOf[java.lang.Double]).toArray
 
   /** Convert list to (transposed) nested array. */
   def to2DTransposedJavaStringArray(valueLists: List[String]*): Array[Array[java.lang.String]] = {
