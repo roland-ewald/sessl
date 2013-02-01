@@ -45,7 +45,14 @@ import sessl.util.CreatableFromVariables
 import simulator.sr.ssa.drm.DirectReactionProcessorVarAFactory
 import simulator.sr.ssa.nrm.NextReactionProcessorVarAFactory
 import simulator.sr.ssa.tau.TauLeapingProcessorFactory
+import simulator.pi.channelfocused.ChannelFocusedProcessorFactory
+import simulator.pi.reaction.plugintype.ReactionFactory
 import sessl.RNGUtils
+import simulator.stopi.reaction.next.NextReactionMethodFactory
+import simulator.pi.popfocused.PopulationFocusedProcessorFactory
+import simulator.pi.comfocused.CommunicationFocusedProcessorFactory
+import simulator.srs.ssa.nsm.NSMProcessorFactory
+import simulator.pdevsflatsequential.FlatSequentialProcessorFactory
 
 /**
  * Defines all James II algorithms that are accessible via sessl.
@@ -94,6 +101,7 @@ case class BucketQueue() extends _BucketQueue with BasicJamesIIEventQueue {
 //Simulators
 trait BasicJamesIISimulator extends Simulator with JamesIIAlgo[ProcessorFactory]
 
+//SR
 case class DirectMethod() extends _DirectMethod with BasicJamesIISimulator {
   override def factory = new DirectReactionProcessorVarAFactory
 }
@@ -106,4 +114,39 @@ case class NextReactionMethod(val eventQueue: BasicJamesIIEventQueue = Heap())
 case class TauLeaping(val epsilon: Double = 0.03, val gamma: Double = 10, val stepNum: Int = 100, val criticalReactionThreshold: Int = 10)
   extends CreatableFromVariables[TauLeaping] with _TauLeaping with BasicJamesIISimulator {
   override def factory = new TauLeapingProcessorFactory
+}
+
+//SRS
+case class NextSubvolumeMethod(val EventQueue: String = Heap().factory.getClass().getCanonicalName())
+  extends CreatableFromVariables[NextSubvolumeMethod] with BasicJamesIISimulator {
+  override def factory = new NSMProcessorFactory
+}
+
+//StoPi
+case class NextReactionMethodType() extends JamesIIAlgo[ReactionFactory] {
+  override def factory = new NextReactionMethodFactory
+}
+
+case class PopulationFocusedSimulator(val EventQueue: String = Heap().factory.getClass().getCanonicalName(),
+  val ReactionType: String = NextReactionMethodType().factory.getClass().getCanonicalName())
+  extends CreatableFromVariables[PopulationFocusedSimulator] with BasicJamesIISimulator {
+  override def factory = new PopulationFocusedProcessorFactory
+}
+
+case class CommunicationFocusedSimulator(val EventQueue: String = Heap().factory.getClass().getCanonicalName(),
+  val ReactionType: String = NextReactionMethodType().factory.getClass().getCanonicalName())
+  extends CreatableFromVariables[CommunicationFocusedSimulator] with BasicJamesIISimulator {
+  override def factory = new CommunicationFocusedProcessorFactory
+}
+
+case class ChannelFocusedSimulator(val EventQueue: String = Heap().factory.getClass().getCanonicalName(),
+  val ReactionType: String = NextReactionMethodType().factory.getClass().getCanonicalName())
+  extends CreatableFromVariables[ChannelFocusedSimulator] with BasicJamesIISimulator {
+  override def factory = new ChannelFocusedProcessorFactory
+}
+
+//PDEVS
+case class PDEVSFlatSequential(val eventqueue: String = Heap().factory.getClass().getCanonicalName())
+  extends CreatableFromVariables[PDEVSFlatSequential] with BasicJamesIISimulator {
+  override def factory = new FlatSequentialProcessorFactory
 }

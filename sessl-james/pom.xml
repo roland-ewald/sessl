@@ -1,16 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>sessl-james</artifactId>
 	<packaging>jar</packaging>
 	<name>SESSL Binding for JAMES II</name>
 
- <parent>
-    <groupId>org.sessl</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>0.8-SNAPSHOT</version>
-    <relativePath>../.</relativePath>
- </parent>
- 
+	<parent>
+		<groupId>org.sessl</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>0.8-SNAPSHOT</version>
+		<relativePath>../.</relativePath>
+	</parent>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.sessl</groupId>
@@ -27,10 +28,25 @@
 			<artifactId>sasf</artifactId>
 			<version>0.8.8</version>
 		</dependency>
-		<!-- To support instrumentation of SR models: -->
+		<!-- To support SR models etc.: -->
 		<dependency>
 			<groupId>org.jamesii</groupId>
 			<artifactId>sr</artifactId>
+			<version>0.8.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jamesii</groupId>
+			<artifactId>srs</artifactId>
+			<version>0.8.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jamesii</groupId>
+			<artifactId>pi-calculus</artifactId>
+			<version>0.8.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jamesii</groupId>
+			<artifactId>pdevs</artifactId>
 			<version>0.8.8</version>
 		</dependency>
 		<!-- To support report generation: -->
@@ -39,12 +55,5 @@
 			<artifactId>resultreports</artifactId>
 			<version>0.8.8</version>
 		</dependency>
-		<!-- To support optimization (this is not released yet - components based 
-			on this cannot be released either): -->
-		<!-- <dependency>
-			<groupId>james2</groupId>
-			<artifactId>experiment</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
-		</dependency>-->
 	</dependencies>
 </project>
