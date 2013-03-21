@@ -53,6 +53,7 @@ import simulator.pi.popfocused.PopulationFocusedProcessorFactory
 import simulator.pi.comfocused.CommunicationFocusedProcessorFactory
 import simulator.srs.ssa.nsm.NSMProcessorFactory
 import simulator.pdevsflatsequential.FlatSequentialProcessorFactory
+import org.jamesii.simulator.mlrules.population.reference.MLRulesPopulationProcessorFactory
 
 /**
  * Defines all James II algorithms that are accessible via sessl.
@@ -149,4 +150,9 @@ case class ChannelFocusedSimulator(val EventQueue: String = Heap().factory.getCl
 case class PDEVSFlatSequential(val eventqueue: String = Heap().factory.getClass().getCanonicalName())
   extends CreatableFromVariables[PDEVSFlatSequential] with BasicJamesIISimulator {
   override def factory = new FlatSequentialProcessorFactory
+}
+
+//ML-Rules
+case class MLRulesReference() extends BasicJamesIISimulator {
+  override def factory = new MLRulesPopulationProcessorFactory
 }

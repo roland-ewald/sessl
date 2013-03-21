@@ -49,6 +49,11 @@
 			<artifactId>pdevs</artifactId>
 			<version>0.8.8</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jamesii</groupId>
+			<artifactId>mlrules</artifactId>
+			<version>0.8.8</version>
+		</dependency>
 		<!-- To support report generation: -->
 		<dependency>
 			<groupId>org.jamesii</groupId>

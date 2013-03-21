@@ -47,8 +47,8 @@ import sessl.james.tools.TrajectorySetsComparator
     val runtimes = CSVFileWriter("vassib_autoreg_nw_sr_runtimes.csv")
     val tlUncertainty = CSVFileWriter("vassib_autoreg_nw_sr_comparison.csv")
 
-    val repsForReferenceImpl = 1000
-    val repsForEvaluation = 250
+    val repsForReferenceImpl = 10
+    val repsForEvaluation = 2
 
     //General experiment: what model, what data
     class AutoRegExperiment extends Experiment with Observation with ParallelExecution {
