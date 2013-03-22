@@ -61,7 +61,7 @@ object ParamBlockGenerator {
   private[this] def addToParamBlock(paramBlock: ParamBlock, nameAndValue: (String, Any), customBlockName: Option[String]): Unit = {
     nameAndValue._2 match {
       case algo: JamesIIAlgo[_] =>
-        paramBlock.addSubBlock(customBlockName.getOrElse(Registry.getBaseFactoryFor(algo.factory.getClass).getName()),
+        paramBlock.addSubBlock(customBlockName.getOrElse(Registry.getBaseFactoryFor(algo.factory.asInstanceOf[Factory].getClass).getName()),
           createParamBlock(algo))
       case pb: ParameterBlock =>
         paramBlock.addSubBl(nameAndValue._1, pb)

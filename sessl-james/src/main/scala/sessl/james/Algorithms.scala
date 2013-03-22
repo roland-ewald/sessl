@@ -54,16 +54,17 @@ import simulator.pi.comfocused.CommunicationFocusedProcessorFactory
 import simulator.srs.ssa.nsm.NSMProcessorFactory
 import simulator.pdevsflatsequential.FlatSequentialProcessorFactory
 import org.jamesii.simulator.mlrules.population.reference.MLRulesPopulationProcessorFactory
+import org.jamesii.core.processor.IProcessor
 
 /**
  * Defines all James II algorithms that are accessible via sessl.
  *
  * @author Roland Ewald
  */
-trait JamesIIAlgo[+T <: Factory] extends Algorithm {
-  
+trait JamesIIAlgo[T] extends Algorithm {
+
   def factory: T
-  
+
   /** Override this to account for legacy non-standard parameter block names for sub-entities. */
   def customBlockName(entryName: String): Option[String] = None
 }

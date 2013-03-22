@@ -29,6 +29,8 @@ package object james {
 
   /** The basic factory type.  */
   type Factory = org.jamesii.core.factories.Factory[_]
+  
+  type SpecificFactory[X] = org.jamesii.core.factories.Factory[X]
 
   /** The abstract factory type. */
   type AbstractFactory[T <: Factory] = org.jamesii.core.factories.AbstractFactory[T]
