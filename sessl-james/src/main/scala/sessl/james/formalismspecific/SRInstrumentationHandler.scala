@@ -50,9 +50,9 @@ class SRInstrumentationHandler extends InstrumentationHandler {
 
     val observer = new SRSnapshotObserver[ISRModel](obsTimes, 1000) with SimpleJAMESIIObserverHelper[SimpleObservation] {
 
-      registerCompTask(task)
       configureTaskObservation(instrumenter, task)
-
+      setConfig(instrumenter.instrConfig)
+      
       /** If the SR snapshot observer decides to store the data, we have to collect it too.*/
       override def store() = {
         val state = model.getState()
@@ -63,12 +63,6 @@ class SRInstrumentationHandler extends InstrumentationHandler {
           val amount = state.get(speciesMap.get(varToBeObserved))
           addValueFor(varToBeObserved, (time, amount))
         }
-      }
-
-      private def registerCompTask(computation: IComputationTask) = {
-        val runID = sessl.james.compTaskIDObjToRunID(computation.getUniqueIdentifier)
-        setRunID(runID)
-        instrumenter.setRunID(runID)
       }
 
     }
