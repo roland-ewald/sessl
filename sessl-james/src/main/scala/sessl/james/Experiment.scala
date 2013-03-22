@@ -169,7 +169,7 @@ class Experiment extends AbstractExperiment {
 
   /** Configure stopping. */
   def configureStopping() = {
-    exp.setComputationTaskStopFactory(createParamStopFactory(checkAndGetStoppingCondition()))
+    exp.setComputationTaskStopPolicyFactory(createParamStopFactory(checkAndGetStoppingCondition()))
   }
 
   /** Create parameterized stop factory. */
