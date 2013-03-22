@@ -32,11 +32,11 @@ import org.jamesii.core.parameters.ParameterBlock
 object ParamBlockGenerator {
 
   /** Create a set of parameter blocks from sessl algorithms. */
-  def createParamBlockSet[T <: JamesIIAlgo[Factory]](algoSet: AlgorithmSet[T]): Seq[ParamBlock] =
+  def createParamBlockSet[T <: JamesIIAlgo[_]](algoSet: AlgorithmSet[T]): Seq[ParamBlock] =
     for (algorithm <- algoSet.algorithms) yield createParamBlock(algorithm)
 
   /** Creates a parameter block from a sessl algorithm specification. */
-  def createParamBlock[T <: JamesIIAlgo[Factory]](algorithm: T): ParamBlock = {
+  def createParamBlock[T <: JamesIIAlgo[_]](algorithm: T): ParamBlock = {
     val paramBlock = new ParamBlock(algorithm.factory.getClass.getName)
     algorithm match {
       case a: CreatableFromVariables[_] =>
