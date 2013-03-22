@@ -18,15 +18,23 @@
 package sessl.james.formalismspecific
 
 import org.jamesii.core.experiments.tasks.IComputationTask
+import org.jamesii.core.observe.IObserver
+import org.jamesii.core.experiments.optimization.parameter.IResponseObserver
+import org.jamesii.core.observe.IObservable
+import sessl.util.SimpleObservation
+import sessl.james.SESSLInstrumenter
 
 /**
  * Interface for components that handle the instrumentation for a specific formalism
- * 
+ *
  * @author Roland Ewald
  */
 trait InstrumentationHandler {
 
   /** Returns true if the handler can be applied to the given computation task. */
   def applicable(task: IComputationTask): Boolean
-  
+
+  /** Configure the observation of this computation task and return the observer. */
+  def configureObserver(task: IComputationTask, instrumenter: SESSLInstrumenter): IResponseObserver[_ <: IObservable]
+
 }

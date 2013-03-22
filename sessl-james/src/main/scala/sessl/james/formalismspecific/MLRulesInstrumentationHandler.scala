@@ -19,6 +19,9 @@ package sessl.james.formalismspecific
 
 import org.jamesii.model.mlrules.IMLRulesModel
 import org.jamesii.core.experiments.tasks.IComputationTask
+import sessl.james.SESSLInstrumenter
+import org.jamesii.core.observe.IObservable
+import org.jamesii.core.experiments.optimization.parameter.IResponseObserver
 
 /**
  * Handles the instrumentation for ml-rules models.
@@ -27,6 +30,9 @@ import org.jamesii.core.experiments.tasks.IComputationTask
  */
 class MLRulesInstrumentationHandler extends InstrumentationHandler {
 
-  override def applicable(task: IComputationTask): Boolean = task.getProcessorInfo().getLocal().getModel().isInstanceOf[IMLRulesModel]
+  override def applicable(task: IComputationTask): Boolean = task.getModel().isInstanceOf[IMLRulesModel]
 
+  override def configureObserver(task: IComputationTask, instrumenter: SESSLInstrumenter): IResponseObserver[_ <: IObservable] = {
+    null
+  }
 }

@@ -1,18 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl.james
 
 import java.util.HashMap
@@ -32,7 +34,6 @@ import org.jamesii.core.observe.IObservable
 import org.jamesii.core.parameters.ParameterizedFactory
 import sessl.james.formalismspecific.SRInstrumentationHandler
 import sessl.james.formalismspecific.MLRulesInstrumentationHandler
-
 
 /**
  * Configuring James II for observation.
@@ -66,10 +67,15 @@ case class SESSLCompInstrFactory(val instrConfig: SimpleObservation) extends Com
 class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObsSimInstrumenter {
 
   val observers = new java.util.ArrayList[IResponseObserver[_ <: IObservable]]()
-  
+
   val instrumentationHandlers = List(new SRInstrumentationHandler(), new MLRulesInstrumentationHandler())
 
   private[this] var myRunID: Option[Int] = None
+
+  def setRunID(runID: Int) = {
+    require(!myRunID.isDefined, "Run ID should only be set once.")
+    myRunID = Some(runID)
+  }
 
   override def getInstantiatedObservers(): java.util.List[_ <: IResponseObserver[_ <: IObservable]] = observers
 
@@ -85,55 +91,11 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
 
   /** Creates dedicated, formalism-specific observer and configures it to additionally record the desired variables.*/
   override def instrumentComputation(computation: IComputationTask): Unit = {
-
-    observers.clear    
-    
-    //TODO: This is currently FORMALISM-SPECIFIC (should be replaced by general instrumentation mechanism)
-    require(computation.getProcessorInfo().getLocal().getModel().isInstanceOf[ISRModel], "Only SR models are supported so far!")
-
-    val model = computation.getProcessorInfo().getLocal().getModel().asInstanceOf[ISRModel]
-
-    computation.getConfig().getParameters() //TODO: Manage parameters explicitly!
-
-    Mediator.create(model)
-    val obsTimes = new Array[java.lang.Double](instrConfig.observationTimes.length)
-    for (i <- obsTimes.indices)
-      obsTimes(i) = instrConfig.observationTimes(i)
-
-    val bindings = instrConfig.variableBindings
-    val varsToBeObserved = instrConfig.varsToBeObserved
-
-    val observer = new SRSnapshotObserver[ISRModel](obsTimes, 1000) with SimpleObserverHelper[SimpleObservation] {
-
-      registerCompTask(computation)
-
-      val configSetup = Experiment.taskConfigToAssignment(computation.getConfig())
-      setAssignmentID(configSetup._1)
-      setAssignment(configSetup._2)
-      setConfig(instrConfig)
-
-      /** If the SR snapshot observer decides to store the data, we have to collect it too.*/
-      override def store() = {
-        val state = model.getState()
-        val time = model.getTime()
-        val speciesMap = model.getObjectMapping()
-        super.store()
-        for (varToBeObserved <- sesslObsConfig.varsToBeObserved) {
-          val amount = state.get(speciesMap.get(varToBeObserved))
-          addValueFor(varToBeObserved, (time, amount))
-        }
-      }
-
-      private[this] def registerCompTask(computation: IComputationTask) = {
-        val runID = compTaskIDObjToRunID(computation.getUniqueIdentifier)
-        setRunID(runID)
-        require(!myRunID.isDefined, "Run ID should only be set once.")
-        myRunID = Some(runID)
-      }
-    }
-    //FORMALISM-SPECIFIC part ends
-
-    model.registerObserver(observer)
+    observers.clear
+    val handler = instrumentationHandlers.find(h => h.applicable(computation))
+    require(handler.isDefined, "Instrumentation of this kind of model " + computation.getModel() + "is not yet supported so far!")
+    //TODO: Manage parameters explicitly: computation.getConfig().getParameters()
+    val observer = handler.get.configureObserver(computation, this)
     observers.add(observer)
   }
 }
