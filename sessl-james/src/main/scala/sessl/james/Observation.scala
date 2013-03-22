@@ -30,6 +30,8 @@ import sessl.util.SimpleObservation
 import sessl.util.SimpleObserverHelper
 import org.jamesii.core.observe.IObservable
 import org.jamesii.core.parameters.ParameterizedFactory
+import sessl.james.formalismspecific.SRInstrumentationHandler
+import sessl.james.formalismspecific.MLRulesInstrumentationHandler
 
 
 /**
@@ -64,6 +66,8 @@ case class SESSLCompInstrFactory(val instrConfig: SimpleObservation) extends Com
 class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObsSimInstrumenter {
 
   val observers = new java.util.ArrayList[IResponseObserver[_ <: IObservable]]()
+  
+  val instrumentationHandlers = List(new SRInstrumentationHandler(), new MLRulesInstrumentationHandler())
 
   private[this] var myRunID: Option[Int] = None
 
@@ -82,8 +86,8 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
   /** Creates dedicated, formalism-specific observer and configures it to additionally record the desired variables.*/
   override def instrumentComputation(computation: IComputationTask): Unit = {
 
-    observers.clear
-
+    observers.clear    
+    
     //TODO: This is currently FORMALISM-SPECIFIC (should be replaced by general instrumentation mechanism)
     require(computation.getProcessorInfo().getLocal().getModel().isInstanceOf[ISRModel], "Only SR models are supported so far!")
 
