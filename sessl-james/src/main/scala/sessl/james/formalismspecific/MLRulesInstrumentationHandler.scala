@@ -32,6 +32,7 @@ import sessl.util.ScalaToJava
 import sessl.util.SimpleObservation
 import sessl.util.SimpleObserverHelper
 import org.jamesii.core.observe.IObservable
+import sessl.james.util.SimpleJAMESIIObserverHelper
 
 /**
  * Handles the instrumentation for ml-rules models.
@@ -51,36 +52,56 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler {
     val bindings = instrumenter.instrConfig.variableBindings
     val varsToBeObserved = instrumenter.instrConfig.varsToBeObserved
 
-    val observer = new TimeStepObserver(model, 0.1, 0.01, new SpeciesCountAggregator()) with SimpleObserverHelper[SimpleObservation] with IResponseObserver[IEntity] {
+    val interval = 0.01
+    val simStopTime = 0.1
+    val aggregator = new SpeciesCountAggregator()
+    val observer = new TimeStepObserver(model, simStopTime, interval, aggregator) with SimpleJAMESIIObserverHelper[SimpleObservation] with IResponseObserver[IEntity] {
 
-      registerCompTask(task)
+      private[this] var nextTime = getModel().getTime
 
-      val configSetup = Experiment.taskConfigToAssignment(task.getConfig())
-      setAssignmentID(configSetup._1)
-      setAssignment(configSetup._2)
+      private[this] var lastTime = 0
+
+      private[this] var execNotification = false
+
+      configureTaskObservation(instrumenter, task)
       setConfig(instrumenter.instrConfig)
 
-      /** If the SR snapshot observer decides to store the data, we have to collect it too.*/
-      def store() = {
-        //        val state = model.getState()
-        //        val time = model.getTime()
-        //        val speciesMap = model.getObjectMapping()
-        //        super.store()
-        //        for (varToBeObserved <- sesslObsConfig.varsToBeObserved) {
-        //          val amount = state.get(speciesMap.get(varToBeObserved))
-        //          addValueFor(varToBeObserved, (time, amount))
-        //        }
+      /** Stores the data as aggregated. */
+      def store(time: Double) = {
+        aggregator.updateData()
+        for (varToBeObserved <- sesslObsConfig.varsToBeObserved) {
+          val timeAmountPair = aggregator.getCurrentData(varToBeObserved)
+          addValueFor(varToBeObserved, (time, timeAmountPair.getSecondValue()))
+        }
       }
-      
-      override def getResponseList():java.util.Map[String, BaseVariable[_]] = throw new NotSupportedException
 
-      private def registerCompTask(computation: IComputationTask) = {
-        val runID = sessl.james.compTaskIDObjToRunID(computation.getUniqueIdentifier)
-        setRunID(runID)
-        instrumenter.setRunID(runID)
+      /** Could be removed once there is a single store() method of the observe to override. */
+      override def handleUpdate(entity: IEntity): Unit = {
+        if (entity == getModel()) {
+          val time =
+            if (getModel().getTime().isInfinity)
+              lastTime
+            else getModel().getTime()
+
+          while (time >= nextTime && interval > 0) {
+            store(nextTime)
+            nextTime += interval
+            execNotification = true
+          }
+        }
       }
+
+      /** Could be removed once there is a single store() method of the observe to override. */
+      override def executeNotification(): Boolean = {
+        val ret = execNotification
+        execNotification = false
+        ret
+      }
+
+      override def getResponseList(): java.util.Map[String, BaseVariable[_]] = throw new NotSupportedException
+
     }
-    
+
     model.registerObserver(observer)
     observer
   }

@@ -29,6 +29,7 @@ import model.sr.snapshots.SRSnapshotObserver
 import sessl.util.SimpleObservation
 import sessl.james.SESSLInstrumenter
 import sessl.util.ScalaToJava
+import sessl.james.util.SimpleJAMESIIObserverHelper
 
 /**
  * Handles the instrumentation for species-reaction models.
@@ -48,14 +49,10 @@ class SRInstrumentationHandler extends InstrumentationHandler {
 
     val varsToBeObserved = instrumenter.instrConfig.varsToBeObserved
 
-    val observer = new SRSnapshotObserver[ISRModel](obsTimes, 1000) with SimpleObserverHelper[SimpleObservation] {
+    val observer = new SRSnapshotObserver[ISRModel](obsTimes, 1000) with SimpleJAMESIIObserverHelper[SimpleObservation] {
 
       registerCompTask(task)
-
-      val configSetup = Experiment.taskConfigToAssignment(task.getConfig())
-      setAssignmentID(configSetup._1)
-      setAssignment(configSetup._2)
-      setConfig(instrumenter.instrConfig)
+      configureTaskObservation(instrumenter, task)
 
       /** If the SR snapshot observer decides to store the data, we have to collect it too.*/
       override def store() = {
