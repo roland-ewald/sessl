@@ -28,6 +28,7 @@ import sessl.james.Experiment
 import model.sr.snapshots.SRSnapshotObserver
 import sessl.util.SimpleObservation
 import sessl.james.SESSLInstrumenter
+import sessl.util.ScalaToJava
 
 /**
  * Handles the instrumentation for species-reaction models.
@@ -43,11 +44,8 @@ class SRInstrumentationHandler extends InstrumentationHandler {
 
     val model = task.getModel().asInstanceOf[ISRModel]
     Mediator.create(model)
-    val obsTimes = new Array[java.lang.Double](instrumenter.instrConfig.observationTimes.length)
-    for (i <- obsTimes.indices)
-      obsTimes(i) = instrumenter.instrConfig.observationTimes(i)
+    val obsTimes = ScalaToJava.toDoubleArray(instrumenter.instrConfig.observationTimes)
 
-    val bindings = instrumenter.instrConfig.variableBindings
     val varsToBeObserved = instrumenter.instrConfig.varsToBeObserved
 
     val observer = new SRSnapshotObserver[ISRModel](obsTimes, 1000) with SimpleObserverHelper[SimpleObservation] {
