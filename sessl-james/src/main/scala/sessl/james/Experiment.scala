@@ -378,7 +378,7 @@ class Experiment extends AbstractExperiment {
     require(typesAreEqual(sequence.values), "The types of objects in a sequence should be equal.")
     for (v <- sequence.values)
       elems.add(v)
-    new ExperimentVariable(sequence.name, sequence.values.head, createSequenceModifier(elems))
+    new ExperimentVariable[Any](sequence.name, createSequenceModifier(elems))
   }
 
   /**
@@ -390,7 +390,7 @@ class Experiment extends AbstractExperiment {
    *            the elements
    *  @return the sequence modifier
    */
-  def createSequenceModifier[T](elements: java.util.List[T]) = new SequenceModifier[T](elements)
+  def createSequenceModifier[T](elements: java.util.List[T]):IVariableModifier[T] = new SequenceModifier[T](elements)
 
   /**
    * Checks whether all values in the gives sequence are of the same type.
@@ -413,7 +413,7 @@ class Experiment extends AbstractExperiment {
    *  @return the james experiment variable
    */
   def createRangeVariable[T <: AnyVal](varRange: VarRange[T]) = {
-    new ExperimentVariable[T](varRange.name, varRange.from, createIncrementModifier(varRange))
+    new ExperimentVariable[T](varRange.name, createIncrementModifier(varRange))
   }
 
   /**

@@ -29,6 +29,7 @@ import model.sr.snapshots.SRSnapshotObserver
 import sessl.util.SimpleObservation
 import sessl.util.SimpleObserverHelper
 import org.jamesii.core.observe.IObservable
+import org.jamesii.core.parameters.ParameterizedFactory
 
 
 /**
@@ -43,7 +44,7 @@ trait Observation extends SimpleObservation {
   abstract override def configure() {
     super.configure()
     if (!observationTimes.isEmpty)
-      exp.setComputationInstrumenterFactory(SESSLCompInstrFactory(this))
+      exp.setComputationInstrumenterFactory(new ParameterizedFactory[ComputationInstrumenterFactory](SESSLCompInstrFactory(this)))
   }
 }
 
