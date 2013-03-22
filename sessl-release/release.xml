@@ -24,7 +24,7 @@
       <excludes>
         <exclude>org.sessl:*</exclude>
 	    <exclude>org.scala-lang:*</exclude>
-        <exclude>james2:*</exclude>
+        <exclude>org.jamesii:*</exclude>
       </excludes>
     </dependencySet>
     
@@ -32,7 +32,7 @@
     <dependencySet>
       <outputDirectory>libs</outputDirectory>
       <includes>
-        <include>james2:*</include>
+        <include>org.jamesii:*</include>
       </includes>
       <outputFileNameMapping>${artifact.groupId}-${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
 	</dependencySet>
