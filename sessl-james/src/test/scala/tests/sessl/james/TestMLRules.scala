@@ -20,7 +20,7 @@ import org.junit.Assert._
         simulator = MLRulesReference()
         stopTime = 0.1
         observe("A", "B")
-        observeAt(range(0, 0.001, 0.095))
+        observeAt(range(0.0, 0.001, 0.095))
         withRunResult(results => {
           logger.info("Results of A:" + results.trajectory("A"))
           trajectoryB = Some(results.trajectory("B"))
@@ -29,7 +29,7 @@ import org.junit.Assert._
     }
 
     assertTrue(trajectoryB.isDefined)
-    assertTrue(trajectoryB.get.size > 2)
+    assertEquals(trajectoryB.get.size, 95)
   }
 
 }

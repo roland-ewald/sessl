@@ -33,27 +33,33 @@ import sessl.util.SimpleObservation
 import sessl.util.SimpleObserverHelper
 import org.jamesii.core.observe.IObservable
 import sessl.james.util.SimpleJAMESIIObserverHelper
+import sessl.util.Logging
 
 /**
  * Handles the instrumentation for ml-rules models.
  *
  * @author Roland Ewald
  */
-class MLRulesInstrumentationHandler extends InstrumentationHandler {
+class MLRulesInstrumentationHandler extends InstrumentationHandler with Logging {
 
   override def applicable(task: IComputationTask): Boolean = task.getModel().isInstanceOf[IMLRulesModel]
 
   override def configureObserver(task: IComputationTask, instrumenter: SESSLInstrumenter): IResponseObserver[_ <: IObservable] = {
 
     val model = task.getModel().asInstanceOf[IMLRulesModel]
-    Mediator.create(model)
-    val obsTimes = ScalaToJava.toDoubleList(instrumenter.instrConfig.observationTimes)
-
-    val bindings = instrumenter.instrConfig.variableBindings
     val varsToBeObserved = instrumenter.instrConfig.varsToBeObserved
+    val obsTimes = instrumenter.instrConfig.observationTimes
+    val timeOfLastObservation = obsTimes.last
+    val simStopTime = 1.05 * timeOfLastObservation //seems to be unused, let's set it to a 'safe' value after the last observation point
 
-    val interval = 0.01
-    val simStopTime = 0.1
+    //Some sanity checks
+    require(obsTimes.size >= 2, "At least two time points need to be given; ml-rules instrumentation is based on intervals.")
+    val interval = obsTimes(1) - obsTimes(0)
+    require(interval > 0, "Interval should be > 0, but is:" + interval)
+    val wrongInterval = obsTimes.sliding(2).find { vals => ((vals(1) - vals(0)) - interval) > 0.01 * interval } //Check for 1% deviation of observation times
+    if (wrongInterval.isDefined)
+      logger.warn("It seems you do not use a range of time points to observe, but ml-rules instrumentation is based on intervals. Using interval:" + interval)
+
     val aggregator = new SpeciesCountAggregator()
     val observer = new TimeStepObserver(model, simStopTime, interval, aggregator) with SimpleJAMESIIObserverHelper[SimpleObservation] with IResponseObserver[IEntity] {
 
@@ -83,7 +89,7 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler {
               lastTime
             else getModel().getTime()
 
-          while (time >= nextTime && interval > 0) {
+          while (time >= nextTime && interval > 0 && nextTime <= timeOfLastObservation) {
             store(nextTime)
             nextTime += interval
             execNotification = true
@@ -102,6 +108,7 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler {
 
     }
 
+    Mediator.create(model)
     model.registerObserver(observer)
     observer
   }
