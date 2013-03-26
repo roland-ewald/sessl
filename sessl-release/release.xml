@@ -23,7 +23,6 @@
       <outputDirectory>libs</outputDirectory>
       <excludes>
         <exclude>org.sessl:*</exclude>
-	    <exclude>org.scala-lang:*</exclude>
         <exclude>org.jamesii:*</exclude>
       </excludes>
     </dependencySet>
