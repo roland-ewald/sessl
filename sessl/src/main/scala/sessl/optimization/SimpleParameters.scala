@@ -17,13 +17,22 @@
  */
 package sessl.optimization
 
+import sessl.util.Logging
+
 /**
- * Optimization parameters can have any type and are read via (unique) identifiers.
+ * Simple default implementation to handle parameters.
+ *
+ * @see OptimizationParameters
+ *
  * @author Roland Ewald
  */
-trait OptimizationParameters {
+case class SimpleParameters(val params: Map[String, Any]) extends OptimizationParameters with Logging {
 
-  /** Returns value of parameter named 's'. */
-  def apply(s: String): Any
+  override def apply(s: String): Any = {
+    val rt = params.get(s)
+    if (!rt.isDefined)
+      logger.error("No value defined for parameter '" + s + "'")
+    rt.get
+  }
 
 }

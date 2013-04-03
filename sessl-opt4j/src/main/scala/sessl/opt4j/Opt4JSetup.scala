@@ -15,15 +15,25 @@
  * limitations under the License.
  * ****************************************************************************
  */
-package sessl.optimization
+package sessl.opt4j
+
+import sessl.optimization.AbstractOptimizerSetup
+import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.MapBuilder
+import scala.util.Random
+import sessl.optimization.SimpleParameters
 
 /**
- * Optimization parameters can have any type and are read via (unique) identifiers.
+ * Support for Opt4J.
+ *
  * @author Roland Ewald
  */
-trait OptimizationParameters {
+class Opt4JSetup extends AbstractOptimizerSetup {
 
-  /** Returns value of parameter named 's'. */
-  def apply(s: String): Any
-
+  override def execute() = {
+    for (i <- Range(1, 10)) {
+      val params = for (dim <- searchSpace) yield (dim.name, dim.values(Random.nextInt(dim.values.length)))
+      println("here be opt4j dragons (using " + objective + ": " + objective(SimpleParameters(params.toMap)) + " :)")
+    }
+  }
 }

@@ -17,6 +17,8 @@
  */
 package sessl.optimization
 
+import scala.collection.mutable.ListBuffer
+
 /**
  * Super class for all optimizer bindings.
  * @author Roland Ewald
@@ -24,14 +26,29 @@ package sessl.optimization
 abstract class AbstractOptimizerSetup {
 
   /** The objective function to be used. */
-  private[this] var objective: Option[Objective] = None
+  private[this] var obj: Option[Objective] = None
 
+  /** The search space consists of an arbitrary number of dimensions.*/
+  private[this] val searchSpaceDims = ListBuffer[SearchSpaceDimension[_]]()
+
+  //TODO: add constraints
+
+  def objective = obj.get
+
+  lazy val searchSpace = searchSpaceDims.toList
+
+  /** Store the objective function (must not be called more than once).*/
   def setObjective(f: Objective) {
-    require(!objective.isDefined, "Objective is already defined.")
-    objective = Some(f)
+    require(!obj.isDefined, "Objective is already defined.")
+    obj = Some(f)
   }
 
-  def execute = {
-    println("here be dragons (using " + objective.get + " :)")
-  }
+  /** Executes the optimization task.*/
+  def execute()
+
+  def param[X](name: String, values: X*) = searchSpaceDims += SearchSpaceDimension[X](name, values)
+
 }
+
+/** Represents a dimension in the search space. */
+case class SearchSpaceDimension[X](name: String, values: Seq[X])
