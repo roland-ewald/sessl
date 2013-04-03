@@ -17,8 +17,9 @@ package tests.sessl
 
 import org.junit.Test
 import org.junit.Test
+import org.junit.runner.RunWith
 
-class TestGenericOptimization {
+@Test class TestGenericOptimization {
 
   @Test def testSimpleOptScheme() = {
 

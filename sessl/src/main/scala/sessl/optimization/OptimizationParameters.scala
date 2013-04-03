@@ -15,13 +15,12 @@
  * limitations under the License.
  * ****************************************************************************
  */
-package sessl
+package sessl.optimization
 
-package object optimization {
-
-  /** The objective function mabs arbitrarily many parameters to some Double value. */
-  type Objective = OptimizationParameters => Double
-
-  /** The optimization 'command'. */
-  def optimize(f: Objective): InitializedObjective = InitializedObjective(f)
+/**
+ * 
+ * @author Roland Ewald
+ */
+trait OptimizationParameters {
+  def get[X](s: String): X
 }

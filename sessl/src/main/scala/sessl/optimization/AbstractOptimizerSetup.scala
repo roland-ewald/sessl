@@ -15,13 +15,23 @@
  * limitations under the License.
  * ****************************************************************************
  */
-package sessl
+package sessl.optimization
 
-package object optimization {
+/**
+ * Super class for all optimizer bindings.
+ * @author Roland Ewald
+ */
+abstract class AbstractOptimizerSetup {
 
-  /** The objective function mabs arbitrarily many parameters to some Double value. */
-  type Objective = OptimizationParameters => Double
+  /** The objective function to be used. */
+  private[this] var objective: Option[Objective] = None
 
-  /** The optimization 'command'. */
-  def optimize(f: Objective): InitializedObjective = InitializedObjective(f)
+  def setObjective(f: Objective) {
+    require(!objective.isDefined, "Objective is already defined.")
+    objective = Some(f)
+  }
+
+  def execute = {
+    println("here be dragons (using " + objective.get + " :)")
+  }
 }
