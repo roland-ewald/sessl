@@ -27,6 +27,14 @@ import sessl.optimization.GeneralSearchSpaceDimension
 import sessl.optimization.SimpleParameters
 import sessl.util.ScalaToJava
 import sessl.util.Logging
+import org.opt4j.core.Genotype
+import org.opt4j.core.genotype.CompositeGenotype
+import org.opt4j.core.problem.Decoder
+import sessl.optimization.SimpleParameters
+import org.opt4j.core.genotype.SelectGenotype
+import org.opt4j.core.problem.Creator
+import org.opt4j.core.problem.Evaluator
+import org.opt4j.core.Objectives
 
 /**
  * Support for Opt4J.
@@ -37,21 +45,22 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
   override def execute() = {
 
-    //Construct genotype
-    for (dim <- searchSpace) yield {
-      dim match {
+    //Construct genotypes
+    val genotypePerDimension: List[(String, Genotype)] =
+      for (dim <- searchSpace) yield dim match {
         case bounds @ BoundedSearchSpaceDimension(name, lower, upper) =>
           lower match {
-            case l: Double => new DoubleGenotype(l, upper.asInstanceOf[Double])
-            case l: Int => new IntegerGenotype(l, upper.asInstanceOf[Int])
+            case l: Double => (name, new DoubleGenotype(l, upper.asInstanceOf[Double]))
+            case l: Int => (name, new IntegerGenotype(l, upper.asInstanceOf[Int]))
             case _ => throw new IllegalArgumentException("This type of numerical bound is not supported:" + lower.getClass)
           }
-        case list @ GeneralSearchSpaceDimension(name, values) => new PermutationGenotype(ScalaToJava.toList(values))
+        case list @ GeneralSearchSpaceDimension(name, values) => (name, new SelectGenotype(ScalaToJava.toList(values)))
         case _ => throw new IllegalArgumentException("This type of search space dimensions is not supported:" + dim)
       }
-    }
 
-    //Won't work:
+    val compositeGenotype = new CompositeGenotype(ScalaToJava.toMap(genotypePerDimension.toMap))
+
+    //Won't work yet:
     val params = SimpleParameters(Map())
     objective(params)
 
@@ -63,5 +72,25 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     //      val params = for (dim <- searchSpace) yield (dim.name, dim.values(Random.nextInt(dim.values.length)))
     //      println("here be opt4j dragons (using " + objective + ": " + objective(SimpleParameters(params.toMap)) + " :)")
     //    }
+  }
+}
+
+class SimpleParameterCreator extends Creator[CompositeGenotype[String, Genotype]] {
+  override def create(): CompositeGenotype[String, Genotype] = {
+    null //TODO: draw new random individual ---> a parameter map
+  }
+}
+
+class SimpleParameterDecoder extends Decoder[CompositeGenotype[String, Genotype], SimpleParameters] {
+  override def decode(composite: CompositeGenotype[String, Genotype]): SimpleParameters = {
+    //TODO:Create SimpleParameters out of variable assignment 
+    null
+  }
+}
+
+class SimpleParameterEvaluator extends Evaluator[SimpleParameters] {
+  override def evaluate(params: SimpleParameters): Objectives = {
+    //TODO: execute objective function, return objective
+    null
   }
 }
