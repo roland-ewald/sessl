@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>sessl-opt4j</artifactId>
 	<packaging>jar</packaging>
@@ -11,6 +12,10 @@
 		<relativePath>../.</relativePath>
 	</parent>
 
+	<properties>
+		<opt4j.version>3.0</opt4j.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.sessl</groupId>
@@ -21,7 +26,22 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
-		<!-- TODO: Add Maven-dependencies for Opt4J -->
+		<!-- Opt4J dependencies: -->
+		<dependency>
+			<groupId>org.opt4j</groupId>
+			<artifactId>opt4j-core</artifactId>
+			<version>${opt4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.opt4j</groupId>
+			<artifactId>opt4j-operators</artifactId>
+			<version>${opt4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.opt4j</groupId>
+			<artifactId>opt4j-optimizers</artifactId>
+			<version>${opt4j.version}</version>
+		</dependency>
 
 	</dependencies>
 </project>

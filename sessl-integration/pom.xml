@@ -29,6 +29,10 @@
 			<artifactId>sessl-omnetpp</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-opt4j</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
