@@ -18,6 +18,7 @@
 package sessl.optimization
 
 import sessl.util.Logging
+import scala.collection.generic.MutableSetFactory
 
 /**
  * Simple default implementation to handle parameters.
@@ -28,11 +29,31 @@ import sessl.util.Logging
  */
 case class SimpleParameters(val params: Map[String, Any]) extends OptimizationParameters with Logging {
 
+  /** The parameter names. */
+  val paramNames = params.keys.toList
+
+  /** Some (arbitrary) numbering of the parameters, based on their order in `paramNames´. */
+  val parameterIndices = paramNames.zipWithIndex.toMap
+
+  /** Array with flags for unused parameters. */
+  private[this] val unusedParams = Range(0, params.size - 1).map(_ => true).toArray
+
   override def apply(s: String): Any = {
-    val rt = params.get(s)
-    if (!rt.isDefined)
-      logger.error("No value defined for parameter '" + s + "'")
-    rt.get
+    val param = params.get(s)
+    if (!param.isDefined)
+      throw new IllegalArgumentException("No value defined for parameter '" + s + "'")
+    unusedParams(parameterIndices(s)) = false
+    param.get
+  }
+
+  /** Returns index of first unused parameter, or -1 if none exists. */
+  def firstUnusedParameter = unusedParams.indexWhere(x => x)
+
+  def firstUnusedParameterName: Option[String] = {
+    val idx = firstUnusedParameter
+    if (idx < 0)
+      None
+    else Some(paramNames(idx))
   }
 
 }

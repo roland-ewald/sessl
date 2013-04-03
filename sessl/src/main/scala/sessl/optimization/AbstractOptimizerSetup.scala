@@ -46,9 +46,19 @@ abstract class AbstractOptimizerSetup {
   /** Executes the optimization task.*/
   def execute()
 
-  def param[X](name: String, values: X*) = searchSpaceDims += SearchSpaceDimension[X](name, values)
+  def param[X](name: String, values: Iterable[X]) = searchSpaceDims += GeneralSearchSpaceDimension[X](name, values)
+
+  def param[X <: Numeric[X]](name: String, lowerBound: X, upperBound: X) = searchSpaceDims += BoundedSearchSpaceDimension[X](name, lowerBound, upperBound)
 
 }
 
 /** Represents a dimension in the search space. */
-case class SearchSpaceDimension[X](name: String, values: Seq[X])
+trait SearchSpaceDimension[+X] {
+  def name: String
+}
+
+/** A dimension in the search space defined by an explicit list of values. */
+case class GeneralSearchSpaceDimension[X](name: String, values: Iterable[X]) extends SearchSpaceDimension[X]
+
+/** A dimension in the search space defined by boundaries. */
+case class BoundedSearchSpaceDimension[X <: Numeric[X]](name: String, lowerBound: X, upperBound: X) extends SearchSpaceDimension[X]

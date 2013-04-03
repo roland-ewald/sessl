@@ -17,23 +17,51 @@
  */
 package sessl.opt4j
 
-import sessl.optimization.AbstractOptimizerSetup
-import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.MapBuilder
-import scala.util.Random
+import org.opt4j.core.genotype.DoubleGenotype
+import org.opt4j.core.genotype.IntegerGenotype
+import org.opt4j.core.genotype.PermutationGenotype
+import sessl.optimization.AbstractOptimizerSetup
+import sessl.optimization.BoundedSearchSpaceDimension
+import sessl.optimization.GeneralSearchSpaceDimension
 import sessl.optimization.SimpleParameters
+import sessl.util.ScalaToJava
+import sessl.util.Logging
 
 /**
  * Support for Opt4J.
  *
  * @author Roland Ewald
  */
-class Opt4JSetup extends AbstractOptimizerSetup {
+class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
   override def execute() = {
-    for (i <- Range(1, 10)) {
-      val params = for (dim <- searchSpace) yield (dim.name, dim.values(Random.nextInt(dim.values.length)))
-      println("here be opt4j dragons (using " + objective + ": " + objective(SimpleParameters(params.toMap)) + " :)")
+
+    //Construct genotype
+    for (dim <- searchSpace) yield {
+      dim match {
+        case bounds @ BoundedSearchSpaceDimension(name, lower, upper) =>
+          lower match {
+            case l: Double => new DoubleGenotype(l, upper.asInstanceOf[Double])
+            case l: Int => new IntegerGenotype(l, upper.asInstanceOf[Int])
+            case _ => throw new IllegalArgumentException("This type of numerical bound is not supported:" + lower.getClass)
+          }
+        case list @ GeneralSearchSpaceDimension(name, values) => new PermutationGenotype(ScalaToJava.toList(values))
+        case _ => throw new IllegalArgumentException("This type of search space dimensions is not supported:" + dim)
+      }
     }
+
+    //Won't work:
+    val params = SimpleParameters(Map())
+    objective(params)
+
+    if (params.firstUnusedParameter >= 0)
+      logger.warn("The parameter '" + params.firstUnusedParameterName.get +
+        "' has not been accessed from within the objective function. Is the configuration of the search space correct?")
+
+    //    for (i <- Range(1, 10)) {
+    //      val params = for (dim <- searchSpace) yield (dim.name, dim.values(Random.nextInt(dim.values.length)))
+    //      println("here be opt4j dragons (using " + objective + ": " + objective(SimpleParameters(params.toMap)) + " :)")
+    //    }
   }
 }
