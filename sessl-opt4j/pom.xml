@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sessl-opt4j</artifactId>
+	<packaging>jar</packaging>
+	<name>SESSL Support for Opt4J</name>
+
+	<parent>
+		<groupId>org.sessl</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>0.8-SNAPSHOT</version>
+		<relativePath>../.</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<!-- TODO: Add Maven-dependencies for Opt4J -->
+
+	</dependencies>
+</project>
