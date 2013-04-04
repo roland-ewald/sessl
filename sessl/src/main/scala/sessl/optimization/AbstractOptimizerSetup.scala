@@ -33,8 +33,10 @@ abstract class AbstractOptimizerSetup {
 
   //TODO: add constraints
 
+  /** Thhe objective function. */
   def objective = obj.get
 
+  /** The overall search space, consisting of all dimensions (parameters) that have been defined. */
   lazy val searchSpace = searchSpaceDims.toList
 
   /** Store the objective function (must not be called more than once).*/
@@ -46,9 +48,22 @@ abstract class AbstractOptimizerSetup {
   /** Executes the optimization task.*/
   def execute()
 
-  def param[X](name: String, values: Iterable[X]) = searchSpaceDims += GeneralSearchSpaceDimension[X](name, values)
+  /** Add parameter with a name and additional values. */
+  def param[X](name: String, values: Iterable[X]) = {
+    checkParamName(name)
+    searchSpaceDims += GeneralSearchSpaceDimension[X](name, values)
+  }
 
-  def param[X <: Numeric[X]](name: String, lowerBound: X, upperBound: X) = searchSpaceDims += BoundedSearchSpaceDimension[X](name, lowerBound, upperBound)
+  /** Add numerical parameter with a name, bounds, and a step size. */
+  def param[X <: AnyVal](name: String, lowerBound: X, stepSize: X, upperBound: X)(implicit n: Numeric[X]) = {
+    checkParamName(name)
+    searchSpaceDims += BoundedSearchSpaceDimension[X](name, lowerBound, stepSize, upperBound)
+  }
+
+  /** Checks whether this parameter name has already been used. */
+  private[this] def checkParamName(name: String) {
+    require(!searchSpaceDims.exists(_ == name), "Parameter with name '" + name + "' has been defined twice!")
+  }
 
 }
 
@@ -61,4 +76,7 @@ trait SearchSpaceDimension[+X] {
 case class GeneralSearchSpaceDimension[X](name: String, values: Iterable[X]) extends SearchSpaceDimension[X]
 
 /** A dimension in the search space defined by boundaries. */
-case class BoundedSearchSpaceDimension[X <: Numeric[X]](name: String, lowerBound: X, upperBound: X) extends SearchSpaceDimension[X]
+case class BoundedSearchSpaceDimension[X <: AnyVal](name: String, lowerBound: X, stepSize: X, upperBound: X)(implicit n: Numeric[X]) extends SearchSpaceDimension[X] {
+  val interval = n.toDouble(n.minus(upperBound, lowerBound))
+  val numSteps = math.round(interval / n.toDouble(stepSize))
+}

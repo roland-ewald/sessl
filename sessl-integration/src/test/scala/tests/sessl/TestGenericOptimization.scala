@@ -51,8 +51,9 @@ import sessl.opt4j.Opt4JSetup
       }
     } using {
       new Opt4JSetup {
-        param("unimportant", Range(1, 15).toList)
-        param("n", Range(10000, 15000).by(100).toList)
+        param("unimportant", List("a", "b", "c"))
+        param("p", 1, 1, 15)
+        param("n", 10000, 100, 15000)
       }
     }
   }
