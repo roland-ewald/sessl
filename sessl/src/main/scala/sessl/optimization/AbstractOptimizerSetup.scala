@@ -26,7 +26,7 @@ import scala.collection.mutable.ListBuffer
 abstract class AbstractOptimizerSetup {
 
   /** The objective function to be used. */
-  private[this] var obj: Option[Objective] = None
+  private[this] var obj: Option[ObjectiveFunction] = None
 
   /** The search space consists of an arbitrary number of dimensions.*/
   private[this] val searchSpaceDims = ListBuffer[SearchSpaceDimension[_]]()
@@ -40,7 +40,7 @@ abstract class AbstractOptimizerSetup {
   lazy val searchSpace = searchSpaceDims.toList
 
   /** Store the objective function (must not be called more than once).*/
-  def setObjective(f: Objective) {
+  def setObjectiveFunction(f: ObjectiveFunction) {
     require(!obj.isDefined, "Objective is already defined.")
     obj = Some(f)
   }

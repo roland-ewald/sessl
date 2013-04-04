@@ -20,8 +20,8 @@ package sessl
 package object optimization {
 
   /** The objective function mabs arbitrarily many parameters to some Double value. */
-  type Objective = OptimizationParameters => Double
+  type ObjectiveFunction = OptimizationParameters => Double
 
   /** The optimization 'command'. */
-  def optimize(f: Objective): InitializedObjective = InitializedObjective(f)
+  def optimize(f: ObjectiveFunction): InitializedObjectiveFunction = InitializedObjectiveFunction(f)
 }

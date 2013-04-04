@@ -45,6 +45,7 @@ import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
 import org.opt4j.core.start.Opt4JTask
 import org.opt4j.core.problem.ProblemModule
 import com.google.inject.Inject
+import org.opt4j.core.optimizer.Archive
 
 /**
  * Support for Opt4J.
@@ -67,14 +68,22 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     }
 
     val ea = new EvolutionaryAlgorithmModule()
-    ea.setGenerations(500)
-    ea.setAlpha(100)
+    
+    //Termination criterion
+    ea.setGenerations(10)
+    ea.setAlpha(10)
+    
     val viewer = new ViewerModule()
     viewer.setCloseOnStop(true)
     val task = new Opt4JTask(false)
     task.init(ea, problemModule, viewer)
     try {
       task.execute()
+      val archive = task.getInstance(classOf[Archive])
+      val it = archive.iterator
+      while(it.hasNext) {
+        it.next.getPhenotype()
+      }
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
@@ -90,7 +99,7 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
 object Opt4JSetup {
   
-  var f: sessl.optimization.Objective = null
+  var f: sessl.optimization.ObjectiveFunction = null
   
   var searchSpace:SearchSpace = null
   
