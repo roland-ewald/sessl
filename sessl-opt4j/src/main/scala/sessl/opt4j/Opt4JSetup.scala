@@ -17,8 +17,10 @@
  */
 package sessl.opt4j
 
-import scala.collection.mutable.MapBuilder
+import java.util.Random
+import scala.Array.canBuildFrom
 import org.opt4j.core.Genotype
+import org.opt4j.core.Objective.Sign
 import org.opt4j.core.Objectives
 import org.opt4j.core.genotype.CompositeGenotype
 import org.opt4j.core.genotype.DoubleGenotype
@@ -27,19 +29,17 @@ import org.opt4j.core.genotype.SelectGenotype
 import org.opt4j.core.problem.Creator
 import org.opt4j.core.problem.Decoder
 import org.opt4j.core.problem.Evaluator
+import org.opt4j.core.problem.ProblemModule
 import sessl.optimization.AbstractOptimizerSetup
-import sessl.optimization.BoundedSearchSpaceDimension
-import sessl.optimization.BoundedSearchSpaceDimension
 import sessl.optimization.BoundedSearchSpaceDimension
 import sessl.optimization.GeneralSearchSpaceDimension
 import sessl.optimization.SearchSpaceDimension
 import sessl.optimization.SimpleParameters
-import sessl.optimization.SimpleParameters
 import sessl.util.Logging
 import sessl.util.ScalaToJava
-import java.util.Random
-import org.opt4j.core.Objective
-import org.opt4j.core.Objective.Sign
+import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
+import org.opt4j.viewer.ViewerModule
+import org.opt4j.core.start.Opt4JTask
 
 /**
  * Support for Opt4J.
@@ -108,9 +108,29 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
         objectives
       }
     }
-    
-    
-    
+
+    val problemModule = new ProblemModule() {
+      override def config() {
+        bindProblem(creator.getClass, decoder.getClass, evaluator.getClass)
+      }
+    }
+
+    //From the tutorial:
+
+    val ea = new EvolutionaryAlgorithmModule()
+    ea.setGenerations(500)
+    ea.setAlpha(100)
+    val viewer = new ViewerModule()
+    viewer.setCloseOnStop(true)
+    val task = new Opt4JTask(false)
+    task.init(ea, problemModule, viewer)
+    try {
+      task.execute()
+    } catch {
+      case e: Exception => e.printStackTrace()
+    } finally {
+      task.close()
+    }
 
     //    for (i <- Range(1, 10)) {
     //      val params = for (dim <- searchSpace) yield (dim.name, dim.values(Random.nextInt(dim.values.length)))
