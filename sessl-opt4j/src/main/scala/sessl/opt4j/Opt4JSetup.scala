@@ -50,13 +50,67 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
   override def execute() = {
 
-    //Won't work yet:
-    val params = SimpleParameters(Map())
-    objective(params)
+    /**
+     *  Creates random genotype.
+     */
+    val creator = new Creator[CompositeGenotype[String, Genotype]] {
 
-    if (params.firstUnusedParameter >= 0)
-      logger.warn("The parameter '" + params.firstUnusedParameterName.get +
-        "' has not been accessed from within the objective function. Is the configuration of the search space correct?")
+      val rng = new Random //TODO: generalize this
+
+      /** Composite genotype: it consists of a genotype per dimension. */
+      val genotypePerDimension: Seq[(String, Genotype)] =
+        for (dim <- searchSpace) yield dim match {
+          case bounds @ BoundedSearchSpaceDimension(name, lower, stepSize, upper) =>
+            lower match {
+              case l: Double => (name, new DoubleGenotype(l, upper.asInstanceOf[Double]))
+              case l: Int => (name, new IntegerGenotype(l, upper.asInstanceOf[Int]))
+              case _ => throw new IllegalArgumentException("This type of numerical bound is not supported:" + lower.getClass)
+            }
+          case list @ GeneralSearchSpaceDimension(name, values) => (name, new SelectGenotype(ScalaToJava.toList(values)))
+          case _ => throw new IllegalArgumentException("This type of search space dimension is not supported:" + dim)
+        }
+
+      override def create(): CompositeGenotype[String, Genotype] = {
+        val composite = new CompositeGenotype(ScalaToJava.toMap(genotypePerDimension.toMap))
+        for (paramName <- composite.keySet.toArray) {
+          composite.get[Genotype](paramName) match {
+            case s: SelectGenotype[_] => s.init(rng, 1)
+            case d: DoubleGenotype => d.init(rng, 1)
+            case i: IntegerGenotype => i.init(rng, 1)
+            case x => throw new IllegalArgumentException("Genotype not supported:" + x.getClass())
+          }
+        }
+        composite
+      }
+    }
+
+    val decoder = new Decoder[CompositeGenotype[String, Genotype], SimpleParameters] {
+      override def decode(composite: CompositeGenotype[String, Genotype]): SimpleParameters = {
+        val paramAssignment =
+          for (paramName <- composite.keySet.toArray) yield (paramName.toString,
+            composite.get[Genotype](paramName) match {
+              case s: SelectGenotype[_] => s.getValue(0)
+              case d: DoubleGenotype => d.get(0)
+              case i: IntegerGenotype => i.get(0)
+              case x => throw new IllegalArgumentException("Genotype not supported:" + x.getClass())
+            })
+        SimpleParameters(paramAssignment.toMap)
+      }
+    }
+
+    val evaluator = new Evaluator[SimpleParameters] {
+      override def evaluate(params: SimpleParameters): Objectives = {
+        val objectives: Objectives = new Objectives
+        objectives.add("objective", Sign.MAX, objective(params))
+        if (params.firstUnusedParameter >= 0)
+          logger.warn("The parameter '" + params.firstUnusedParameterName.get +
+            "' has not been accessed from within the objective function. Is the configuration of the search space correct?")
+        objectives
+      }
+    }
+    
+    
+    
 
     //    for (i <- Range(1, 10)) {
     //      val params = for (dim <- searchSpace) yield (dim.name, dim.values(Random.nextInt(dim.values.length)))
@@ -69,64 +123,3 @@ object Opt4JSetup {
   type SearchSpace = Seq[SearchSpaceDimension[_]]
 }
 
-/**
- *  Creates random genotype.
- */
-class SimpleParameterCreator(val searchSpace: Opt4JSetup.SearchSpace) extends Creator[CompositeGenotype[String, Genotype]] {
-
-  val rng = new Random //TODO: generalize this
-
-  /** Composite genotype: it consists of a genotype per dimension. */
-  val genotypePerDimension: Seq[(String, Genotype)] =
-    for (dim <- searchSpace) yield dim match {
-      case bounds @ BoundedSearchSpaceDimension(name, lower, stepSize, upper) =>
-        lower match {
-          case l: Double => (name, new DoubleGenotype(l, upper.asInstanceOf[Double]))
-          case l: Int => (name, new IntegerGenotype(l, upper.asInstanceOf[Int]))
-          case _ => throw new IllegalArgumentException("This type of numerical bound is not supported:" + lower.getClass)
-        }
-      case list @ GeneralSearchSpaceDimension(name, values) => (name, new SelectGenotype(ScalaToJava.toList(values)))
-      case _ => throw new IllegalArgumentException("This type of search space dimension is not supported:" + dim)
-    }
-
-  /** Number of steps per dimension (the resolution). */
-  val stepNumbers = searchSpace.filter(_.isInstanceOf[BoundedSearchSpaceDimension[_]]).
-    map(x => (x.name, x.asInstanceOf[BoundedSearchSpaceDimension[_]].numSteps.toInt)).toMap
-
-  override def create(): CompositeGenotype[String, Genotype] = {
-    val composite = new CompositeGenotype(ScalaToJava.toMap(genotypePerDimension.toMap))
-    for (paramName <- composite.keySet.toArray) {
-      composite.get[Genotype](paramName) match {
-        case s: SelectGenotype[_] => s.init(rng, 1)
-        case d: DoubleGenotype => d.init(rng, stepNumbers(paramName.toString))
-        case i: IntegerGenotype => i.init(rng, stepNumbers(paramName.toString))
-        case x => throw new IllegalArgumentException("Genotype not supported:" + x.getClass())
-      }
-    }
-    composite
-  }
-}
-
-/**
- * Decodes genotype into phenotype.
- */
-class SimpleParameterDecoder extends Decoder[CompositeGenotype[String, Genotype], SimpleParameters] {
-  override def decode(composite: CompositeGenotype[String, Genotype]): SimpleParameters = {
-    val paramAssignment = for (paramName <- composite.keySet.toArray) yield {
-      val genotype = composite.get(paramName)
-      (paramName.toString, null)
-    }
-    SimpleParameters(paramAssignment.toMap)
-  }
-}
-
-/**
- * Evaluates phenotype.
- */
-class SimpleParameterEvaluator(val f: sessl.optimization.Objective) extends Evaluator[SimpleParameters] {
-  override def evaluate(params: SimpleParameters): Objectives = {
-    val objectives: Objectives = new Objectives
-    objectives.add("objective", Sign.MAX, f(params))
-    objectives
-  }
-}

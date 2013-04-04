@@ -43,5 +43,17 @@
 			<version>${opt4j.version}</version>
 		</dependency>
 
+		<!-- Not necessary, just helpful as a reference: -->
+		<dependency>
+			<groupId>org.opt4j</groupId>
+			<artifactId>opt4j-tutorial</artifactId>
+			<version>${opt4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.opt4j</groupId>
+			<artifactId>opt4j-benchmarks</artifactId>
+			<version>${opt4j.version}</version>
+		</dependency>
+
 	</dependencies>
 </project>
