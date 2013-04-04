@@ -23,7 +23,7 @@ package object optimization {
   type ObjectiveFunction = (OptimizationParameters, Objective) => Unit
 
   /** The optimization 'command'. */
-  def optimize(o: Objective)(f: ObjectiveFunction): InitializedObjectiveFunction = InitializedObjectiveFunction(o,f)
+  def optimize(o: Objective)(f: ObjectiveFunction): InitializedObjectiveFunction = InitializedObjectiveFunction(o, f)
 
   //min & max
   sealed trait OptDirection

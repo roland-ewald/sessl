@@ -72,19 +72,22 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     val ea = new EvolutionaryAlgorithmModule()
 
     //Termination criterion
-    ea.setGenerations(10)
-    ea.setAlpha(10)
+    ea.setGenerations(2)
+    ea.setAlpha(5)
 
     val viewer = new ViewerModule()
     viewer.setCloseOnStop(true)
     val task = new Opt4JTask(false)
-    task.init(ea, problemModule, viewer)
+    task.init(ea, problemModule)
     try {
       task.execute()
       val archive = task.getInstance(classOf[Archive])
       val it = archive.iterator
       while (it.hasNext) {
-        it.next.getPhenotype()
+        println("OPT:")
+        val ind = it.next.getPhenotype()
+        println(ind.toString)
+        //TODO: withOptResults(...)
       }
     } catch {
       case e: Exception => e.printStackTrace()
@@ -162,9 +165,10 @@ class SimpleParameterDecoder extends Decoder[CompositeGenotype[String, Genotype]
 class SimpleParameterEvaluator extends Evaluator[SimpleParameters] with Logging {
   override def evaluate(params: SimpleParameters): Objectives = {
     val objectives: Objectives = new Objectives
-    val newObjective = AbstractObjective.copy(Opt4JSetup.obj) // TODO: copy!
-    Opt4JSetup.f(params, newObjective)
+    val newObjective = AbstractObjective.copy(Opt4JSetup.obj)
+    Opt4JSetup.f(params, newObjective) // TODO: support multi-objective
     objectives.add("objective", Sign.MAX, newObjective.singleValue)
+
     if (params.firstUnusedParameter >= 0)
       logger.warn("The parameter '" + params.firstUnusedParameterName.get +
         "' has not been accessed from within the objective function. Is the configuration of the search space correct?")

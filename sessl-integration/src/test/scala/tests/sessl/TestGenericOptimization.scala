@@ -55,4 +55,36 @@ import sessl.opt4j.Opt4JSetup
       }
     }
   }
+
+  @Test def testMultiParamOpt() = {
+
+    //TODO:
+    //    import sessl._
+    //    import sessl.james._
+    //    import sessl.optimization._
+    //
+    //    optimize(MultiObjective(("species", max))) { (params, objective) => //<-todo: use companion object 'Objective'
+    //      {
+    //        execute {
+    //          new Experiment with Observation with ParallelExecution {
+    //            model = "java://examples.sr.LinearChainSystem"
+    //            set("propensity" <~ params("p"))
+    //            set("numOfInitialParticles" <~ params("n"))
+    //            stopTime = 1.0
+    //            replications = 2
+    //            observe("x" ~ "S0", "y" ~ "S1")
+    //            observeAt(0.8)
+    //            withReplicationsResult(results => {
+    //              objective("species") <~ results.mean("x")
+    //            })
+    //          }
+    //        }
+    //      }
+    //    } using {
+    //      new Opt4JSetup {
+    //        param("p", 1, 1, 15)
+    //        param("n", 10000, 100, 15000)
+    //      }
+    //    }
+  }
 }
