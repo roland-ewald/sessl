@@ -30,24 +30,22 @@ import sessl.opt4j.Opt4JSetup
     import sessl.james._
     import sessl.optimization._
 
-    optimize { params =>
+    optimize(Objective(max)) { (params, objective) =>
       {
-        var objectiveValue = .0
         execute {
           new Experiment with Observation with ParallelExecution {
             model = "java://examples.sr.LinearChainSystem"
             set("propensity" <~ params("p"))
             set("numOfInitialParticles" <~ params("n"))
             stopTime = 1.0
-            replications = 5
+            replications = 2
             observe("x" ~ "S0", "y" ~ "S1")
             observeAt(0.8)
             withReplicationsResult(results => {
-              objectiveValue = results.mean("x")
+              objective <~ results.mean("x")
             })
           }
         }
-        objectiveValue
       }
     } using {
       new Opt4JSetup {

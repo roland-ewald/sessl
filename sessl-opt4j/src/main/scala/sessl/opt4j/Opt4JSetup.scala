@@ -46,6 +46,7 @@ import org.opt4j.core.start.Opt4JTask
 import org.opt4j.core.problem.ProblemModule
 import com.google.inject.Inject
 import org.opt4j.core.optimizer.Archive
+import sessl.optimization.AbstractObjective
 
 /**
  * Support for Opt4J.
@@ -58,9 +59,10 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
     //From the tutorial
 
-    Opt4JSetup.f = objective
+    Opt4JSetup.obj = objective
+    Opt4JSetup.f = objectiveFunction
     Opt4JSetup.searchSpace = searchSpace
-    
+
     val problemModule = new ProblemModule() {
       override def config() {
         bindProblem(classOf[SimpleParameterCreator], classOf[SimpleParameterDecoder], classOf[SimpleParameterEvaluator])
@@ -68,11 +70,11 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     }
 
     val ea = new EvolutionaryAlgorithmModule()
-    
+
     //Termination criterion
     ea.setGenerations(10)
     ea.setAlpha(10)
-    
+
     val viewer = new ViewerModule()
     viewer.setCloseOnStop(true)
     val task = new Opt4JTask(false)
@@ -81,7 +83,7 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
       task.execute()
       val archive = task.getInstance(classOf[Archive])
       val it = archive.iterator
-      while(it.hasNext) {
+      while (it.hasNext) {
         it.next.getPhenotype()
       }
     } catch {
@@ -89,20 +91,17 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     } finally {
       task.close()
     }
-
-    //    for (i <- Range(1, 10)) {
-    //      val params = for (dim <- searchSpace) yield (dim.name, dim.values(Random.nextInt(dim.values.length)))
-    //      println("here be opt4j dragons (using " + objective + ": " + objective(SimpleParameters(params.toMap)) + " :)")
-    //    }
   }
 }
 
 object Opt4JSetup {
-  
+
+  var obj: sessl.optimization.Objective = null
+
   var f: sessl.optimization.ObjectiveFunction = null
-  
-  var searchSpace:SearchSpace = null
-  
+
+  var searchSpace: SearchSpace = null
+
   type SearchSpace = Seq[SearchSpaceDimension[_]]
 }
 
@@ -163,7 +162,9 @@ class SimpleParameterDecoder extends Decoder[CompositeGenotype[String, Genotype]
 class SimpleParameterEvaluator extends Evaluator[SimpleParameters] with Logging {
   override def evaluate(params: SimpleParameters): Objectives = {
     val objectives: Objectives = new Objectives
-    objectives.add("objective", Sign.MAX, Opt4JSetup.f(params))
+    val newObjective = AbstractObjective.copy(Opt4JSetup.obj) // TODO: copy!
+    Opt4JSetup.f(params, newObjective)
+    objectives.add("objective", Sign.MAX, newObjective.singleValue)
     if (params.firstUnusedParameter >= 0)
       logger.warn("The parameter '" + params.firstUnusedParameterName.get +
         "' has not been accessed from within the objective function. Is the configuration of the search space correct?")

@@ -68,7 +68,7 @@ object AbstractExperiment {
    *  @param experiments
    *            the experiments
    */
-  def execute(exps: AbstractExperiment*) = for (exp <- exps) {
+  def execute(exps: AbstractExperiment*):Unit = for (exp <- exps) {
     try {
       exp.prepare()
       exp.executeExperiment()
