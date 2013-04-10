@@ -80,9 +80,10 @@ import sessl.opt4j.Opt4JSetup
         }
       }
     } using {
-      new Opt4JSetup {        
+      new Opt4JSetup {
         param("p", 1, 1, 15)
         param("n", 10000, 100, 15000)
+        //        showViewer = true
       }
     }
   }

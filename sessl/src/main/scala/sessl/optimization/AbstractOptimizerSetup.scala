@@ -28,6 +28,7 @@ abstract class AbstractOptimizerSetup {
   /** The objective function to be used. */
   private[this] var objFunction: Option[ObjectiveFunction[_]] = None
 
+  /** The objective (manages result values). */
   private[this] var obj: Option[Objective] = None
 
   /** The search space consists of an arbitrary number of dimensions.*/
@@ -35,9 +36,10 @@ abstract class AbstractOptimizerSetup {
 
   //TODO: add constraints
 
-  /** Thhe objective function. */
+  /** The objective function. */
   def objectiveFunction = objFunction.get
 
+  /** The objective. */
   def objective = obj.get
 
   /** The overall search space, consisting of all dimensions (parameters) that have been defined. */
@@ -49,6 +51,7 @@ abstract class AbstractOptimizerSetup {
     objFunction = Some(f)
   }
 
+  /** Store the objective */
   def setObjective(o: Objective) {
     require(!obj.isDefined, "Objective is already defined.")
     obj = Some(o)

@@ -18,7 +18,9 @@
 package sessl.opt4j
 
 import java.util.Random
+
 import scala.Array.canBuildFrom
+
 import org.opt4j.core.Genotype
 import org.opt4j.core.Objective.Sign
 import org.opt4j.core.Objectives
@@ -33,21 +35,20 @@ import org.opt4j.core.problem.Evaluator
 import org.opt4j.core.problem.ProblemModule
 import org.opt4j.core.start.Opt4JTask
 import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
+import org.opt4j.viewer.ViewerModule
+
 import sessl.optimization.AbstractOptimizerSetup
 import sessl.optimization.BoundedSearchSpaceDimension
 import sessl.optimization.GeneralSearchSpaceDimension
-import sessl.optimization.SearchSpaceDimension
-import sessl.optimization.SimpleParameters
-import sessl.util.Logging
-import sessl.util.ScalaToJava
-import org.opt4j.viewer.ViewerModule
-import sessl.optimization.SingleObjective
-import sessl.optimization.MultiObjective
-import sessl.optimization.SingleObjective
-import sessl.optimization.OptDirection
 import sessl.optimization.MultiObjective
 import sessl.optimization.Objective
+import sessl.optimization.ObjectiveFunction
+import sessl.optimization.OptDirection
+import sessl.optimization.SearchSpaceDimension
 import sessl.optimization.SimpleParameters
+import sessl.optimization.SingleObjective
+import sessl.util.Logging
+import sessl.util.ScalaToJava
 
 /**
  * Support for Opt4J.
@@ -56,19 +57,21 @@ import sessl.optimization.SimpleParameters
  */
 class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
+  /** Flag to control whether the GUI of Opt4J is shown during optimization or not. */
   var showViewer: Boolean = false
+
+  val problemModule = new ProblemModule() {
+    override def config() {
+      bindProblem(
+        classOf[SimpleParameterCreator],
+        classOf[SimpleParameterDecoder],
+        classOf[SimpleParameterEvaluator])
+    }
+  }
 
   override def execute() = {
 
-    Opt4JSetup.obj = objective
-    Opt4JSetup.f = objectiveFunction
-    Opt4JSetup.searchSpace = searchSpace
-
-    val problemModule = new ProblemModule() {
-      override def config() {
-        bindProblem(classOf[SimpleParameterCreator], classOf[SimpleParameterDecoder], classOf[SimpleParameterEvaluator])
-      }
-    }
+    Opt4JSetup.register(this, objective, objectiveFunction, searchSpace)
 
     //Termination criterion -- TODO: move to case classes
     val ea = new EvolutionaryAlgorithmModule()
@@ -96,27 +99,60 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
       case e: Exception => e.printStackTrace()
     } finally {
       task.close()
+      Opt4JSetup.release(this)
     }
   }
 }
 
+/**
+ *
+ */
 object Opt4JSetup {
 
-  //TODO: guard access to these elements!
   type SESSLObjectiveFun[-X <: Objective] = sessl.optimization.ObjectiveFunction[X]
 
-  var obj: Objective = null
+  type SearchSpace = Seq[SearchSpaceDimension[_]]
 
-  var f: SESSLObjectiveFun[_] = null
+  private[this] var owner: Option[Opt4JSetup] = None
+
+  private[this] var objectiveFunction: Option[SESSLObjectiveFun[_]] = None
+
+  private[this] var objective: Option[Objective] = None
+
+  private[this] var space: Option[SearchSpace] = None
+
+  def register(s: Opt4JSetup, o: Objective, f: ObjectiveFunction[_ <: Objective], se: SearchSpace): Unit =
+    this.synchronized {
+      require(!owner.isDefined, "There is already an owner for the setup singleton: " + owner.get)
+      owner = Some(s)
+      objective = Some(o)
+      objectiveFunction = Some(f)
+      space = Some(se)
+    }
+
+  def searchSpace = {
+    require(space.isDefined, "No search space defined.")
+    space.get.toList
+  }
 
   def eval(params: SimpleParameters, o: Objective) =
     this.synchronized {
-      f.asInstanceOf[SESSLObjectiveFun[Objective]](params, o)
+      require(objectiveFunction.isDefined, "No objective function defined.")
+      objectiveFunction.get.asInstanceOf[SESSLObjectiveFun[Objective]](params, o)
     }
 
-  var searchSpace: SearchSpace = null
+  def copyObjective(): Objective = {
+    require(objective.isDefined, "No objective defined.")
+    Objective.copy(objective.get)
+  }
 
-  type SearchSpace = Seq[SearchSpaceDimension[_]]
+  def release(s: Opt4JSetup): Unit = this.synchronized {
+    require(owner.isDefined && owner.get.eq(s), "Not the owner of the setup singleton: " + s)
+    owner = None
+    objectiveFunction = None
+    objective = None
+    space = None
+  }
 }
 
 /**
@@ -180,8 +216,8 @@ class SimpleParameterEvaluator extends Evaluator[SimpleParameters] with Logging 
   override def evaluate(params: SimpleParameters): Objectives = {
     val objectives: Objectives = new Objectives
 
-    val newObjective = Objective.copy(Opt4JSetup.obj)
-    Opt4JSetup.eval(params, newObjective) // TODO: support multi-objective
+    val newObjective = Opt4JSetup.copyObjective()
+    Opt4JSetup.eval(params, newObjective) // TODO: support multi-objectives
 
     newObjective match {
       case obj: SingleObjective => objectives.add("objective", obj.direction, obj.singleValue)

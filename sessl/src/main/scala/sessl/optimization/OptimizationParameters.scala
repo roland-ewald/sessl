@@ -23,7 +23,11 @@ package sessl.optimization
  */
 trait OptimizationParameters {
 
-  /** Returns value of parameter named 's'. */
+  /**
+   * Returns value of a parameter.
+   *  @param s name of the parameter
+   *  @return its value
+   */
   def apply(s: String): Any
 
 }
