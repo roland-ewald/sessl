@@ -20,12 +20,18 @@ package sessl
 package object optimization {
 
   /** The objective function mabs arbitrarily many parameters to some Double value. */
-  type ObjectiveFunction = (OptimizationParameters, Objective) => Unit
+  type ObjectiveFunction[-X <: AbstractObjective] = (OptimizationParameters, X) => Unit
 
   /** The optimization 'command'. */
-  def optimize(o: Objective)(f: ObjectiveFunction): InitializedObjectiveFunction = InitializedObjectiveFunction(o, f)
+  def optimize[X <: AbstractObjective](o: X)(f: ObjectiveFunction[X]): InitializedObjectiveFunction[X] = InitializedObjectiveFunction(o, f)
 
-  //min & max
+  /** Short-hand notation for single-objective maximization. */
+  def maximize(f: ObjectiveFunction[Objective]): InitializedObjectiveFunction[Objective] = optimize(Objective(max))(f)
+
+  /** Short-hand notation for single-objective minimization. */
+  def minimize(f: ObjectiveFunction[Objective]): InitializedObjectiveFunction[Objective] = optimize(Objective(min))(f)
+
+  /** Types to declare which objective shall be minimized and which shall be maximized. */
   sealed trait OptDirection
   case object min extends OptDirection
   case object max extends OptDirection

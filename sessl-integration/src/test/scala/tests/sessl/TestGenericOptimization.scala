@@ -19,7 +19,7 @@ package tests.sessl
 
 import org.junit.Test
 import org.junit.Test
-import org.junit.runner.RunWith
+
 import sessl.opt4j.Opt4JSetup
 
 @Test class TestGenericOptimization {
@@ -30,7 +30,7 @@ import sessl.opt4j.Opt4JSetup
     import sessl.james._
     import sessl.optimization._
 
-    optimize(Objective(max)) { (params, objective) =>
+    maximize { (params, objective) =>
       {
         execute {
           new Experiment with Observation with ParallelExecution {
@@ -58,33 +58,33 @@ import sessl.opt4j.Opt4JSetup
 
   @Test def testMultiParamOpt() = {
 
-    //TODO:
-    //    import sessl._
-    //    import sessl.james._
-    //    import sessl.optimization._
-    //
-    //    optimize(MultiObjective(("species", max))) { (params, objective) => //<-todo: use companion object 'Objective'
-    //      {
-    //        execute {
-    //          new Experiment with Observation with ParallelExecution {
-    //            model = "java://examples.sr.LinearChainSystem"
-    //            set("propensity" <~ params("p"))
-    //            set("numOfInitialParticles" <~ params("n"))
-    //            stopTime = 1.0
-    //            replications = 2
-    //            observe("x" ~ "S0", "y" ~ "S1")
-    //            observeAt(0.8)
-    //            withReplicationsResult(results => {
-    //              objective("species") <~ results.mean("x")
-    //            })
-    //          }
-    //        }
-    //      }
-    //    } using {
-    //      new Opt4JSetup {
-    //        param("p", 1, 1, 15)
-    //        param("n", 10000, 100, 15000)
-    //      }
-    //    }
+    import sessl._
+    import sessl.james._
+    import sessl.optimization._
+
+    optimize(MultiObjective(("x", max), ("y", max))) { (params, objective) => //<-todo: use companion object 'Objective'
+      {
+        execute {
+          new Experiment with Observation with ParallelExecution {
+            model = "java://examples.sr.LinearChainSystem"
+            set("propensity" <~ params("p"))
+            set("numOfInitialParticles" <~ params("n"))
+            stopTime = 1.0
+            replications = 2
+            observe("x" ~ "S0", "y" ~ "S1")
+            observeAt(0.8)
+            withReplicationsResult(results => {
+              objective("x") <~ results.mean("x")
+            })
+          }
+        }
+      }
+    } using {
+      new Opt4JSetup {        
+        param("p", 1, 1, 15)
+        param("n", 10000, 100, 15000)
+        showViewer = true
+      }
+    }
   }
 }
