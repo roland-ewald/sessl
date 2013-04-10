@@ -33,7 +33,6 @@ import org.opt4j.core.problem.Evaluator
 import org.opt4j.core.problem.ProblemModule
 import org.opt4j.core.start.Opt4JTask
 import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
-import sessl.optimization.AbstractObjective
 import sessl.optimization.AbstractOptimizerSetup
 import sessl.optimization.BoundedSearchSpaceDimension
 import sessl.optimization.GeneralSearchSpaceDimension
@@ -47,6 +46,8 @@ import sessl.optimization.MultiObjective
 import sessl.optimization.SingleObjective
 import sessl.optimization.OptDirection
 import sessl.optimization.MultiObjective
+import sessl.optimization.Objective
+import sessl.optimization.SimpleParameters
 
 /**
  * Support for Opt4J.
@@ -102,10 +103,16 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 object Opt4JSetup {
 
   //TODO: guard access to these elements!
+  type SESSLObjectiveFun[-X <: Objective] = sessl.optimization.ObjectiveFunction[X]
 
-  var obj: sessl.optimization.AbstractObjective = null
+  var obj: Objective = null
 
-  var f: sessl.optimization.ObjectiveFunction[_] = null
+  var f: SESSLObjectiveFun[_] = null
+
+  def eval(params: SimpleParameters, o: Objective) =
+    this.synchronized {
+      f.asInstanceOf[SESSLObjectiveFun[Objective]](params, o)
+    }
 
   var searchSpace: SearchSpace = null
 
@@ -173,8 +180,8 @@ class SimpleParameterEvaluator extends Evaluator[SimpleParameters] with Logging 
   override def evaluate(params: SimpleParameters): Objectives = {
     val objectives: Objectives = new Objectives
 
-    val newObjective = AbstractObjective.copy(Opt4JSetup.obj)
-    Opt4JSetup.f.asInstanceOf[sessl.optimization.ObjectiveFunction[AbstractObjective]](params, newObjective) // TODO: support multi-objective
+    val newObjective = Objective.copy(Opt4JSetup.obj)
+    Opt4JSetup.eval(params, newObjective) // TODO: support multi-objective
 
     newObjective match {
       case obj: SingleObjective => objectives.add("objective", obj.direction, obj.singleValue)

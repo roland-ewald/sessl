@@ -18,24 +18,34 @@
 package sessl.optimization
 
 /**
+ * Data structure to manage values (objectives) returned from the objective function.
+ * The values have to be real numbers.
+ *
+ * @see ObjectiveFunction
+ * @see SingleObjective
+ * @see MultiObjective
+ *
  * @author Roland Ewald
  */
-sealed trait AbstractObjective {
+sealed trait Objective
 
-  def numOfValues
+/** Helper methods. */
+object Objective {
 
-}
-
-object AbstractObjective {
-
-  def copy[X <: AbstractObjective](o: X): X = (o match {
+  /**
+   * Copies objective.
+   *  @param o the objective
+   *  @return a copy
+   */
+  def copy(o: Objective): Objective = o match {
     case single: SingleObjective => SingleObjective(single.direction)
     case multi: MultiObjective => MultiObjective(multi.dims: _*)
-  }).asInstanceOf[X]
+  }
 
 }
 
-case class SingleObjective(val direction: OptDirection) extends AbstractObjective {
+/** */
+case class SingleObjective(val direction: OptDirection) extends Objective {
 
   private[this] var value: Option[Double] = None
 
@@ -45,11 +55,10 @@ case class SingleObjective(val direction: OptDirection) extends AbstractObjectiv
   }
 
   def singleValue = value.get
-
-  override def numOfValues = if (value.isDefined) 1 else 0
 }
 
-case class MultiObjective(val dims: (String, OptDirection)*) extends AbstractObjective {
+/** */
+case class MultiObjective(val dims: (String, OptDirection)*) extends Objective {
 
   private val values = scala.collection.mutable.Map[String, Double]()
 
@@ -58,8 +67,6 @@ case class MultiObjective(val dims: (String, OptDirection)*) extends AbstractObj
   val dimensionDirections = dims.toMap
 
   def apply(name: String) = new AssignmentWrapper(name)
-
-  def numOfValues = dims.length
 
   class AssignmentWrapper(val name: String) {
     def <~[X](newValue: X)(implicit n: Numeric[X]): Unit = {

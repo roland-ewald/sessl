@@ -28,7 +28,7 @@ abstract class AbstractOptimizerSetup {
   /** The objective function to be used. */
   private[this] var objFunction: Option[ObjectiveFunction[_]] = None
 
-  private[this] var obj: Option[AbstractObjective] = None
+  private[this] var obj: Option[Objective] = None
 
   /** The search space consists of an arbitrary number of dimensions.*/
   private[this] val searchSpaceDims = ListBuffer[SearchSpaceDimension[_]]()
@@ -44,12 +44,12 @@ abstract class AbstractOptimizerSetup {
   lazy val searchSpace = searchSpaceDims.toList
 
   /** Store the objective function (must not be called more than once).*/
-  def setObjectiveFunction(f: ObjectiveFunction[_ <: AbstractObjective]) {
+  def setObjectiveFunction(f: ObjectiveFunction[_ <: Objective]) {
     require(!objFunction.isDefined, "Objective function is already defined.")
     objFunction = Some(f)
   }
 
-  def setObjective(o: AbstractObjective) {
+  def setObjective(o: Objective) {
     require(!obj.isDefined, "Objective is already defined.")
     obj = Some(o)
   }

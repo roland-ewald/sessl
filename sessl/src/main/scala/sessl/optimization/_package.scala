@@ -20,10 +20,10 @@ package sessl
 package object optimization {
 
   /** The objective function mabs arbitrarily many parameters to some Double value. */
-  type ObjectiveFunction[-X <: AbstractObjective] = (OptimizationParameters, X) => Unit
+  type ObjectiveFunction[-X <: Objective] = (OptimizationParameters, X) => Unit
 
   /** The optimization 'command'. */
-  def optimize[X <: AbstractObjective](o: X)(f: ObjectiveFunction[X]): InitializedObjectiveFunction[X] = InitializedObjectiveFunction(o, f)
+  def optimize[X <: Objective](o: X)(f: ObjectiveFunction[X]): InitializedObjectiveFunction[X] = InitializedObjectiveFunction(o, f)
 
   /** Short-hand notation for single-objective maximization. */
   def maximize(f: ObjectiveFunction[SingleObjective]): InitializedObjectiveFunction[SingleObjective] = optimize(SingleObjective(max))(f)
