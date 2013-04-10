@@ -29,13 +29,13 @@ sealed trait AbstractObjective {
 object AbstractObjective {
 
   def copy[X <: AbstractObjective](o: X): X = (o match {
-    case single: Objective => Objective(single.direction)
+    case single: SingleObjective => SingleObjective(single.direction)
     case multi: MultiObjective => MultiObjective(multi.dims: _*)
   }).asInstanceOf[X]
 
 }
 
-case class Objective(val direction: OptDirection) extends AbstractObjective {
+case class SingleObjective(val direction: OptDirection) extends AbstractObjective {
 
   private[this] var value: Option[Double] = None
 

@@ -42,7 +42,10 @@ import sessl.optimization.SimpleParameters
 import sessl.util.Logging
 import sessl.util.ScalaToJava
 import org.opt4j.viewer.ViewerModule
-import sessl.optimization.Objective
+import sessl.optimization.SingleObjective
+import sessl.optimization.MultiObjective
+import sessl.optimization.SingleObjective
+import sessl.optimization.OptDirection
 import sessl.optimization.MultiObjective
 
 /**
@@ -165,16 +168,18 @@ class SimpleParameterDecoder extends Decoder[CompositeGenotype[String, Genotype]
  */
 class SimpleParameterEvaluator extends Evaluator[SimpleParameters] with Logging {
 
+  implicit def optDirectionToSign(d: OptDirection) = if (d == sessl.optimization.min) Sign.MIN else Sign.MAX
+
   override def evaluate(params: SimpleParameters): Objectives = {
     val objectives: Objectives = new Objectives
 
     val newObjective = AbstractObjective.copy(Opt4JSetup.obj)
     Opt4JSetup.f.asInstanceOf[sessl.optimization.ObjectiveFunction[AbstractObjective]](params, newObjective) // TODO: support multi-objective
 
-    if (newObjective.isInstanceOf[Objective])
-      objectives.add("objective", Sign.MAX, newObjective.asInstanceOf[Objective].singleValue)
-    else if (newObjective.isInstanceOf[MultiObjective])
-      println("DONE!")
+    newObjective match {
+      case obj: SingleObjective => objectives.add("objective", obj.direction, obj.singleValue)
+      case obj: MultiObjective => println("DONE!")
+    }
 
     if (params.firstUnusedParameter >= 0)
       logger.warn("The parameter '" + params.firstUnusedParameterName.get +

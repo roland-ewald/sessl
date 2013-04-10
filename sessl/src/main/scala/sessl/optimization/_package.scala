@@ -26,10 +26,10 @@ package object optimization {
   def optimize[X <: AbstractObjective](o: X)(f: ObjectiveFunction[X]): InitializedObjectiveFunction[X] = InitializedObjectiveFunction(o, f)
 
   /** Short-hand notation for single-objective maximization. */
-  def maximize(f: ObjectiveFunction[Objective]): InitializedObjectiveFunction[Objective] = optimize(Objective(max))(f)
+  def maximize(f: ObjectiveFunction[SingleObjective]): InitializedObjectiveFunction[SingleObjective] = optimize(SingleObjective(max))(f)
 
   /** Short-hand notation for single-objective minimization. */
-  def minimize(f: ObjectiveFunction[Objective]): InitializedObjectiveFunction[Objective] = optimize(Objective(min))(f)
+  def minimize(f: ObjectiveFunction[SingleObjective]): InitializedObjectiveFunction[SingleObjective] = optimize(SingleObjective(min))(f)
 
   /** Types to declare which objective shall be minimized and which shall be maximized. */
   sealed trait OptDirection
