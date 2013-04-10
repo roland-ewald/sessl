@@ -17,36 +17,31 @@
  */
 package sessl.opt4j
 
-import scala.collection.mutable.MapBuilder
+import java.util.Random
+import scala.Array.canBuildFrom
 import org.opt4j.core.Genotype
+import org.opt4j.core.Objective.Sign
 import org.opt4j.core.Objectives
 import org.opt4j.core.genotype.CompositeGenotype
 import org.opt4j.core.genotype.DoubleGenotype
 import org.opt4j.core.genotype.IntegerGenotype
 import org.opt4j.core.genotype.SelectGenotype
+import org.opt4j.core.optimizer.Archive
 import org.opt4j.core.problem.Creator
 import org.opt4j.core.problem.Decoder
 import org.opt4j.core.problem.Evaluator
+import org.opt4j.core.problem.ProblemModule
+import org.opt4j.core.start.Opt4JTask
+import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
+import sessl.optimization.AbstractObjective
 import sessl.optimization.AbstractOptimizerSetup
-import sessl.optimization.BoundedSearchSpaceDimension
-import sessl.optimization.BoundedSearchSpaceDimension
 import sessl.optimization.BoundedSearchSpaceDimension
 import sessl.optimization.GeneralSearchSpaceDimension
 import sessl.optimization.SearchSpaceDimension
 import sessl.optimization.SimpleParameters
-import sessl.optimization.SimpleParameters
 import sessl.util.Logging
 import sessl.util.ScalaToJava
-import java.util.Random
-import org.opt4j.core.Objective
-import org.opt4j.core.Objective.Sign
 import org.opt4j.viewer.ViewerModule
-import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
-import org.opt4j.core.start.Opt4JTask
-import org.opt4j.core.problem.ProblemModule
-import com.google.inject.Inject
-import org.opt4j.core.optimizer.Archive
-import sessl.optimization.AbstractObjective
 
 /**
  * Support for Opt4J.
@@ -55,9 +50,9 @@ import sessl.optimization.AbstractObjective
  */
 class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
-  override def execute() = {
+  var showViewer: Boolean = false
 
-    //From the tutorial
+  override def execute() = {
 
     Opt4JSetup.obj = objective
     Opt4JSetup.f = objectiveFunction
@@ -69,16 +64,18 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
       }
     }
 
+    //Termination criterion -- TODO: move to case classes
     val ea = new EvolutionaryAlgorithmModule()
-
-    //Termination criterion
     ea.setGenerations(2)
     ea.setAlpha(5)
 
-    val viewer = new ViewerModule()
-    viewer.setCloseOnStop(true)
+    //Initialize task
     val task = new Opt4JTask(false)
-    task.init(ea, problemModule)
+    if (showViewer)
+      task.init(ea, problemModule, new ViewerModule)
+    else
+      task.init(ea, problemModule)
+
     try {
       task.execute()
       val archive = task.getInstance(classOf[Archive])
@@ -98,6 +95,8 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 }
 
 object Opt4JSetup {
+
+  //TODO: guard access to these elements!
 
   var obj: sessl.optimization.Objective = null
 
