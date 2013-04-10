@@ -44,11 +44,19 @@ object Objective {
 
 }
 
-/** */
+/**
+ * Represents a single-valued objective.
+ *  @param direction the optimization direction (min/max)
+ */
 case class SingleObjective(val direction: OptDirection) extends Objective {
 
+  /** The single value of the objective function. */
   private[this] var value: Option[Double] = None
 
+  /**
+   * Assign numeric value.
+   * @param newValue the new value
+   */
   def <~[X](newValue: X)(implicit n: Numeric[X]): Unit = {
     require(!value.isDefined, "The value of the objective function has already been set to " + value.get)
     value = Some(n.toDouble(newValue))
@@ -57,17 +65,24 @@ case class SingleObjective(val direction: OptDirection) extends Objective {
   def singleValue = value.get
 }
 
-/** */
+/**
+ * Represents an objective with multiple values, distinguished by their names.
+ *  @param dims list of pairs (name, [min|max]) that determines the number of optimization dimensions and the names of these dimensions
+ */
 case class MultiObjective(val dims: (String, OptDirection)*) extends Objective {
 
+  /** Values of this objective. */
   private val values = scala.collection.mutable.Map[String, Double]()
 
   val dimensionNames = dims.map(_._1)
 
-  val dimensionDirections = dims.toMap
-
+  /** Creates syntactic sugar to simplify value assignment. */
   def apply(name: String) = new AssignmentWrapper(name)
 
+  /**
+   * Allows to a sign a value to a single dimension to be optimized.
+   *  @param name the name of the dimension
+   */
   class AssignmentWrapper(val name: String) {
     def <~[X](newValue: X)(implicit n: Numeric[X]): Unit = {
       require(!values.contains(name), "The value of the '" + name + "' objective has already been set to " + values(name))
