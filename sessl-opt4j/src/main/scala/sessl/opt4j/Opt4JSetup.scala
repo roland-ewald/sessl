@@ -61,7 +61,7 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
     //Termination criterion -- TODO: move to case classes
     val ea = new EvolutionaryAlgorithmModule()
-    ea.setGenerations(20)
+    ea.setGenerations(3)
     ea.setAlpha(10)
 
     //Initialize task
