@@ -72,12 +72,16 @@ case class SingleObjective(val direction: OptDirection) extends Objective {
 case class MultiObjective(val dims: (String, OptDirection)*) extends Objective {
 
   /** Values of this objective. */
-  private val values = scala.collection.mutable.Map[String, Double]()
+  private[this] val values = scala.collection.mutable.Map[String, Double]()
 
   val dimensionNames = dims.map(_._1)
 
+  val dimensions = dims.toMap
+
   /** Creates syntactic sugar to simplify value assignment. */
   def apply(name: String) = new AssignmentWrapper(name)
+
+  def value(name: String) = values(name)
 
   /**
    * Allows to a sign a value to a single dimension to be optimized.

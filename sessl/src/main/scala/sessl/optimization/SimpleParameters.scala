@@ -36,7 +36,7 @@ case class SimpleParameters(val params: Map[String, Any]) extends OptimizationPa
   val parameterIndices = paramNames.zipWithIndex.toMap
 
   /** Array with flags for unused parameters. */
-  private[this] val unusedParams = Range(0, params.size - 1).map(_ => true).toArray
+  private[this] val unusedParams = Range(0, params.size).map(_ => true).toArray
 
   override def apply(s: String): Any = {
     val param = params.get(s)
