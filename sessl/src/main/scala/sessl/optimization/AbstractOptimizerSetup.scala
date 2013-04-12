@@ -34,7 +34,16 @@ abstract class AbstractOptimizerSetup {
   /** The search space consists of an arbitrary number of dimensions.*/
   private[this] val searchSpaceDims = ListBuffer[SearchSpaceDimension[_]]()
 
-  //TODO: add constraints
+  /** The actions to be done after the objective function was evaluated once. */
+  private[this] val evaluationDoneActions = ListBuffer[(OptimizationParameters, Objective) => Unit]()
+
+  /** The actions to be done after an iteration of the optimization algorithm is done. */
+  private[this] val iterationDoneActions = ListBuffer[List[(OptimizationParameters, Objective)] => Unit]()
+
+  /** The actions to be done after regarding the best results, after each iteration. */
+  private[this] val resultsPerIterationActions = ListBuffer[List[(OptimizationParameters, Objective)] => Unit]()
+
+  //TODO: add pre/post-constraints?
 
   /** The objective function. */
   def objectiveFunction = objFunction.get
@@ -71,6 +80,12 @@ abstract class AbstractOptimizerSetup {
     checkParamName(name)
     searchSpaceDims += BoundedSearchSpaceDimension[X](name, lowerBound, stepSize, upperBound)
   }
+
+  /**
+   * Execute a given function after the objective function has been evaluated.
+   *  @param f the function
+   */
+  def afterEvaluation(f: (OptimizationParameters, Objective) => Unit) = { evaluationDoneActions += f }
 
   /** Checks whether this parameter name has already been used. */
   private[this] def checkParamName(name: String) {

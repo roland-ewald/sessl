@@ -26,6 +26,10 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
+		<!-- Improved GUICE support for Scala (not necessary so far): <dependency> 
+			<groupId>net.codingwell</groupId> <artifactId>scala-guice_2.9.2</artifactId> 
+			<version>3.0.2</version> </dependency> -->
+
 		<!-- Opt4J dependencies: -->
 		<dependency>
 			<groupId>org.opt4j</groupId>

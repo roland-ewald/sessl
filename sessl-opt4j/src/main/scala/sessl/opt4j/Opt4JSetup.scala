@@ -20,13 +20,17 @@ package sessl.opt4j
 import java.util.Random
 
 import org.opt4j.core.optimizer.Archive
+import org.opt4j.core.optimizer.OptimizerIterationListener
+import org.opt4j.core.optimizer.Population
 import org.opt4j.core.problem.ProblemModule
 import org.opt4j.core.start.Opt4JTask
 import org.opt4j.viewer.ViewerModule
 
-import sessl.optimization.ObjectiveFunction
+import com.google.inject.Inject
+
 import sessl.optimization.AbstractOptimizerSetup
 import sessl.optimization.Objective
+import sessl.optimization.ObjectiveFunction
 import sessl.optimization.ObjectiveFunction
 import sessl.optimization.SearchSpaceDimension
 import sessl.optimization.SimpleParameters
@@ -50,12 +54,13 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
   def optimizer = optAlgorithm.get
 
   /** Defines the Opt4J problem module to be used. */
-  val problemModule = new ProblemModule() {
+  val problemModule = new ProblemModule {
     override def config() {
       bindProblem(
         classOf[SimpleParameterCreator],
         classOf[SimpleParameterDecoder],
         classOf[SimpleParameterEvaluator])
+      addOptimizerIterationListener(classOf[IterationListener])
     }
   }
 
@@ -67,6 +72,7 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     try {
       task.execute()
       val archive = task.getInstance(classOf[Archive])
+      val population = task.getInstance(classOf[Population])
       val it = archive.iterator
       while (it.hasNext) {
         println("OPT:")
