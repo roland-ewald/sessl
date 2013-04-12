@@ -18,16 +18,13 @@
 package sessl.opt4j
 
 import java.util.Random
-
 import org.opt4j.core.optimizer.Archive
 import org.opt4j.core.optimizer.OptimizerIterationListener
 import org.opt4j.core.optimizer.Population
 import org.opt4j.core.problem.ProblemModule
 import org.opt4j.core.start.Opt4JTask
 import org.opt4j.viewer.ViewerModule
-
 import com.google.inject.Inject
-
 import sessl.optimization.AbstractOptimizerSetup
 import sessl.optimization.Objective
 import sessl.optimization.ObjectiveFunction
@@ -35,6 +32,7 @@ import sessl.optimization.ObjectiveFunction
 import sessl.optimization.SearchSpaceDimension
 import sessl.optimization.SimpleParameters
 import sessl.util.Logging
+import sessl.optimization.OptimizationParameters
 
 /**
  * Support for Opt4J.
@@ -67,6 +65,8 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
   override def execute() = {
     require(optAlgorithm.isDefined, "No optimization algorithm is defined. Use, for example, \"optimizer = EvoluationaryAlgorithm\"")
     Opt4JSetup.register(this, objective, objectiveFunction, searchSpace)
+    Opt4JSetup.afterEvaluationActions = Some(afterEvaluationActions)
+
     val task = initializeOptimizationTask()
 
     try {
@@ -135,6 +135,8 @@ object Opt4JSetup {
   /** The RNG seed to be used. */
   private[this] var seed: Option[Long] = None
 
+  /*private[this]*/ var afterEvaluationActions: Option[List[(OptimizationParameters, Objective) => Unit]] = None
+
   /**
    * Register the given setup as owner, store the given problem-specific information.
    * @param s the setup (new owner)
@@ -173,6 +175,7 @@ object Opt4JSetup {
       require(objectiveFunction.isDefined, "No objective function defined.")
       val rv = copyObjective()
       objectiveFunction.get.asInstanceOf[SESSLObjectiveFun[Objective]](params, rv)
+      afterEvaluationActions.map(_.foreach(f => f(params, rv)))
       rv
     }
 

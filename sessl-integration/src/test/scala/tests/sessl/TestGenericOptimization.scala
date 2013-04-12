@@ -55,6 +55,9 @@ import sessl.opt4j.Opt4JSetup
         param("p", 1, 1, 15)
         param("n", 10000, 100, 15000)
         optimizer = EvolutionaryAlgorithm(generations = 2, alpha = 10)
+        afterEvaluation { (params, obj) =>
+          println("?!?!?!params:" + params + " , " + obj)
+        }
       }
     }
   }
