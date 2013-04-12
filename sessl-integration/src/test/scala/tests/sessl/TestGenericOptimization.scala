@@ -28,7 +28,9 @@ import sessl.opt4j.Opt4JSetup
 
     import sessl._
     import sessl.james._
+
     import sessl.optimization._
+    import sessl.opt4j._
 
     maximize { (params, objective) =>
       {
@@ -52,6 +54,7 @@ import sessl.opt4j.Opt4JSetup
         param("unimportant", List("a", "b", "c"))
         param("p", 1, 1, 15)
         param("n", 10000, 100, 15000)
+        optimizer = EvolutionaryAlgorithm(generations = 2, alpha = 10)
       }
     }
   }
@@ -60,7 +63,9 @@ import sessl.opt4j.Opt4JSetup
 
     import sessl._
     import sessl.james._
+
     import sessl.optimization._
+    import sessl.opt4j._
 
     optimize(MultiObjective(("x", max), ("y", max))) { (params, objective) => //<-todo: use companion object 'Objective'
       {
@@ -84,6 +89,7 @@ import sessl.opt4j.Opt4JSetup
       new Opt4JSetup {
         param("p", 1, 1, 15)
         param("n", 10000, 100, 15000)
+        optimizer = EvolutionaryAlgorithm(generations = 2, alpha = 10)
       }
     }
   }

@@ -46,6 +46,13 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
   /** Flag to control whether the GUI of Opt4J is shown during optimization or not. */
   var showViewer: Boolean = false
 
+  /** Specifies which optimization algorithm to use. */
+  protected[opt4j] var optAlgorithm: Option[Opt4JAlgorithm] = None
+
+  /** Getting/setting the optimization algorithm. */
+  def optimizer_=(a: Opt4JAlgorithm) = { optAlgorithm = Some(a) }
+  def optimizer = optAlgorithm.get
+
   /** Defines the Opt4J problem module to be used. */
   val problemModule = new ProblemModule() {
     override def config() {
@@ -56,12 +63,8 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     }
   }
 
-  //Termination criterion -- TODO: move to case classes
-  val ea = new EvolutionaryAlgorithmModule()
-  ea.setGenerations(3)
-  ea.setAlpha(10)
-
   override def execute() = {
+    require(optAlgorithm.isDefined, "No optimization algorithm is defined. Use, for example, \"optimizer = EvoluationaryAlgorithm\"")
     Opt4JSetup.register(this, objective, objectiveFunction, searchSpace)
     val task = initializeOptimizationTask()
 
@@ -84,11 +87,12 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
   }
 
   private[this] def initializeOptimizationTask() = {
+    val optModule = optAlgorithm.get.create
     val rv = new Opt4JTask(false)
     if (showViewer)
-      rv.init(ea, problemModule, new ViewerModule)
+      rv.init(optModule, problemModule, new ViewerModule)
     else
-      rv.init(ea, problemModule)
+      rv.init(optModule, problemModule)
     rv
   }
 }
