@@ -42,13 +42,10 @@ class SimpleParameterEvaluator extends Evaluator[SimpleParameters] with Logging 
   override def evaluate(params: SimpleParameters): Objectives = {
     val objectives: Objectives = new Objectives
 
-    val newObjective = Opt4JSetup.copyObjective()
-    Opt4JSetup.eval(params, newObjective)
-
-    newObjective match {
-      case obj: SingleObjective => objectives.add("objective", obj.direction, obj.singleValue)
-      case obj: MultiObjective => obj.dimensions.foreach { d =>
-        objectives.add(d._1, d._2, obj.value(d._1))
+    Opt4JSetup.eval(params) match {
+      case o: SingleObjective => objectives.add("objective", o.direction, o.singleValue)
+      case o: MultiObjective => o.dimensions.foreach { d =>
+        objectives.add(d._1, d._2, o.value(d._1))
       }
     }
 
