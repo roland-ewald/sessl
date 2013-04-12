@@ -29,7 +29,7 @@ import org.jamesii.core.util.eventset.SimpleEventQueueFactory
 import org.jamesii.core.util.eventset.plugintype.EventQueueFactory
 import sessl.Algorithm
 import sessl.EventQueue
-import sessl.Optimizer
+import sessl.optimization.Optimizer
 import sessl.RNG
 import sessl.Simulator
 import sessl._BucketQueue

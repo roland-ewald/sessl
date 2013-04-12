@@ -17,6 +17,7 @@ package sessl
 
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Map
+import sessl.optimization.Optimizer
 
 /**
  * Support for optimization.

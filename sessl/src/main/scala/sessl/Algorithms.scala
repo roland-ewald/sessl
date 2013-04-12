@@ -42,12 +42,6 @@ object RNGUtils {
 trait _LCG extends RNGWithLongSeed
 trait _MersenneTwister extends RNGWithLongSeed
 
-//Optimization
-trait Optimizer extends Algorithm
-
-trait _SimulatedAnnealing extends Optimizer
-trait _HillClimbing extends Optimizer
-
 //Simulation
 trait Simulator extends Algorithm
 
