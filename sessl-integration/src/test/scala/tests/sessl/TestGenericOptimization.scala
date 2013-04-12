@@ -67,29 +67,37 @@ import sessl.opt4j.Opt4JSetup
     import sessl.optimization._
     import sessl.opt4j._
 
-    optimize(MultiObjective(("x", max), ("y", max))) { (params, objective) => //<-todo: use companion object 'Objective'
-      {
-        execute {
-          new Experiment with Observation with ParallelExecution {
-            model = "java://examples.sr.LinearChainSystem"
-            set("propensity" <~ params("p"))
-            set("numOfInitialParticles" <~ params("n"))
-            stopTime = 1.0
-            replications = 2
-            observe("x" ~ "S0", "y" ~ "S1")
-            observeAt(0.8)
-            withReplicationsResult(results => {
-              objective("x") <~ results.mean("x")
-              objective("y") <~ results.min("y")
-            })
+    val optAlgos = List(
+      EvolutionaryAlgorithm(generations = 2, alpha = 10),
+      SimulatedAnnealing(iterations = 20),
+      RandomSearch(iterations = 20, batchsize = 1))
+
+    optAlgos.foreach { optAlgo =>
+
+      optimize(MultiObjective(("x", max), ("y", max))) { (params, objective) =>
+        {
+          execute {
+            new Experiment with Observation with ParallelExecution {
+              model = "java://examples.sr.LinearChainSystem"
+              set("propensity" <~ params("p"))
+              set("numOfInitialParticles" <~ params("n"))
+              stopTime = 1.0
+              replications = 2
+              observe("x" ~ "S0", "y" ~ "S1")
+              observeAt(0.8)
+              withReplicationsResult(results => {
+                objective("x") <~ results.mean("x")
+                objective("y") <~ results.min("y")
+              })
+            }
           }
         }
-      }
-    } using {
-      new Opt4JSetup {
-        param("p", 1, 1, 15)
-        param("n", 10000, 100, 15000)
-        optimizer = EvolutionaryAlgorithm(generations = 2, alpha = 10)
+      } using {
+        new Opt4JSetup {
+          param("p", 1, 1, 15)
+          param("n", 10000, 100, 15000)
+          optimizer = optAlgo
+        }
       }
     }
   }

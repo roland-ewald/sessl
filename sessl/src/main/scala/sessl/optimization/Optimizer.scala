@@ -29,3 +29,5 @@ trait Optimizer extends Algorithm
 trait _SimulatedAnnealing extends Optimizer
 trait _HillClimbing extends Optimizer
 trait _EvolutionaryAlgorithm extends Optimizer
+trait _RandomSearch extends Optimizer
+trait _ParticleSwarm extends Optimizer
