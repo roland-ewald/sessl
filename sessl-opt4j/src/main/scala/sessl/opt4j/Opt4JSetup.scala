@@ -17,24 +17,20 @@
  */
 package sessl.opt4j
 
-import scala.Array.canBuildFrom
+import java.util.Random
+
 import org.opt4j.core.optimizer.Archive
 import org.opt4j.core.problem.ProblemModule
 import org.opt4j.core.start.Opt4JTask
-import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
 import org.opt4j.viewer.ViewerModule
+
+import sessl.optimization.ObjectiveFunction
 import sessl.optimization.AbstractOptimizerSetup
-import sessl.optimization.BoundedSearchSpaceDimension
-import sessl.optimization.GeneralSearchSpaceDimension
-import sessl.optimization.MultiObjective
 import sessl.optimization.Objective
 import sessl.optimization.ObjectiveFunction
-import sessl.optimization.OptDirection
 import sessl.optimization.SearchSpaceDimension
 import sessl.optimization.SimpleParameters
-import sessl.optimization.SingleObjective
 import sessl.util.Logging
-import java.util.Random
 
 /**
  * Support for Opt4J.

@@ -17,16 +17,15 @@
  */
 package sessl.opt4j
 
-import sessl.optimization._EvolutionaryAlgorithm
 import org.opt4j.core.optimizer.OptimizerModule
-import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
-import sessl.optimization._SimulatedAnnealing
-import org.opt4j.optimizers.sa.SimulatedAnnealingModule
-import sessl.optimization._RandomSearch
-import org.opt4j.optimizers.rs.RandomSearchModule
-import sessl.optimization._ParticleSwarm
-import org.opt4j.optimizers.mopso.MOPSOModule
 import org.opt4j.optimizers.de.DifferentialEvolutionModule
+import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
+import org.opt4j.optimizers.rs.RandomSearchModule
+import org.opt4j.optimizers.sa.SimulatedAnnealingModule
+
+import sessl.optimization._EvolutionaryAlgorithm
+import sessl.optimization._RandomSearch
+import sessl.optimization._SimulatedAnnealing
 
 /**
  * Common interface of all optimization algorithms in Opt4J.
