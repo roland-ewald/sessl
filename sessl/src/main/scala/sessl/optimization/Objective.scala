@@ -63,6 +63,8 @@ case class SingleObjective(val direction: OptDirection) extends Objective {
   }
 
   def singleValue = value.get
+
+  override def toString = "objective =" + value.getOrElse("[undefined]") + " [" + direction + "]"
 }
 
 object SingleObjective {
@@ -92,6 +94,8 @@ case class MultiObjective(val dims: (String, OptDirection)*) extends Objective {
   def apply(name: String) = new AssignmentWrapper(name)
 
   def value(name: String) = values(name)
+
+  override def toString = dimensionNames.map(n => n + "=" + value(n) + " [" + dimensions(n) + "]").mkString(",")
 
   /**
    * Allows to a sign a value to a single dimension to be optimized.
