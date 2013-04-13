@@ -70,15 +70,13 @@ import sessl.james._
     var executionDone = false
 
     maximize { (params, objective) =>
-      {
-        execute {
-          new TestExperiment {
-            set("propensity" <~ params("p"))
-            set("numOfInitialParticles" <~ params("n"))
-            withReplicationsResult(results => {
-              objective <~ results.mean("x")
-            })
-          }
+      execute {
+        new TestExperiment {
+          set("propensity" <~ params("p"))
+          set("numOfInitialParticles" <~ params("n"))
+          withReplicationsResult(results => {
+            objective <~ results.mean("x")
+          })
         }
       }
     } using {
@@ -103,16 +101,14 @@ import sessl.james._
 
     optAlgos.foreach { optAlgo =>
       optimize(MultiObjective(("x", max), ("y", max))) { (params, objective) =>
-        {
-          execute {
-            new TestExperiment {
-              set("propensity" <~ params("p"))
-              set("numOfInitialParticles" <~ params("n"))
-              withReplicationsResult(results => {
-                objective("x") <~ results.mean("x")
-                objective("y") <~ results.min("y")
-              })
-            }
+        execute {
+          new TestExperiment {
+            set("propensity" <~ params("p"))
+            set("numOfInitialParticles" <~ params("n"))
+            withReplicationsResult(results => {
+              objective("x") <~ results.mean("x")
+              objective("y") <~ results.min("y")
+            })
           }
         }
       } using {
@@ -145,15 +141,13 @@ import sessl.james._
     val optimizationResults = ListBuffer[List[_]]()
 
     maximize { (params, objective) =>
-      {
-        execute {
-          new TestExperiment {
-            set("propensity" <~ params("p"))
-            set("numOfInitialParticles" <~ params("n"))
-            withReplicationsResult(results => {
-              objective <~ results.mean("x")
-            })
-          }
+      execute {
+        new TestExperiment {
+          set("propensity" <~ params("p"))
+          set("numOfInitialParticles" <~ params("n"))
+          withReplicationsResult(results => {
+            objective <~ results.mean("x")
+          })
         }
       }
     } using {
