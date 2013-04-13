@@ -79,8 +79,8 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
       task.execute()
       val archive = task.getInstance(classOf[Archive])
       val population = task.getInstance(classOf[Population])
-      callEventHandlers(optimizationResultActions, archive.iterator)
       callEventHandlers(afterOptimizationActions, population.iterator)
+      callEventHandlers(optimizationResultActions, archive.iterator)
     } catch {
       case e: Exception => logger.error("Optimization failed", e)
     } finally {
@@ -94,7 +94,7 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
    *  @param handlers the list of event handlers to be called
    *  @param it the iterator to access the individuals that shall be handed over
    */
-  private[this] def callEventHandlers(handlers: List[MultipleSolutionsAction], it: java.util.Iterator[Individual]): Unit =
+  private def callEventHandlers(handlers: List[MultipleSolutionsAction], it: java.util.Iterator[Individual]): Unit =
     if (!handlers.isEmpty) {
       val convertedResults = convertResults(it)
       handlers.foreach(_(convertedResults))
@@ -107,6 +107,7 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
    */
   private[this] def convertResults(it: java.util.Iterator[Individual]): List[(OptimizationParameters, Objective)] = {
 
+    /** All data to reconstruct the results (and the goals) of the optimization (results refer to a specific parameter setup).*/
     type ObjectiveData = (Map[String, OptDirection], Map[String, Double])
 
     /** Extract relevant data from Opt4J's Objectives. */
@@ -252,6 +253,17 @@ object Opt4JSetup {
       require(seed.isDefined, "No RNG seed defined.")
       new Random(seed.get)
     }
+
+  /**
+   * Event handler to be called by the {@link IterationListener} whenever an iteration is done.
+   * @see IterationListener
+   * @param population the population
+   * @param archive the archive containing the best individuals (pareto front)
+   */
+  protected[opt4j] def iterationComplete(population: Population, archive: Archive) = owner.map { o =>
+    o.callEventHandlers(o.afterIterationActions, population.iterator)
+    o.callEventHandlers(o.iterationResultActions, archive.iterator)
+  }
 
   /**
    * Creates a new copy of an objective (values container, @see Objective).

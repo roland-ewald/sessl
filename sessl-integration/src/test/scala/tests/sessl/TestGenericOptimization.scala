@@ -54,15 +54,21 @@ import sessl.opt4j.Opt4JSetup
         param("unimportant", List("a", "b", "c"))
         param("p", 1, 1, 15)
         param("n", 10000, 100, 15000)
-        optimizer = EvolutionaryAlgorithm(generations = 2, alpha = 10)
-        afterEvaluation { (params, obj) =>
+        optimizer = EvolutionaryAlgorithm(generations = 3, alpha = 3)
+        afterEvaluation { (params, obj) => //TODO: Test!
           println("AFTER EVAL:" + params + " , " + obj)
+        }
+        afterIteration { solutions =>
+          println("ITERATION RESULTS POP:" + solutions.mkString(","))
         }
         afterOptimization { solutions =>
           println("OVERALL RESULTS POP:" + solutions.mkString(","))
         }
+        withIterationResults { solutions =>
+          println("ITERATION RESULTS:" + solutions.mkString(",") + "/" + solutions.head._2.asInstanceOf[SingleObjective].singleValue)
+        }
         withOptimizationResults { solutions =>
-          println("OVERALL RESULTS:" + solutions.mkString(","))
+          println("OVERALL RESULTS:" + solutions.mkString(",") + "/" + solutions.head._2.asInstanceOf[SingleObjective].singleValue)
         }
       }
     }

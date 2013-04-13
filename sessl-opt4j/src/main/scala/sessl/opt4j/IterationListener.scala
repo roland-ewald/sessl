@@ -32,9 +32,6 @@ import com.google.inject.Inject
  */
 class IterationListener @Inject() (val population: Population, val archive: Archive) extends OptimizerIterationListener {
 
-  override def iterationComplete(iteration: Int): Unit = {
-    println("I'm listening: " + population + ", " + archive)
-    //TODO: extract data & call event handlers in
-  }
+  override def iterationComplete(iteration: Int) = if (iteration > 1) Opt4JSetup.iterationComplete(population, archive)
 
 }
