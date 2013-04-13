@@ -30,4 +30,10 @@ trait OptimizationParameters {
    */
   def apply(s: String): Any
 
+  /**
+   * Returns value of a parameter with type to be inferred from the context.
+   * @param s name of the parameter
+   */
+  def get[X](s: String): X = apply(s).asInstanceOf[X]
+
 }

@@ -70,24 +70,21 @@ import sessl.james._
     var executionDone = false
 
     maximize { (params, objective) =>
-      execute {
-        new TestExperiment {
-          set("propensity" <~ params("p"))
-          set("numOfInitialParticles" <~ params("n"))
-          withReplicationsResult(results => {
-            objective <~ results.mean("x")
-          })
-        }
-      }
-    } using {
-      new Opt4JSetup {
-        param("unused", List("a", "b", "c")) //This should provoke a warning
-        param("p", 1, 1, 15)
-        param("n", 10000, 100, 15000)
-        optimizer = optAlgos.head
-        withOptimizationResults { _ => executionDone = true }
-      }
-    }
+      execute(new TestExperiment {
+        set("propensity" <~ params("p"))
+        set("numOfInitialParticles" <~ params("n"))
+        withReplicationsResult(results => {
+          objective <~ results.mean("x")
+        })
+      })
+    } using (new Opt4JSetup {
+      param("unused", List("a", "b", "c")) //This should provoke a warning
+      param("p", 1, 1, 15)
+      param("n", 10000, 100, 15000)
+      optimizer = optAlgos.head
+      withOptimizationResults { _ => executionDone = true }
+    })
+
     assertTrue("Execution should complete successfully.", executionDone)
   }
 
@@ -101,26 +98,22 @@ import sessl.james._
 
     optAlgos.foreach { optAlgo =>
       optimize(MultiObjective(("x", max), ("y", max))) { (params, objective) =>
-        execute {
-          new TestExperiment {
-            set("propensity" <~ params("p"))
-            set("numOfInitialParticles" <~ params("n"))
-            withReplicationsResult(results => {
-              objective("x") <~ results.mean("x")
-              objective("y") <~ results.min("y")
-            })
-          }
+        execute(new TestExperiment {
+          set("propensity" <~ params("p"))
+          set("numOfInitialParticles" <~ params("n"))
+          withReplicationsResult(results => {
+            objective("x") <~ results.mean("x")
+            objective("y") <~ results.min("y")
+          })
+        })
+      } using (new Opt4JSetup {
+        param("p", 1, 1, 15)
+        param("n", 10000, 100, 15000)
+        optimizer = optAlgo
+        withOptimizationResults { optResults =>
+          resultsPerAlgo += ((optAlgo, optResults.head._1))
         }
-      } using {
-        new Opt4JSetup {
-          param("p", 1, 1, 15)
-          param("n", 10000, 100, 15000)
-          optimizer = optAlgo
-          withOptimizationResults { optResults =>
-            resultsPerAlgo += ((optAlgo, optResults.head._1))
-          }
-        }
-      }
+      })
     }
     assertEquals("There should be one result for each algorithm tried.", optAlgos.length, resultsPerAlgo.length)
   }
@@ -150,19 +143,19 @@ import sessl.james._
           })
         }
       }
-    } using {
-      new Opt4JSetup {
-        param("p", 1, 1, 15)
-        param("n", 10000, 100, 15000)
-        optimizer = RandomSearch(iterations = iterationCount, batchsize = evalsPerIteration)
-        //Available event handlers to be tested:         
-        withIterationResults { iterationResults += _ }
-        withOptimizationResults { optimizationResults += _ }
-        afterEvaluation { (_, _) => evaluationCounter += 1 }
-        afterIteration { _ => iterationCounter += 1 }
-        afterOptimization { _ => optimizationCounter += 1 }
-      }
-    }
+    } using (new Opt4JSetup {
+      param("p", 1, 1, 15)
+      param("n", 10000, 100, 15000)
+      optimizer = RandomSearch(iterations = iterationCount, batchsize = evalsPerIteration)
+
+      //Available event handlers to be tested:         
+      withIterationResults { iterationResults += _ }
+      withOptimizationResults { optimizationResults += _ }
+      afterEvaluation { (_, _) => evaluationCounter += 1 }
+      afterIteration { _ => iterationCounter += 1 }
+      afterOptimization { _ => optimizationCounter += 1 }
+    })
+
     assertEquals("Event handling w.r.t. overall results is only called once.", 1, optimizationCounter)
     assertEquals(optimizationCounter, optimizationResults.length)
     assertEquals("First iteration is ignored, so per-iteration event handling should be called n-1 times.", iterationCount - 1, iterationCounter)
