@@ -65,6 +65,16 @@ case class SingleObjective(val direction: OptDirection) extends Objective {
   def singleValue = value.get
 }
 
+object SingleObjective {
+
+  /** Facilitates object creation in case value is already given. */
+  def apply(direction: OptDirection, value: Double): SingleObjective = {
+    val rv = SingleObjective(direction)
+    rv <~ value
+    rv
+  }
+}
+
 /**
  * Represents an objective with multiple values, distinguished by their names.
  *  @param dims list of pairs (name, [min|max]) that determines the number of optimization dimensions and the names of these dimensions
@@ -93,4 +103,16 @@ case class MultiObjective(val dims: (String, OptDirection)*) extends Objective {
       values(name) = n.toDouble(newValue)
     }
   }
+}
+
+object MultiObjective {
+
+  /** Allows easier creation of multi-objective objects in case objective values are already known. */
+  def apply(directions: Map[String, OptDirection], values: Map[String, Double]): MultiObjective = {
+    val rv = MultiObjective(directions.toList: _*)
+    for ((name, value) <- values)
+      rv(name) <~ value
+    rv
+  }
+
 }

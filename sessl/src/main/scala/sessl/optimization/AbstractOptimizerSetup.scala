@@ -25,10 +25,6 @@ import scala.collection.mutable.ListBuffer
  */
 abstract class AbstractOptimizerSetup {
 
-  type SingleSolutionAction = (OptimizationParameters, Objective) => Unit
-
-  type MultipleSolutionsAction = List[(OptimizationParameters, Objective)] => Unit
-
   /** The objective function to be used. */
   private[this] var objFunction: Option[ObjectiveFunction[_]] = None
 
