@@ -1,21 +1,24 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl
 
-/** Support for configuring the conditions at which a simulation run should stop.
+/**
+ * Support for configuring the conditions at which a simulation run should stop.
  *  @author Roland Ewald
  */
 trait SupportStoppingConditions {
@@ -38,7 +41,8 @@ trait SupportStoppingConditions {
   }
   def stopCondition: StoppingCondition = stoppingCondition.get
 
-  /** Check stopping setup and get stopping condition.
+  /**
+   * Check stopping setup and get stopping condition.
    *  @return the stopping condition to be used
    */
   protected[sessl] def checkAndGetStoppingCondition() = {
@@ -62,14 +66,15 @@ trait StoppingCondition
 case object Never extends StoppingCondition
 
 /** Stop after a given amount of simulation time. */
-case class AfterSimTime(override val time: Double = 0., days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with AbstractDuration
+case class AfterSimTime(override val time: Double = 0., days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, milliseconds: Int = 0) extends StoppingCondition with AbstractDuration
 
 /** Stop after a given amount of wall-clock time. */
-case class AfterWallClockTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) extends StoppingCondition with AbstractDuration
+case class AfterWallClockTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, milliseconds: Int = 0) extends StoppingCondition with AbstractDuration
 
 case class AfterCPUTime()
 
-/** Stop after a given number of simulation steps.
+/**
+ * Stop after a given number of simulation steps.
  *  @param steps the number of steps after which the simulation can be stopped
  */
 case class AfterSimSteps(steps: Long) extends StoppingCondition
@@ -80,7 +85,8 @@ case class ConjunctiveStoppingCondition(left: StoppingCondition, right: Stopping
 /** Stop if any of the given conditions is fulfilled. */
 case class DisjunctiveStoppingCondition(left: StoppingCondition, right: StoppingCondition) extends StoppingCondition
 
-/** Combines two stopping conditions (either with OR or with AND).
+/**
+ * Combines two stopping conditions (either with OR or with AND).
  *  @param left the first stopping condition
  */
 case class CombinedStoppingCondition(left: StoppingCondition) extends StoppingCondition {
