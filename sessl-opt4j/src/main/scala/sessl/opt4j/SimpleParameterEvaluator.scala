@@ -37,15 +37,13 @@ import sessl.util.Logging
  */
 class SimpleParameterEvaluator extends Evaluator[SimpleParameters] with Logging {
 
-  implicit def optDirectionToSign(d: OptDirection) = if (d == sessl.optimization.min) Sign.MIN else Sign.MAX
-
   override def evaluate(params: SimpleParameters): Objectives = {
     val objectives: Objectives = new Objectives
 
     Opt4JSetup.eval(params) match {
-      case o: SingleObjective => objectives.add("objective", o.direction, o.singleValue)
+      case o: SingleObjective => objectives.add("objective", Opt4JSetup.optDirToSign(o.direction), o.singleValue)
       case o: MultiObjective => o.dimensions.foreach { d =>
-        objectives.add(d._1, d._2, o.value(d._1))
+        objectives.add(d._1, Opt4JSetup.optDirToSign(d._2), o.value(d._1))
       }
     }
 

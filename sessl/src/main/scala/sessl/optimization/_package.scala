@@ -22,6 +22,12 @@ package object optimization {
   /** The objective function mabs arbitrarily many parameters to some Double value. */
   type ObjectiveFunction[-X <: Objective] = (OptimizationParameters, X) => Unit
 
+  /** Event handler considering a single parameter setup and the corresponding results of the objective function. */
+  type SingleSolutionAction = (OptimizationParameters, Objective) => Unit
+
+  /** Event handler considering multiple parameter setups and their corresponding results of the objective function. */
+  type MultipleSolutionsAction = List[(OptimizationParameters, Objective)] => Unit
+
   /** The optimization 'command'. */
   def optimize[X <: Objective](o: X)(f: ObjectiveFunction[X]): InitializedObjectiveFunction[X] = InitializedObjectiveFunction(o, f)
 

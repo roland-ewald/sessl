@@ -35,8 +35,8 @@ object Interpolation {
   /** Finds interpolation points for a sequence of time points at which data has been recorded and a list
    *  of time points for which data would be required.
    *  Note that it is assumed that timesToObserve is *sorted* (in increasing order).
-   *  @recordedSampleTimes the recorded times
-   *  @timesToObserve the times at which the system shall be observed (in increasing order)
+   *  @param recordedSampleTimes the recorded times
+   *  @param timesToObserve the times at which the system shall be observed (in increasing order)
    *  @return a list containing an interpolation point for each time to be observed (in the correct order)
    */
   def findInterpolationPoints(recordedSampleTimes: Seq[Double], timesToObserve: Seq[Double]): List[InterpolationPoint] = {

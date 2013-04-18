@@ -63,6 +63,18 @@ case class SingleObjective(val direction: OptDirection) extends Objective {
   }
 
   def singleValue = value.get
+
+  override def toString = "objective =" + value.getOrElse("[undefined]") + " [" + direction + "]"
+}
+
+object SingleObjective {
+
+  /** Facilitates object creation in case value is already given. */
+  def apply(direction: OptDirection, value: Double): SingleObjective = {
+    val rv = SingleObjective(direction)
+    rv <~ value
+    rv
+  }
 }
 
 /**
@@ -83,6 +95,8 @@ case class MultiObjective(val dims: (String, OptDirection)*) extends Objective {
 
   def value(name: String) = values(name)
 
+  override def toString = dimensionNames.map(n => n + "=" + value(n) + " [" + dimensions(n) + "]").mkString(",")
+
   /**
    * Allows to a sign a value to a single dimension to be optimized.
    *  @param name the name of the dimension
@@ -93,4 +107,16 @@ case class MultiObjective(val dims: (String, OptDirection)*) extends Objective {
       values(name) = n.toDouble(newValue)
     }
   }
+}
+
+object MultiObjective {
+
+  /** Allows easier creation of multi-objective objects in case objective values are already known. */
+  def apply(directions: Map[String, OptDirection], values: Map[String, Double]): MultiObjective = {
+    val rv = MultiObjective(directions.toList: _*)
+    for ((name, value) <- values)
+      rv(name) <~ value
+    rv
+  }
+
 }

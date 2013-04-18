@@ -35,13 +35,19 @@ abstract class AbstractOptimizerSetup {
   private[this] val searchSpaceDims = ListBuffer[SearchSpaceDimension[_]]()
 
   /** The actions to be done after the objective function was evaluated once. */
-  private[this] val evaluationDoneActions = ListBuffer[(OptimizationParameters, Objective) => Unit]()
+  private[this] val evaluationDoneActions = ListBuffer[SingleSolutionAction]()
 
   /** The actions to be done after an iteration of the optimization algorithm is done. */
-  private[this] val iterationDoneActions = ListBuffer[List[(OptimizationParameters, Objective)] => Unit]()
+  private[this] val iterationDoneActions = ListBuffer[MultipleSolutionsAction]()
 
-  /** The actions to be done after regarding the best results, after each iteration. */
-  private[this] val resultsPerIterationActions = ListBuffer[List[(OptimizationParameters, Objective)] => Unit]()
+  /** The actions to be done after the optimization procedure is done. */
+  private[this] val optimizationDoneActions = ListBuffer[MultipleSolutionsAction]()
+
+  /** The actions to be done with the best results, after each iteration. */
+  private[this] val resultsOfIterationActions = ListBuffer[MultipleSolutionsAction]()
+
+  /** The actions to be done with the best results, after the optimization. */
+  private[this] val resultsOfOptimizationActions = ListBuffer[MultipleSolutionsAction]()
 
   //TODO: add pre/post-constraints?
 
@@ -85,7 +91,49 @@ abstract class AbstractOptimizerSetup {
    * Execute a given function after the objective function has been evaluated.
    *  @param f the function
    */
-  def afterEvaluation(f: (OptimizationParameters, Objective) => Unit) = { evaluationDoneActions += f }
+  def afterEvaluation(f: SingleSolutionAction) = { evaluationDoneActions += f }
+
+  /**
+   * Get all actions to be executed after an evaluation.
+   *  @return the list of actions to be executed after each evaluation
+   */
+  protected def afterEvaluationActions = evaluationDoneActions.toList
+
+  /** The actions to be done after an iteration of the optimization algorithm is done. */
+  def afterIteration(f: MultipleSolutionsAction) = { iterationDoneActions += f }
+
+  /**
+   * Get all actions to be executed after an iteration.
+   *  @return the list of actions to be executed after each iteration
+   */
+  protected def afterIterationActions = iterationDoneActions.toList
+
+  /** The actions to be done after the optimization algorithm is finished. */
+  def afterOptimization(f: MultipleSolutionsAction) = { optimizationDoneActions += f }
+
+  /**
+   * Get all actions to be executed after the optimization.
+   *  @return the list of actions to be executed after the optimization
+   */
+  protected def afterOptimizationActions = optimizationDoneActions.toList
+
+  /** The actions to be done after regarding the best results, after each iteration. */
+  def withIterationResults(f: MultipleSolutionsAction) = { resultsOfIterationActions += f }
+
+  /**
+   * Get all actions to be executed with the results of an iteration.
+   *  @return the list of actions to be executed on the result of an iteration
+   */
+  protected def iterationResultActions = resultsOfIterationActions.toList
+
+  /** The actions to be done after regarding the best results, after the whole optimization is finished. */
+  def withOptimizationResults(f: MultipleSolutionsAction) = { resultsOfOptimizationActions += f }
+
+  /**
+   * Get all actions to be executed with the overall optimization results.
+   *  @return the list of actions to be executed on the overall results of the optimization
+   */
+  protected def optimizationResultActions = resultsOfOptimizationActions.toList
 
   /** Checks whether this parameter name has already been used. */
   private[this] def checkParamName(name: String) {
