@@ -47,7 +47,7 @@ import sessl.Variable
  *
  *  @author Roland Ewald
  */
-trait CreatableFromVariables[T <: CreatableFromVariables[T]] {
+trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
   this: T =>
 
   /** The copy(...) method is used to create new instances. */
@@ -77,10 +77,8 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T]] {
   /** Gets internal parameter names and their values. */
   def getInternalParameters = {
     val renamingMap = getRenamingMap()
-    (fieldNames.indices zip fieldNames).map(entry => (renamingMap.getOrElse(entry._2, entry._2), getCurrentValue(entry._2))).toMap
-  }
-  
-  def getCurrentValue(name: String)= this.getClass.getMethods.find(x => x.getName == name).get.invoke(this)
+    (fieldNames.indices zip fieldNames).map(entry => (renamingMap.getOrElse(entry._2, entry._2), productElement(entry._1))).toMap
+  }  
 
   /** Get the map of the elements to be renamed. Should be overridden by all classes that want to rename the variables.*/
   def getRenamingMap(): Map[String, String] = Map()

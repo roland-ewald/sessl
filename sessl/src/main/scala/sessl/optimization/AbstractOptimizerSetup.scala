@@ -137,7 +137,7 @@ abstract class AbstractOptimizerSetup {
 
   /** Checks whether this parameter name has already been used. */
   private[this] def checkParamName(name: String) {
-    require(!searchSpaceDims.exists(_ == name), "Parameter with name '" + name + "' has been defined twice!")
+    require(!searchSpaceDims.exists(_.name == name), "Parameter with name '" + name + "' has been defined twice!")
   }
 
 }

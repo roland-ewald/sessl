@@ -29,7 +29,7 @@ object MiscUtils extends Logging {
     try {
       Some(f.apply(args))
     } catch {
-      case ex => logger.warn("Application of " + f + " failed.", ex); None
+      case ex:Throwable => logger.warn("Application of " + f + " failed.", ex); None
     }
   }
 

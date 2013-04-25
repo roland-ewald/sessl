@@ -30,7 +30,7 @@ trait AbstractDuration {
   private val toH = 24
 
   /** Unit-less time. Will be ignored for the calculations, unless it is non-zero. */
-  def time: Double = 0.
+  def time: Double = .0
 
   /** The number of days. */
   def days: Int

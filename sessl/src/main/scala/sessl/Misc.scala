@@ -42,7 +42,7 @@ object Misc {
       require(point._1._1 == point._2._1, "Trajectories need to have same support points for RMSE calculation.")
       math.pow(doubleVal(point._1) - doubleVal(point._2), 2)
     }
-    math.sqrt(se.foldLeft(0.)(_ + _) / t1.length)
+    math.sqrt(se.foldLeft(.0)(_ + _) / t1.length)
   }
 
   /**

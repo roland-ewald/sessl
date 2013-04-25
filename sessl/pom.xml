@@ -21,10 +21,10 @@
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 		</dependency>
-		<dependency>
+<!--    <dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scalap</artifactId>
-		</dependency>
+		</dependency> Can be removed? -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

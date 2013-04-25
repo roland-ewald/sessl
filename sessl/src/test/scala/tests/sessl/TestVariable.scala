@@ -46,8 +46,8 @@ import sessl._
 
     val reverseDoubleRange = { "doubleRange" <~ range(10, -.5, 1) }.asInstanceOf[VarRange[Double]].toList
     assertEquals(expectedDoubleRangeElements, reverseDoubleRange.length)
-    assertEquals(10., reverseDoubleRange(0))
-    assertEquals(1., reverseDoubleRange(expectedDoubleRangeElements - 1))
+    assertEquals(10.0, reverseDoubleRange(0))
+    assertEquals(1.0, reverseDoubleRange(expectedDoubleRangeElements - 1))
 
     assertEquals("When lower and upper bound are the same, one element is returned.", 1, { "doubleRange" <~ range(1, 0.5, 1) }.asInstanceOf[VarRange[Double]].toList.length)
   }
