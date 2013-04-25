@@ -19,7 +19,6 @@
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl-james</artifactId>
-			<version>0.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

@@ -1,18 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package tests.sessl.james
 
 import org.junit.Assert._
@@ -20,15 +22,15 @@ import org.junit.Test
 
 import sessl.util.CreatableFromVariables
 
+case class TestAlgo(x: Double = 0.5, y: String = "default") extends CreatableFromVariables[TestAlgo]
+case class TestAlgo2(x1: Int = 1, x2: Int = 2, x3: Int = 3, x4: Int = 4) extends CreatableFromVariables[TestAlgo2]
+case class TestAlgo3(x1: Int = 0, subAlgo: TestAlgo2 = TestAlgo2(), x45: Int = 17) extends CreatableFromVariables[TestAlgo3]
+
 /**
  * Some tests for performance experiments.
  *  @author Roland Ewald
  */
 @Test class TestPerformanceExperiments {
-
-  case class TestAlgo(x: Double = 0.5, y: String = "default") extends CreatableFromVariables[TestAlgo]
-  case class TestAlgo2(x1: Int = 1, x2: Int = 2, x3: Int = 3, x4: Int = 4) extends CreatableFromVariables[TestAlgo2]
-  case class TestAlgo3(x1: Int = 0, subAlgo: TestAlgo2 = TestAlgo2(), x45: Int = 17) extends CreatableFromVariables[TestAlgo3]
 
   /** Tests construction of simulator sets. */
   @Test def testSimulatorSets() = {

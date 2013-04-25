@@ -16,6 +16,7 @@
 package sessl.sbmlsim
 
 import sessl.AbstractParallelExecution
+import scala.collection.parallel.ForkJoinTaskSupport
 
 /** Support for parallel execution.
  *  @author Roland Ewald
@@ -30,8 +31,9 @@ trait ParallelExecution extends AbstractParallelExecution {
     numberOfThreads = threads
   }
 
-  override def executeJobs(jobs: List[JobDescription]) = {
-    collection.parallel.ForkJoinTasks.defaultForkJoinPool.setParallelism(numberOfThreads)
+  override def executeJobs(jobs: List[JobDescription]) = {    
+    val parallelJobs = jobs.par
+    parallelJobs.tasksupport = new ForkJoinTaskSupport(new scala.concurrent.forkjoin.ForkJoinPool(numberOfThreads))
     jobs.par.map(executeJob).toList
   }
 

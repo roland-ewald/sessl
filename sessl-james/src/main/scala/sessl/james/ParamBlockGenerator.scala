@@ -17,6 +17,7 @@
  */
 package sessl.james
 
+import reflect._
 import sessl.Algorithm
 import sessl.util.AlgorithmSet
 import sessl.util.CreatableFromVariables
@@ -40,12 +41,12 @@ object ParamBlockGenerator {
     val paramBlock = new ParamBlock(algorithm.factory.getClass.getName)
     algorithm match {
       case a: CreatableFromVariables[_] =>
-        a.getInternalParameters().foreach(entry => addToParamBlock(paramBlock, entry, algorithm.customBlockName(entry._1)))
+        a.getInternalParameters.foreach(entry => addToParamBlock(paramBlock, entry, algorithm.customBlockName(entry._1)))
       case _ =>
         report(Level.INFO, "Algorithm " + algorithm + " cannot be parameterized.")
     }
     paramBlock
-  }
+  }  
 
   /**
    * Recursively adds sub-blocks to the parameter block.
