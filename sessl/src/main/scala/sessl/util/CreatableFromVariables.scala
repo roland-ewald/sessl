@@ -25,7 +25,6 @@ import scala.collection.Seq
 import sessl.MultipleVars
 import sessl.Variable
 
-
 /**
  * A trait to create sets of case class instances from a set of specified variables.
  *
@@ -53,17 +52,11 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
   /** The copy(...) method is used to create new instances. */
   private[this] val copyMethod = this.getClass.getMethods.find(x => x.getName == "copy").get
 
-  /** Names and default values of constructor parameters. */
-  val constructorInfo = ReflectionHelper.caseClassConstrArgs(this)
-
   /** The names of all specified fields. */
-  lazy val fieldNames = constructorInfo.map(_._1)
+  lazy val fieldNames = ReflectionHelper.caseClassConstrArgs(this).map(_._1)
 
   /** The set of all specified field names. */
   lazy val fieldNamesSet = fieldNames.toSet
-
-  /** The default values of all specified fields. */
-  lazy val defaultValues = constructorInfo.map(_._2)
 
   /**
    * Create instance of class from list of parameters.
@@ -78,7 +71,7 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
   def getInternalParameters = {
     val renamingMap = getRenamingMap()
     (fieldNames.indices zip fieldNames).map(entry => (renamingMap.getOrElse(entry._2, entry._2), productElement(entry._1))).toMap
-  }  
+  }
 
   /** Get the map of the elements to be renamed. Should be overridden by all classes that want to rename the variables.*/
   def getRenamingMap(): Map[String, String] = Map()
@@ -94,7 +87,7 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
       for (i <- fieldNames.indices) yield {
         if (setup.contains(fieldNames(i)))
           setup(fieldNames(i))
-        else defaultValues(i)
+        else productElement(i)
       }
     }
 
@@ -112,6 +105,7 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
    */
   private[this] def getCopy(parameters: Seq[Any]) = {
     try {
+      println("Invoking copy with params: " + parameters.mkString(","))
       copyMethod.invoke(this, parameters.map(_.asInstanceOf[AnyRef]): _*).asInstanceOf[T]
     } catch {
       case ex: IllegalArgumentException => throw new IllegalArgumentException("Have you used parentheses to specify *all* allgorithms and subalgorithms? E.g. \"algo1\" <~ Algo() etc.", ex)

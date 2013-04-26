@@ -22,15 +22,15 @@ import org.junit.Test
 
 import sessl.util.CreatableFromVariables
 
-case class TestAlgo(x: Double = 0.5, y: String = "default") extends CreatableFromVariables[TestAlgo]
-case class TestAlgo2(x1: Int = 1, x2: Int = 2, x3: Int = 3, x4: Int = 4) extends CreatableFromVariables[TestAlgo2]
-case class TestAlgo3(x1: Int = 0, subAlgo: TestAlgo2 = TestAlgo2(), x45: Int = 17) extends CreatableFromVariables[TestAlgo3]
-
 /**
  * Some tests for performance experiments.
  *  @author Roland Ewald
  */
 @Test class TestPerformanceExperiments {
+
+  case class TestAlgo(x: Double = 0.5, y: String = "default") extends CreatableFromVariables[TestAlgo]
+  case class TestAlgo2(x1: Int = 1, x2: Int = 2, x3: Int = 3, x4: Int = 4) extends CreatableFromVariables[TestAlgo2]
+  case class TestAlgo3(x1: Int = 0, subAlgo: TestAlgo2 = TestAlgo2(), x45: Int = 17) extends CreatableFromVariables[TestAlgo3]
 
   /** Tests construction of simulator sets. */
   @Test def testSimulatorSets() = {
@@ -38,11 +38,12 @@ case class TestAlgo3(x1: Int = 0, subAlgo: TestAlgo2 = TestAlgo2(), x45: Int = 1
     import sessl._
 
     //Testing corner case and simple cases
-    assertEquals(1, (TestAlgo2() scan ()).size)
+    assertEquals(1, (TestAlgo2() scan ()).size)    
     assertEquals(3, (TestAlgo() scan ("x" <~ (1, 2, 3), "y" <~ "test")).size)
     assertEquals(10, (TestAlgo() scan ("x" <~ range(.1, .1, 1), "y" <~ "test")).size)
     assertEquals(10, (TestAlgo2() scan ("x1" <~ range(1, 1, 10) and "x2" <~ range(1, 1, 10))).size)
 
+    println("---")
     //Testing more complex case
     val fixedX3 = 1223
     val setups = TestAlgo2(x3 = fixedX3) scan ("x1" <~ range(1, 1, 10) and "x2" <~ range(1, 1, 10), "x4" <~ range(20, -1, 1))
