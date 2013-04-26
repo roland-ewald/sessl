@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.sessl</groupId>
 	<artifactId>parent-pom</artifactId>
@@ -6,7 +7,7 @@
 	<version>0.8-SNAPSHOT</version>
 	<name>SESSL</name>
 	<url>http://sessl.org</url>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<scala.version>2.10.1</scala.version>
@@ -23,10 +24,10 @@
 			<id>scala-tools.org</id>
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
-		</repository> 
+		</repository>
 	</repositories>
 
-	
+
 	<scm>
 		<connection>scm:hg:${sessl.source.repository}</connection>
 		<url>${sessl.source.repository}</url>
@@ -43,7 +44,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	
+
 	<developers>
 		<developer>
 			<id>Roland_Ewald</id>
@@ -55,18 +56,18 @@
 			<organization>University of Rostock</organization>
 		</developer>
 	</developers>
-	
-		
+
+
 	<modules>
 		<module>sessl</module>
 		<module>sessl-james</module>
-		<module>sessl-sbmlsim</module>		
+		<module>sessl-sbmlsim</module>
 		<module>sessl-omnetpp</module>
 		<module>sessl-opt4j</module>
 		<module>sessl-integration</module>
 		<module>sessl-release</module>
 	</modules>
-		
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>scala-tools.org</id>
@@ -77,76 +78,76 @@
 
 	<dependencyManagement>
 		<dependencies>
-		
-		<!-- Internal dependencies: -->
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-james</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-sbmlsim</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-omnetpp</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sessl</groupId>
-			<artifactId>sessl-opt4j</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
-		<!-- External dependencies: -->
-		
-		<!-- Scala -->
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-compiler</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scalap</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-		
-		<!-- SLF4J for Scala -->
-		<dependency>
-			<groupId>com.weiglewilczek.slf4s</groupId>
-			<artifactId>slf4s_2.9.1</artifactId>
-			<version>1.0.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.6</version>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<!-- JUnit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8</version>
-			<scope>test</scope>
-		</dependency>
+			<!-- Internal dependencies: -->
+			<dependency>
+				<groupId>org.sessl</groupId>
+				<artifactId>sessl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sessl</groupId>
+				<artifactId>sessl-james</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sessl</groupId>
+				<artifactId>sessl-sbmlsim</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sessl</groupId>
+				<artifactId>sessl-omnetpp</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sessl</groupId>
+				<artifactId>sessl-opt4j</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- External dependencies: -->
+
+			<!-- Scala -->
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-compiler</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scalap</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
+
+			<!-- SLF4J for Scala -->
+			<dependency>
+				<groupId>com.weiglewilczek.slf4s</groupId>
+				<artifactId>slf4s_2.9.1</artifactId>
+				<version>1.0.7</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>1.6.6</version>
+				<scope>runtime</scope>
+			</dependency>
+
+			<!-- JUnit -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<!-- BUILDING -->
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
@@ -163,10 +164,10 @@
 						<jvmArg>-Xms64m</jvmArg>
 						<jvmArg>-Xmx1024m</jvmArg>
 					</jvmArgs>
-        <args>
-          <arg>-deprecation</arg>
-          <arg>-feature</arg>
-        </args>
+					<args>
+						<arg>-deprecation</arg>
+						<arg>-feature</arg>
+					</args>
 				</configuration>
 			</plugin>
 
@@ -232,7 +233,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Bundle source files -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
