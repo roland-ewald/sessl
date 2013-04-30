@@ -38,7 +38,7 @@ object ReflectionHelper {
    * @return list of (parameter name, default value) tuples, in correct order
    */
   def caseClassConstrArgs(a: Product): Seq[(String, Any)] = {
-    
+
     val classSymbol = cm.classSymbol(a.getClass)
 
     val moduleInstanceMirror =
@@ -60,7 +60,7 @@ object ReflectionHelper {
         // Get instance mirror for companion object
         rtMirror.reflect(moduleMirror.instance)
       }
-    
+
     argsAndDefaults(moduleInstanceMirror, "apply")
   }
 
@@ -94,6 +94,18 @@ object ReflectionHelper {
     }
 
     (for (ps <- method.paramss; p <- ps) yield p).zipWithIndex.map(valueForParam)
+  }
+
+  /**
+   * Retrieves reference to an object by its name.
+   * @param the class name of the object
+   * @return the reference to the object
+   */
+  def objectReferenceByName[A](className: String): A = {
+    val rtMirror = runtimeMirror(getClass.getClassLoader)
+    val moduleSymbol = rtMirror.staticModule(className)
+    val moduleMirror = rtMirror reflectModule moduleSymbol
+    moduleMirror.instance.asInstanceOf[A]
   }
 
 }

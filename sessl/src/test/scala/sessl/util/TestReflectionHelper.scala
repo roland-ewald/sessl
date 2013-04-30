@@ -22,8 +22,6 @@ import org.junit.Assert._
 import org.junit.Assert
 import ReflectionHelper._
 
-case class TestNormalCaseClass(val x: Int = 1, val y: String = "test")
-
 /**
  * Tests for {@link ReflectionHelper}.
  *
@@ -50,4 +48,19 @@ case class TestNormalCaseClass(val x: Int = 1, val y: String = "test")
     assertEquals(Seq(("testName", 4), "x", testString), caseClassConstrArgs(TestFunctionInnerCaseClass()).toSeq)
   }
 
+  @Test def testObjectReferenceRetrieval {
+    val objectclassName = SomeTestObject.getClass.getCanonicalName
+    val myTestObject: SomeTestTrait = objectReferenceByName(objectclassName)
+    assertTrue(myTestObject.eq(SomeTestObject))
+  }
 }
+
+//Some types for testing:
+
+case class TestNormalCaseClass(val x: Int = 1, val y: String = "test")
+
+trait SomeTestTrait {
+  def someTestMethod = "test"
+}
+
+object SomeTestObject extends SomeTestTrait
