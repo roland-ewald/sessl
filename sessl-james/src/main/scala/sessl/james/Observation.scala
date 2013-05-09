@@ -24,16 +24,15 @@ import org.jamesii.core.experiments.optimization.parameter.IResponseObserver
 import org.jamesii.core.experiments.optimization.parameter.instrumenter.IResponseObsSimInstrumenter
 import org.jamesii.core.experiments.tasks.IComputationTask
 import org.jamesii.core.model.variables.BaseVariable
-import org.jamesii.core.observe.Mediator
+import org.jamesii.core.observe.IObservable
 import org.jamesii.core.parameters.ParameterBlock
-import model.sr.ISRModel
-import model.sr.snapshots.SRSnapshotObserver
+import org.jamesii.core.parameters.ParameterizedFactory
+import sessl.james.formalismspecific.MLRulesInstrumentationHandler
+import sessl.james.formalismspecific.SRInstrumentationHandler
 import sessl.util.SimpleObservation
 import sessl.util.SimpleObserverHelper
-import org.jamesii.core.observe.IObservable
-import org.jamesii.core.parameters.ParameterizedFactory
-import sessl.james.formalismspecific.SRInstrumentationHandler
-import sessl.james.formalismspecific.MLRulesInstrumentationHandler
+import sessl.james.formalismspecific.InstrumentationHandler
+import scala.collection.mutable.ListBuffer
 
 /**
  * Configuring James II for observation.
@@ -68,8 +67,6 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
 
   val observers = new java.util.ArrayList[IResponseObserver[_ <: IObservable]]()
 
-  val instrumentationHandlers = List(new SRInstrumentationHandler(), new MLRulesInstrumentationHandler())
-
   private[this] var myRunID: Option[Int] = None
 
   def setRunID(runID: Int) = {
@@ -92,10 +89,22 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
   /** Creates dedicated, formalism-specific observer and configures it to additionally record the desired variables.*/
   override def instrumentComputation(computation: IComputationTask): Unit = {
     observers.clear
-    val handler = instrumentationHandlers.find(h => h.applicable(computation))
+    val handler = SESSLInstrumenter.instrumentationHandlers.find(h => h.applicable(computation))
     require(handler.isDefined, "Instrumentation of this kind of model " + computation.getModel() + "is not yet supported so far!")
     //TODO: Manage parameters explicitly: computation.getConfig().getParameters()
     val observer = handler.get.configureObserver(computation, this)
     observers.add(observer)
   }
+}
+
+/**
+ * This solution is ugly, but facilitates SESSL development for currently unreleased parts of JAMES II.
+ */
+object SESSLInstrumenter {
+
+  val instrHandlers = ListBuffer(new SRInstrumentationHandler(), new MLRulesInstrumentationHandler())
+
+  def instrumentationHandlers = instrHandlers.toList
+
+  def registerInstrumentationHandler(i: InstrumentationHandler): Unit = {instrHandlers += i}
 }
