@@ -28,7 +28,7 @@ trait OptimizationParameters {
    *  @param s name of the parameter
    *  @return its value
    */
-  def apply(s: String): Any
+  def apply[X](s: String): X
 
   /**
    * Returns value of a parameter with type to be inferred from the context.
