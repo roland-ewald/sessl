@@ -36,4 +36,9 @@ trait OptimizationParameters {
    */
   def get[X](s: String): X = apply(s).asInstanceOf[X]
 
+  /**
+   * Returns all parameter values as a map.
+   */
+  def values: Map[String, Any]
+
 }
