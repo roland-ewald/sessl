@@ -38,12 +38,12 @@ case class SimpleParameters(val params: Map[String, Any]) extends OptimizationPa
   /** Array with flags for unused parameters. */
   private[this] val unusedParams = Range(0, params.size).map(_ => true).toArray
 
-  override def apply[X](s: String): X = {
+  override def apply(s: String): Any = {
     val param = params.get(s)
     if (!param.isDefined)
       throw new IllegalArgumentException("No value defined for parameter '" + s + "'")
     unusedParams(parameterIndices(s)) = false
-    param.get.asInstanceOf[X]
+    param.get
   }
 
   /** Returns index of first unused parameter, or -1 if none exists. */
