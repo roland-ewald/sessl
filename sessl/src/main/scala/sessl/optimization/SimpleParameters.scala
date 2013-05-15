@@ -38,8 +38,17 @@ case class SimpleParameters(val params: Map[String, Any]) extends OptimizationPa
   /** Array with flags for unused parameters. */
   private[this] val unusedParams = Range(0, params.size).map(_ => true).toArray
 
-  override def values = params
-  
+  /** Resets all flags for parameter usage. */
+  private[this] def markAllParamsAsRead() = {
+    for (i <- unusedParams.indices)
+      unusedParams(i) = false
+  }
+
+  override def values() = {
+    markAllParamsAsRead()
+    params
+  }
+
   override def apply(s: String): Any = {
     val param = params.get(s)
     if (!param.isDefined)
@@ -57,7 +66,7 @@ case class SimpleParameters(val params: Map[String, Any]) extends OptimizationPa
       None
     else Some(paramNames(idx))
   }
-  
+
   override def toString = params.toString
 
 }
