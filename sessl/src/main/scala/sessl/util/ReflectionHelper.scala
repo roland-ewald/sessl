@@ -33,11 +33,14 @@ object ReflectionHelper {
    * Assumes that there are default values for each parameter.
    *
    * TODO: This does not work with case classes that are nested within functions
+   * 
+   * This method needs to be synchronized, otherwise calls to the reflection API may provoke 
+   * a <code>scala.reflect.internal.Symbols$CyclicReference</code>.
    *
    * @param a any product (case class instance)
    * @return list of (parameter name, default value) tuples, in correct order
    */
-  def caseClassConstrArgs(a: Product): Seq[(String, Any)] = {
+  def caseClassConstrArgs(a: Product): Seq[(String, Any)] = synchronized {
 
     val classSymbol = cm.classSymbol(a.getClass)
 
