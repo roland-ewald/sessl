@@ -222,16 +222,15 @@ object Opt4JSetup {
    *  @param params the input parameters of the objective function
    *  @return the results
    */
-  def eval(params: SimpleParameters): Objective =
-    this.synchronized {
-      require(objectiveFunction.isDefined, "No objective function defined.")
-      val rv = copyObjective()
-      //Execution:
-      objectiveFunction.get.asInstanceOf[SESSLObjectiveFun[Objective]](params, rv)
-      //Event handling:
+  def eval(params: SimpleParameters): Objective = {
+    require(objectiveFunction.isDefined, "No objective function defined.")
+    val rv = copyObjective()
+    //Execution:
+    objectiveFunction.get.asInstanceOf[SESSLObjectiveFun[Objective]](params, rv)
+    //Event handling:
       owner.get.afterEvaluationActions.foreach(_.apply(params, rv))
-      rv
-    }
+    rv
+  }
 
   /**
    * Releases ownership of this object.

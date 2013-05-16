@@ -22,10 +22,16 @@ import org.opt4j.optimizers.de.DifferentialEvolutionModule
 import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule
 import org.opt4j.optimizers.rs.RandomSearchModule
 import org.opt4j.optimizers.sa.SimulatedAnnealingModule
-
 import sessl.optimization._EvolutionaryAlgorithm
 import sessl.optimization._RandomSearch
 import sessl.optimization._SimulatedAnnealing
+import org.opt4j.core.optimizer.IterativeOptimizer
+import org.opt4j.core.optimizer.IndividualCompleter
+import org.opt4j.core.common.completer.ParallelIndividualCompleter
+import org.opt4j.optimizers.ea.CrossoverRate
+import org.opt4j.optimizers.ea.ConstantCrossoverRate
+import com.google.inject.Scopes
+import org.opt4j.core.start.Opt4JModule
 
 /**
  * Common interface of all optimization algorithms in Opt4J.
@@ -52,7 +58,15 @@ trait Opt4JAlgorithm {
 case class EvolutionaryAlgorithm(val generations: Int = 1000, val alpha: Int = 100, val mu: Int = 25,
   val lambda: Int = 25, val rate: Double = 0.95) extends Opt4JAlgorithm with _EvolutionaryAlgorithm {
   override def create = {
-    val rv = new EvolutionaryAlgorithmModule
+    val rv = new EvolutionaryAlgorithmModule {
+      override def config() = { //TODO: Generalize this
+        super.config() 
+        bindConstant("maxThreads", classOf[ParallelIndividualCompleter]).to(4)
+        bind(classOf[ParallelIndividualCompleter]).in(Opt4JModule.SINGLETON)
+        bind(classOf[IndividualCompleter]).to(classOf[ParallelIndividualCompleter])
+        addOptimizerStateListener(classOf[ParallelIndividualCompleter])
+      }
+    }
     rv.setGenerations(generations)
     rv.setAlpha(alpha)
     rv.setMu(mu)
