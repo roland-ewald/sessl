@@ -58,15 +58,7 @@ trait Opt4JAlgorithm {
 case class EvolutionaryAlgorithm(val generations: Int = 1000, val alpha: Int = 100, val mu: Int = 25,
   val lambda: Int = 25, val rate: Double = 0.95) extends Opt4JAlgorithm with _EvolutionaryAlgorithm {
   override def create = {
-    val rv = new EvolutionaryAlgorithmModule {
-      override def config() = { //TODO: Generalize this
-        super.config() 
-        bindConstant("maxThreads", classOf[ParallelIndividualCompleter]).to(4)
-        bind(classOf[ParallelIndividualCompleter]).in(Opt4JModule.SINGLETON)
-        bind(classOf[IndividualCompleter]).to(classOf[ParallelIndividualCompleter])
-        addOptimizerStateListener(classOf[ParallelIndividualCompleter])
-      }
-    }
+    val rv = new EvolutionaryAlgorithmModule
     rv.setGenerations(generations)
     rv.setAlpha(alpha)
     rv.setMu(mu)

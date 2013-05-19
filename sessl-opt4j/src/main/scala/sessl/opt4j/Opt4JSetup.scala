@@ -18,9 +18,7 @@
 package sessl.opt4j
 
 import java.util.Random
-
 import scala.collection.mutable.ListBuffer
-
 import org.opt4j.core.Individual
 import org.opt4j.core.Objective.Sign
 import org.opt4j.core.Objectives
@@ -29,7 +27,6 @@ import org.opt4j.core.optimizer.Population
 import org.opt4j.core.problem.ProblemModule
 import org.opt4j.core.start.Opt4JTask
 import org.opt4j.viewer.ViewerModule
-
 import sessl.optimization.AbstractOptimizerSetup
 import sessl.optimization.MultipleSolutionsAction
 import sessl.optimization.Objective
@@ -40,6 +37,8 @@ import sessl.optimization.SearchSpaceDimension
 import sessl.optimization.SimpleParameters
 import sessl.optimization._
 import sessl.util.Logging
+import org.opt4j.core.common.completer.IndividualCompleterModule
+import org.opt4j.core.start.Opt4JModule
 
 /**
  * Support for Opt4J.
@@ -141,12 +140,20 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
   }
 
   private[this] def initializeOptimizationTask() = {
-    val optModule = optAlgorithm.get.create
-    val rv = new Opt4JTask(false)
+    val modules = ListBuffer[Opt4JModule]()
+    modules += optAlgorithm.get.create
+    modules += problemModule
+
     if (showViewer)
-      rv.init(optModule, problemModule, new ViewerModule)
-    else
-      rv.init(optModule, problemModule)
+      modules += new ViewerModule
+
+    //TODO: make configurable
+    val comp = new IndividualCompleterModule();
+    comp.setType(IndividualCompleterModule.Type.PARALLEL);
+    modules += comp
+
+    val rv = new Opt4JTask(false)
+    rv.init(modules: _*)
     rv
   }
 }
@@ -228,7 +235,7 @@ object Opt4JSetup {
     //Execution:
     objectiveFunction.get.asInstanceOf[SESSLObjectiveFun[Objective]](params, rv)
     //Event handling:
-      owner.get.afterEvaluationActions.foreach(_.apply(params, rv))
+    owner.get.afterEvaluationActions.foreach(_.apply(params, rv))
     rv
   }
 
