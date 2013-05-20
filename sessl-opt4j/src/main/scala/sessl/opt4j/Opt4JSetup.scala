@@ -64,6 +64,14 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
   def optimizer_=(a: Opt4JAlgorithm) = { optAlgorithm = Some(a) }
   def optimizer = optAlgorithm.get
 
+  /**
+   * Add numerical parameter with a name, bounds, but WITHOUT a step size.
+   * Step size this is not supported by the default genotypes (e.g. see {@link org.opt4j.core.genotype.DoubleGenotype}).
+   */
+  def param[X <: AnyVal](name: String, lowerBound: X, upperBound: X)(implicit n: Numeric[X]): Unit = {
+    param(name, lowerBound, n.one, upperBound)
+  }
+
   /** Defines the Opt4J problem module to be used. */
   val problemModule = new ProblemModule {
     override def config() {
