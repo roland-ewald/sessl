@@ -39,6 +39,7 @@ import sessl.optimization._
 import sessl.util.Logging
 import org.opt4j.core.common.completer.IndividualCompleterModule
 import org.opt4j.core.start.Opt4JModule
+import sessl.util.ParallelExecutionConfiguration
 
 /**
  * Support for Opt4J.
@@ -49,6 +50,12 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
 
   /** Flag to control whether the GUI of Opt4J is shown during optimization or not. */
   var showViewer: Boolean = false
+
+  /**
+   * Controls how many parallel threads to be used. 0 means to exploit all available cores (n_cores),
+   *  negative numbers x mean that n_cores - |x| threads should be started.
+   */
+  var parallelThreads: Int = 1
 
   /** Specifies which optimization algorithm to use. */
   protected[opt4j] var optAlgorithm: Option[Opt4JAlgorithm] = None
@@ -140,6 +147,7 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
   }
 
   private[this] def initializeOptimizationTask() = {
+
     val modules = ListBuffer[Opt4JModule]()
     modules += optAlgorithm.get.create
     modules += problemModule
@@ -147,10 +155,14 @@ class Opt4JSetup extends AbstractOptimizerSetup with Logging {
     if (showViewer)
       modules += new ViewerModule
 
-    //TODO: make configurable
-    val comp = new IndividualCompleterModule();
-    comp.setType(IndividualCompleterModule.Type.PARALLEL);
-    modules += comp
+    if (parallelThreads != 1) {
+      val comp = new IndividualCompleterModule();
+      comp.setType(IndividualCompleterModule.Type.PARALLEL);
+      val threadConfig = ParallelExecutionConfiguration.calculateNumberOfThreads(parallelThreads)
+      threadConfig._2.map(logger.warn(_))
+      comp.setThreads(threadConfig._1)
+      modules += comp
+    }
 
     val rv = new Opt4JTask(false)
     rv.init(modules: _*)
