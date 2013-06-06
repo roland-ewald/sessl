@@ -182,7 +182,7 @@ import sessl.james._
           observe("A") // Model instrumentation
           observeAt(10000, 20000, 99900)
 
-          dataSink = MySQLDataSink(schema = "test_experiment", password = "") // Data storage
+          dataSink = MySQLDataSink(schema = "test", password = "") // Data storage
 
           simulator = DirectMethod() // Configure simulation algorithm to use
 
