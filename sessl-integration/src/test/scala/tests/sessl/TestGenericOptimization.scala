@@ -18,19 +18,15 @@
 package tests.sessl
 
 import scala.collection.mutable.ListBuffer
-
 import org.junit.Assert._
 import org.junit.Test
-
 import sessl.execute
 import sessl.james.Experiment
 import sessl.james.Observation
 import sessl.james.ParallelExecution
-
 import sessl.opt4j.EvolutionaryAlgorithm
 import sessl.opt4j.RandomSearch
 import sessl.opt4j.SimulatedAnnealing
-
 import sessl._
 import sessl.james._
 
@@ -161,5 +157,52 @@ import sessl.james._
     assertEquals("First iteration is ignored, so per-iteration event handling should be called n-1 times.", iterationCount - 1, iterationCounter)
     assertEquals(iterationCounter, iterationResults.length)
     assertEquals((iterationCount - 1) * evalsPerIteration, evaluationCounter)
+  }
+
+  @Test def testGenericOptimizationBibExperiment() {
+
+    import sessl._ // SESSL core
+    import sessl.james._ // JAMES II binding
+    import sessl.optimization._ // Support for simulation-based optimization
+    import sessl.opt4j._ // Opt4J binding
+
+    var maxObjective: Option[Double] = None
+
+    maximize { (params, objective) => //Maximize the following function:
+      execute {
+        new Experiment with Observation with ParallelExecution with DataSink {
+
+          model = "file-sr:/./SimpleModel.sr" // Basic setup
+          stopTime = 100000
+          set("r1" <~ params("synthRate"), "r2" <~ params("degradRate"))
+
+          replications = 10 // Setup for stochastic simulation
+          rng = MersenneTwister()
+
+          observe("A") // Model instrumentation
+          observeAt(10000, 20000, 99900)
+
+          dataSink = MySQLDataSink(schema = "test_experiment", password = "") // Data storage
+
+          simulator = DirectMethod() // Configure simulation algorithm to use
+
+          withExperimentResult { results => //Store objective function
+            objective <~ results.max("A")
+          }
+        }
+      }
+    } using {
+      new Opt4JSetup {
+        param("synthRate", 1.0, 1.0, 10.0)
+        param("degradRate", 5.0, 1.0, 15.0)
+        optimizer = SimulatedAnnealing(iterations = 20)
+        withOptimizationResults { results =>
+          maxObjective = Some(results(0)._2.asInstanceOf[SingleObjective].singleValue)
+        }
+      }
+    }
+
+    assertTrue(maxObjective.isDefined)
+    assertTrue(maxObjective.get > 0)
   }
 }
