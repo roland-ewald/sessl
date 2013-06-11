@@ -15,6 +15,8 @@
  ******************************************************************************/
 package sessl.omnetpp
 
+import scala.language.postfixOps
+
 import java.io.File
 import scala.sys.process._
 import sessl.util.Logging
