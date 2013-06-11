@@ -443,6 +443,8 @@ object Experiment {
   /** The prefix for URIs that point to implemented models. */
   private val URI_PREFIX_IMPL_MODELS = "java://"
 
+  import scala.language.existentials
+    
   /** Extract variable assignment and configuration ID from computation task configuration. */
   def taskConfigToAssignment(taskConfig: IComputationTaskConfiguration): (Int, VariableAssignment) = {
     val config = taskConfig match {
