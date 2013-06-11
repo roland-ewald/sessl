@@ -156,9 +156,9 @@
 		<plugins>
 			<!-- Scala support -->
 			<plugin>
-				<groupId>org.scala-tools</groupId>
-				<artifactId>maven-scala-plugin</artifactId>
-				<version>2.14.1</version>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.1.0</version>
 				<configuration>
 					<jvmArgs>
 						<jvmArg>-Xms64m</jvmArg>
@@ -169,6 +169,14 @@
 						<arg>-feature</arg>
 					</args>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Testing -->

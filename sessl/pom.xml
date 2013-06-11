@@ -21,10 +21,6 @@
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 		</dependency>
-<!--    <dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scalap</artifactId>
-		</dependency> Can be removed? -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

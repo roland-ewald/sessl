@@ -5,7 +5,7 @@ Development requirements:
 - Scala 2.10 (http://scala-lang.org)
 - Maven 3 (http://maven.apache.org/)
 
-Compile with: mvn clean scala:compile scala:testCompile
+Compile with: mvn test-compile
 
 License: Apache 2.0
 
