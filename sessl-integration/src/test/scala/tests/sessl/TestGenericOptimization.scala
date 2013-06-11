@@ -48,14 +48,7 @@ import sessl.james._
     SimulatedAnnealing(iterations = 20),
     RandomSearch(iterations = 20, batchsize = 1))
 
-  /** Test experiment for optimization. */
-  class TestExperiment extends Experiment with Observation with ParallelExecution {
-    model = "java://examples.sr.LinearChainSystem"
-    stopTime = 1.0
-    replications = 2
-    observe("x" ~ "S0", "y" ~ "S1")
-    observeAt(0.8)
-  }
+    
 
   /** Test execution with a simple optimization problem. */
   @Test def testSimpleOptScheme() = {
