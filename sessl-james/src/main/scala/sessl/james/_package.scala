@@ -20,6 +20,7 @@ package sessl
 import java.util.logging.Level
 
 import scala.collection.mutable.ListBuffer
+import scala.language.implicitConversions
 
 import org.jamesii.SimSystem
 import org.jamesii.core.experiments.tasks.ComputationTaskIDObject
@@ -29,7 +30,7 @@ package object james {
 
   /** The basic factory type.  */
   type Factory = org.jamesii.core.factories.Factory[_]
-  
+
   type SpecificFactory[X] = org.jamesii.core.factories.Factory[X]
 
   /** The abstract factory type. */
