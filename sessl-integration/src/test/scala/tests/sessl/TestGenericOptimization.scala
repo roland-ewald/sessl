@@ -186,8 +186,8 @@ import sessl.james._
       }
     } using {
       new Opt4JSetup {
-        param("synthRate", 1.0, 1.0, 10.0)
-        param("degradRate", 5.0, 1.0, 15.0)
+        param("synthRate", 1.0, 10.0)
+        param("degradRate", 5.0, 15.0)
         optimizer = SimulatedAnnealing(iterations = 20)
         withOptimizationResults { results =>
           maxObjective = Some(results(0)._2.asInstanceOf[SingleObjective].singleValue)
