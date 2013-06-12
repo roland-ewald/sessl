@@ -38,7 +38,7 @@ import sessl.util.CreatableFromVariables
     import sessl._
 
     //Testing corner case and simple cases
-    assertEquals(1, (TestAlgo2() scan ()).size)    
+    assertEquals(1, (TestAlgo2() scan ()).size)
     assertEquals(3, (TestAlgo() scan ("x" <~ (1, 2, 3), "y" <~ "test")).size)
     assertEquals(10, (TestAlgo() scan ("x" <~ range(.1, .1, 1), "y" <~ "test")).size)
     assertEquals(10, (TestAlgo2() scan ("x1" <~ range(1, 1, 10) and "x2" <~ range(1, 1, 10))).size)
@@ -149,6 +149,25 @@ import sessl.util.CreatableFromVariables
     }
     execute(exp)
     assertEquals(exp.simulators.size * exp.replications * 4, counter)
+  }
+
+  @Test def simplePerformanceExperiment() {
+
+    import sessl._
+    import sessl.james._
+
+    var runtime: Option[Double] = None
+
+    execute {
+      new Experiment with PerformanceObservation {
+        model = "java://examples.sr.CyclicChainSystem"
+        stopTime = 100.0
+        simulator = TauLeaping(epsilon = 0.05, gamma = 9.0, stepNum = 90, criticalReactionThreshold = 9) //<-- change / omit parameters here
+        withRunPerformance { r => runtime = Some(r.runtime)}
+      }
+    }
+    assertTrue(runtime.isDefined && runtime.get > 0)
+    println("JAMES II runtime: " + runtime.get)
   }
 
 }

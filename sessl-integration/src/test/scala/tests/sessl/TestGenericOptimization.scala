@@ -90,6 +90,7 @@ import sessl.james._
         execute(new TestExperiment {
           set("propensity" <~ params("p"))
           set("numOfInitialParticles" <~ params("n"))
+          simulator = TauLeaping(epsilon = params.get("eps"))
           withReplicationsResult(results => {
             objective("x") <~ results.mean("x")
             objective("y") <~ results.min("y")
