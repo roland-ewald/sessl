@@ -99,6 +99,7 @@ import sessl.james._
       } using (new Opt4JSetup {
         param("p", 1, 1, 15)
         param("n", 10000, 100, 15000)
+        param("eps", 0.001, 0.05)
         optimizer = optAlgo
         withOptimizationResults { optResults =>
           resultsPerAlgo += ((optAlgo, optResults.head._1))
