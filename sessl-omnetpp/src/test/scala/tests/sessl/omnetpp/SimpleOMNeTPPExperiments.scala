@@ -1,18 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package tests.sessl.omnetpp
 
 import org.junit.Test
@@ -110,20 +112,51 @@ import scala.collection.mutable.ListBuffer
       }
 
     recordedTrajectories.toList.foreach(t => assertEquals(observationRange.toList.length, t.length))
+  }
 
-    // If corresponding binding is included, this works as well (when mixing in sessl.james.Report):
-    //        reportName = "OMNeT++ Report"
-    //        withRunResult { r =>
-    //          {
-    //            reportSection("Run Number " + r.id) {
-    //              linePlot(r ~ "length_Q1", r ~ "length_Q5")(title = "Queue lengths")
-    //            }
-    //          }
-    //        }
+  @Test def testExperimentFromPaper() {
+
+    import sessl._
+    import sessl.omnetpp._
+
+    val myResults = ListBuffer[ObservationRunResultsAspect]()
+
+    if (testEnvironmentIsSuitable)
+      execute {
+        new Experiment with Observation with EventLogRecording {
+          model = ("omnetpp-samples/cqn/cqn.exe" -> "ClosedQueueingNetA")
+          set("*.numTandems" <~ 2, "*.numQueuesPerTandem" <~ 3)
+          replications = 2
+          stopCondition = AfterSimTime(hours = 10) or AfterWallClockTime(seconds = 10)
+          warmup = Duration(seconds = 20)
+          observeAt(range(1000, 100, 30000))
+          observe("**.queueLength")
+          scan(
+            "*.queue[*].numInitialJobs" <~ (2, 4),
+            "*.sDelay" <~ range("%ds", 2, 2, 8) and
+              "*.qDelay" <~ range("%ds", 2, 2, 8) and
+              "*.queue[*].serviceTime" <~ range("exponential(%ds)", 2, 2, 8))
+          withRunResult(myResults += _)
+        }
+      }
+
+    assertEquals(16, myResults.length)
+
+    if (omNetInstalled)
+      myResults.foreach {
+        result =>
+          {
+            result.all.foreach(println)
+            assertFalse(result.all.isEmpty)
+          }
+      }
   }
 
   /** Checks whether the tests are running on Windows. */
   val testEnvironmentIsSuitable =
     Seq(("os.name", "Windows 7"), ("os.arch", "amd64")) forall { t => java.lang.System.getProperty(t._1).equals(t._2) }
+
+  /** Checks property that signals an OMNeT++ installation is available. */
+  val omNetInstalled = java.lang.System.getProperty("org.sessl.omnetpp.installed") != null
 
 }

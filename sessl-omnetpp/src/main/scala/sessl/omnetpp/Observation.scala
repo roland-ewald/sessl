@@ -44,7 +44,7 @@ trait Observation extends SimpleObservation with OMNeTPPResultHandler {
     super.configure()
     writeComment("Observation Configuration")
     if (observationTimes.isEmpty) {
-      logger.warn("Warning: to observation times defined, no vector data will be observed.")
+      logger.warn("Warning: no observation times defined, no vector data will be observed.")
       configureRecording(allEntitiesPattern, true, false)
     } else {
       variableBindings.keys.foreach {
