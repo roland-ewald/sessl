@@ -86,7 +86,7 @@ import sessl.james._
     var resultsPerAlgo = ListBuffer[(Opt4JAlgorithm, OptimizationParameters)]()
 
     optAlgos.foreach { optAlgo =>
-      optimize(MultiObjective(("x", max), ("y", max))) { (params, objective) =>
+      optimize(("x", max), ("y", max)) { (params, objective) =>
         execute(new TestExperiment {
           set("propensity" <~ params("p"))
           set("numOfInitialParticles" <~ params("n"))

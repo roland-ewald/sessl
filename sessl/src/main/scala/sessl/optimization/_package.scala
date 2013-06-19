@@ -31,6 +31,9 @@ package object optimization {
   /** The optimization 'command'. */
   def optimize[X <: Objective](o: X)(f: ObjectiveFunction[X]): InitializedObjectiveFunction[X] = InitializedObjectiveFunction(o, f)
 
+  /** Improve readability by letting users simply specify the dimensions for optimization. */
+  def optimize(dims: (String, OptDirection)*)(f: ObjectiveFunction[MultiObjective]): InitializedObjectiveFunction[MultiObjective] = InitializedObjectiveFunction(MultiObjective(dims: _*), f)
+
   /** Short-hand notation for single-objective maximization. */
   def maximize(f: ObjectiveFunction[SingleObjective]): InitializedObjectiveFunction[SingleObjective] = optimize(SingleObjective(max))(f)
 
