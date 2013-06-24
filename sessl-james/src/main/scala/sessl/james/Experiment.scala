@@ -102,8 +102,14 @@ class Experiment extends AbstractExperiment {
   val additionalReplicationConditions = ListBuffer[ReplicationCondition]()
 
   /** Encapsulated base experiment. */
-  val exp = new BaseExperiment
-  exp.setBackupEnabled(false)
+  private[this] val baseExp = new BaseExperiment
+  baseExp.setBackupEnabled(false)
+
+  /** Base experiment for access within binding. */
+  protected[james] def exp = baseExp
+  
+  /** Base experiment for access from within other experiments. */
+  def james2Experiment = baseExp
 
   /** Allow to specify a model class. */
   def model_=(modelClass: Class[_ <: IModel]) = {
@@ -390,7 +396,7 @@ class Experiment extends AbstractExperiment {
    *            the elements
    *  @return the sequence modifier
    */
-  def createSequenceModifier[T](elements: java.util.List[T]):IVariableModifier[T] = new SequenceModifier[T](elements)
+  def createSequenceModifier[T](elements: java.util.List[T]): IVariableModifier[T] = new SequenceModifier[T](elements)
 
   /**
    * Checks whether all values in the gives sequence are of the same type.
@@ -444,7 +450,7 @@ object Experiment {
   private val URI_PREFIX_IMPL_MODELS = "java://"
 
   import scala.language.existentials
-    
+
   /** Extract variable assignment and configuration ID from computation task configuration. */
   def taskConfigToAssignment(taskConfig: IComputationTaskConfiguration): (Int, VariableAssignment) = {
     val config = taskConfig match {

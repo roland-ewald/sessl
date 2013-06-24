@@ -80,7 +80,7 @@ import sessl.util.test.TestCounter
       }
 
       // Note that system-specific configuration is ALWAYS possible, too! 
-      exp.getFixedModelParameters.put("theAnswer", new java.lang.Integer(42))
+      james2Experiment.getFixedModelParameters.put("theAnswer", new java.lang.Integer(42))
 
       parallelThreads = -1 //Leave one core idle... 
       // Simple configuration tasks are done by case classes...
