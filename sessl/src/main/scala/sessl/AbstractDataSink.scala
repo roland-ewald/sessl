@@ -35,7 +35,7 @@ trait AbstractDataSink extends ExperimentConfiguration {
 
   /** Set the data sink. */
   def dataSink_=(ds: DataSinkSpecification) = { dataSinkSpecification = Some(ds) }
-  
+
   /** Get the data sink.*/
   def dataSink: DataSinkSpecification = { dataSinkSpecification.get }
 }
@@ -43,13 +43,35 @@ trait AbstractDataSink extends ExperimentConfiguration {
 /** The super class of all data sink specifications.*/
 trait DataSinkSpecification
 
-/** Database sinks. */
+/**
+ * Data sink specification for (JDBC-compatible) databases.
+ *
+ *  @example {{{
+ *  dataSink = DatabaseDataSink(url="jdbc:mysql://localhost/my_schema", username="john_doe", driver="com.mysql.jdbc.Driver")
+ * 	}}}
+ *
+ *  @param url the database URL
+ *  @param user the user name
+ *  @param password the password
+ *  @param driver the class name of the JDBC driver
+ */
 case class DatabaseDataSink(url: String = "not://specified", user: String = "username", password: String = "", driver: String = "unknown driver")
   extends DataSinkSpecification
 
-/** File-based data sinks. */
-case class AbstractFileDataSink(file: String = "./unspecified.dat") extends DataSinkSpecification
+/**
+ * File-based data sink specification.
+ * @example {{{
+ * dataSink = FileDataSink("output.dat")
+ * }}}
+ *  @param file the file name
+ */
+case class FileDataSink(file: String = "./unspecified.dat") extends DataSinkSpecification
 
-/** In-memory data sinks. */
+/**
+ * In-memory data sink.
+ * @example {{{
+ * dataSink = MemoryDataSink
+ * }}}
+ */
 case object MemoryDataSink extends DataSinkSpecification
 
