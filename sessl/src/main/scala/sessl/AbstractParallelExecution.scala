@@ -22,13 +22,21 @@ import sessl.util.ParallelExecutionConfiguration
 
 /**
  * Support for parallel execution. How the parallel execution is achieved (e.g. fine/coarse-grained in what aspect
- *  is largely up to the simulation system at hand - and to the user specifying the usage of certain algorithms).
+ *  is largely up to the simulation system at hand - and to the user specifying the usage of specific algorithms).
  *
  *  The single variable here, the number of parallel threads that shall be employed, just hints at the available resources
  *  that shall be used.
  *
- *  @author Roland Ewald
+ *  @example {{{
+ *   new Experiment extends Observation with ParallelExecution {
+ *      //...
+ *      parallelThreads = 5  // Use exactly five threads
+ *      parallelThreads = 0  // Use one thread per available core (default)
+ *      parallelThreads = -2 // Keep two threads idle
+ *   }
+ *  }}}
  *
+ *  @author Roland Ewald
  */
 trait AbstractParallelExecution extends ExperimentConfiguration {
 

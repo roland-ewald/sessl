@@ -1,18 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl
 
 import scala.collection.mutable.ListBuffer
@@ -20,11 +22,32 @@ import scala.collection.mutable.ListBuffer
 import sessl.util.MiscUtils._
 
 /**
- * General support for result reports. It lets the user construct a hierarchy of section/dataview elements,
- *  which are then displayed in this order.
+ * General support for result reports.
+ * It lets the user construct a hierarchy of [[ReportNode]] elements to structure the report in sections etc.,
+ * which are then displayed in the defined order.
+ * Each (sub-)section may have an arbitrary number of [[DataView]] entities, which represent plots or tables.
+ *
+ * A report has a name, a description, and a target directory that can be assigned directly.
+ * Report sections and data views are specified by function calls.
+ *
+ * @example {{{
+ * new Experiment extends Observation with Report {
+ *   // ...
+ *   reportName = "The name of the report"
+ *   reportDescription = "The description"
+ *   reportDirectory = "../target_directory"
+ *   // ...
+ *   withRunResult { results =>
+ *     reportSection("New Section") {
+ *      reportSection("New Subsection") {
+ *        linePlot(results.all)(title = "The results of the run")
+ *      }
+ *     }
+ *    }
+ * }
+ * }}}
  *
  *  @author Roland Ewald
- *
  */
 trait AbstractReport extends ExperimentConfiguration {
   this: AbstractExperiment =>
@@ -51,7 +74,15 @@ trait AbstractReport extends ExperimentConfiguration {
     currentSection = currentSection.parent
   }
 
-  /** Define a scatter plot. */
+  /**
+   * Defines a scatter plot.
+   *  @param xData data for the x-axis
+   *  @param yData data for the y-axis
+   *  @param title title of the plot (default: empty)
+   *  @param caption the caption (default: empty)
+   *  @param xLabel label for the x-axis (default: empty)
+   *  @param yLabel label for the y-axis (default: empty)
+   */
   def scatterPlot(xData: Any, yData: Any)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "") = {
     val namedXData = toNamedList(xData)(0)
     val namedYData = toNamedList(yData)(0)
@@ -61,21 +92,43 @@ trait AbstractReport extends ExperimentConfiguration {
     }
   }
 
-  /** Define a histogram plot. */
+  /**
+   * Define a histogram plot.
+   *  @param data the data to be plotted
+   *  @param title title of the plot (default: empty)
+   *  @param caption the caption (default: empty)
+   *  @param xLabel label for the x-axis (default: empty)
+   *  @param yLabel label for the y-axis (default: 'Amount')
+   */
   def histogram(data: Any)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "Amount") = {
     val namedData = toNamedList(data)(0)
     if (dataIsNumeric(namedData._2))
       currentSection.childs += HistogramView(toDoubleList(namedData._2), title, caption, getOrEmpty(xLabel, namedData._1), yLabel, currentSection)
   }
 
-  /** Define a box plot with variable names. */
+  /**
+   * Define a box plot with variable names.
+   *  @param data list of tuples of the form '(name, list of values)'
+   *  @param title title of the plot (default: empty)
+   *  @param caption the caption (default: empty)
+   *  @param xLabel label for the x-axis (default: empty)
+   *  @param yLabel label for the y-axis (default: empty)
+   */
   def boxPlot(data: Any*)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "") = {
     val namedData = data.flatMap(toNamedList)
     if (namedData.forall(x => dataIsNumeric(x._2)))
       currentSection.childs += BoxPlotView(namedData.toList.map(x => (x._1, toDoubleList(x._2))), title, caption, xLabel, yLabel, currentSection)
   }
 
-  /** Define a line plot with variable names. The first value list defines the time points (if it is a trajectory, both values and times are taken from it). */
+  /**
+   * Define a line plot with variable names.
+   * The first value list defines the time points (if it is a trajectory, both values and times are taken from it).
+   *  @param data list of [[Trajectory]] or (variable name, [[Trajectory]]) tuples
+   *  @param title title of the plot (default: empty)
+   *  @param caption the caption (default: empty)
+   *  @param xLabel label for the x-axis (default: empty)
+   *  @param yLabel label for the y-axis (default: empty)
+   */
   def linePlot(data: Any*)(title: String = "", caption: String = "", xLabel: String = "", yLabel: String = "") = {
     val convertedData = convertToLinePlotData(retrieveInstrumentationResult(data))
     if (convertedData.forall(x => dataIsNumeric(x._2)))
@@ -84,7 +137,8 @@ trait AbstractReport extends ExperimentConfiguration {
 
   /** Checks whether the whole result of a simulation run has been passed, in which case it is retrieved. */
   private[this] def retrieveInstrumentationResult(data: Iterable[Any]) = data.head match {
-    case result: ObservationRunResultsAspect => require(data.size == 1, "Only single-element result list is allowed."); result.all
+    case result: ObservationRunResultsAspect =>
+      require(data.size == 1, "Only single-element result list is allowed."); result.all
     case _ => data
   }
 
@@ -95,7 +149,13 @@ trait AbstractReport extends ExperimentConfiguration {
     case _ => data.toList.flatMap(toNamedList)
   }
 
-  /** Define a report section that describes the outcomes of a statistical test. */
+  /**
+   * Define a report section that describes the outcomes of a statistical test.
+   *  @param firstData data of the first sample
+   *  @param secondData data of the second sample
+   *  @param caption the caption of the output (default: empty)
+   *  @param test the [[TwoPairedStatisticalTest]] to be used
+   */
   def reportStatisticalTest(firstData: Any, secondData: Any)(caption: String = "", test: TwoPairedStatisticalTest = null) = {
     val namedFirstData = toNamedList(firstData)(0)
     val namedSecondData = toNamedList(secondData)(0)
@@ -104,7 +164,11 @@ trait AbstractReport extends ExperimentConfiguration {
         (namedSecondData._1, toDoubleList(namedSecondData._2)), caption, if (test == null) None else Some(test), currentSection)
   }
 
-  /** Define a report section that prints out data in a table format. */
+  /**
+   * Define a report section that prints out data in a table format.
+   *  @param data a list of [[Trajectory]] or tuples of the form (variable name, [[Trajectory]])
+   *  @param caption the caption of the output (default: empty)
+   */
   def reportTable(data: Any*)(caption: String = "") = {
     val namedData = data.flatMap(toNamedList)
     val tableData = namedData.map(x => x._1 :: x._2.map(_.toString))
@@ -170,10 +234,10 @@ trait ReportSection extends ReportNode {
 }
 
 /** The root section has no parent. */
-case object RootReportSection extends ReportSection { def parent = throw new UnsupportedOperationException("The root has no parent.") }
+private case object RootReportSection extends ReportSection { def parent = throw new UnsupportedOperationException("The root has no parent.") }
 
 /** Normal nodes representing report sections. */
-case class ReportSectionNode(name: String, description: String, parent: ReportSection) extends ReportSection {
+protected case class ReportSectionNode(name: String, description: String, parent: ReportSection) extends ReportSection {
   parent.childs += this
 }
 
@@ -191,7 +255,7 @@ case class HistogramView(data: List[Double], title: String, caption: String, xLa
 /** Display a box plot. */
 case class BoxPlotView(data: List[(String, List[Double])], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
 
-/** Display a line plot*/
+/** Display a line plot. */
 case class LinePlotView(data: List[(String, List[Double])], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
 
 /** Display the results of a statistical test. */
