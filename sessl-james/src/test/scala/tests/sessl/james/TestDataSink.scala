@@ -34,13 +34,6 @@ class TestDataSink {
       model = TestJamesExperiments.testModel
       stopTime = 0.1
       dataSink = MySQLDataSink(schema = "test", password = "")
-
-      withRunResult { result =>
-        println(result)
-        if (result ? "x")
-          println(result("x"))
-        println(result.trajectory("x"))
-      }
     }
     execute(exp)
   }
