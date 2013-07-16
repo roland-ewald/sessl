@@ -23,7 +23,7 @@ import sessl.Trajectory
 trait ResultOperations {
 
   /** Retrieves the data for a variable name.*/
-  protected def getValuesFor(varName: String): List[_]
+  protected def getValuesFor(varName: String): Iterable[_]
 
   /** Get the maximum value of a variable. */
   def max(name: String): Double = aggregate(name, Double.NegativeInfinity, scala.math.max)

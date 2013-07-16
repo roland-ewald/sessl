@@ -46,7 +46,7 @@ import org.junit.Assert._
         results =>
           {
             reportSection("From run " + results.id) {
-              linePlot(results ~ ("x"), results ~ ("y"))(title = "The trajectories of x and y!")
+              linePlot(results.all)(title = "The trajectories of x and y!")
             }
           }
       }

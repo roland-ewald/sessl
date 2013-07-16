@@ -83,13 +83,13 @@ trait AbstractReport extends ExperimentConfiguration {
   }
 
   /** Checks whether the whole result of a simulation run has been passed, in which case it is retrieved. */
-  private[this] def retrieveInstrumentationResult(data: Seq[Any]) = data.head match {
+  private[this] def retrieveInstrumentationResult(data: Iterable[Any]) = data.head match {
     case result: ObservationRunResultsAspect => require(data.size == 1, "Only single-element result list is allowed."); result.all
     case _ => data
   }
 
   /** Converts data items to a common format that can be used for line plots. */
-  private[this] def convertToLinePlotData(data: Seq[Any]): List[(String, List[_])] = data.head match {
+  private[this] def convertToLinePlotData(data: Iterable[Any]): List[(String, List[_])] = data.head match {
     case tuple: (_, _) => ("Time", tuple._2.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
     case trajectory: List[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
     case _ => data.toList.flatMap(toNamedList)
