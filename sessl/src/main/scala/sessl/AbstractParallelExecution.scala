@@ -28,7 +28,7 @@ import sessl.util.ParallelExecutionConfiguration
  *  that shall be used.
  *
  *  @example {{{
- *   new Experiment extends Observation with ParallelExecution {
+ *   new Experiment with ParallelExecution {
  *      //...
  *      parallelThreads = 5  // Use exactly five threads
  *      parallelThreads = 0  // Use one thread per available core (default)

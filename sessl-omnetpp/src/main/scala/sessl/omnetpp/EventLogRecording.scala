@@ -16,14 +16,14 @@
 package sessl.omnetpp
 
 import sessl.ExperimentConfiguration
-import sessl.AbtractEventLogRecording
+import sessl.AbstractEventLogRecording
 
 /**
  * Records a detailed event log for each run.
  *
  * @author Roland Ewald
  */
-trait EventLogRecording extends AbtractEventLogRecording {
+trait EventLogRecording extends AbstractEventLogRecording {
   this: Experiment =>
 
   override def configureEventLogRecording() = {

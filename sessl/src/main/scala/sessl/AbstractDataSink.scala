@@ -21,9 +21,12 @@ package sessl
  * Some type definitions for data sinks.
  *
  *  @example {{{
- *  //...
- *  dataSink = MyDataSink(...)
- *  //...}}}
+ *  new Experiment with Observation with DataSink {
+ *    //...
+ *    dataSink = SomeDataSink(...)
+ *    //...
+ *    }
+ *  }}}
  *
  *  @author Roland Ewald
  */

@@ -31,7 +31,7 @@ import sessl.util.MiscUtils._
  * Report sections and data views are specified by function calls.
  *
  * @example {{{
- * new Experiment extends Observation with Report {
+ * new Experiment with Observation with Report {
  *   // ...
  *   reportName = "The name of the report"
  *   reportDescription = "The description"
