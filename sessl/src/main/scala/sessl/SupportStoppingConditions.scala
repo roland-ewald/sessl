@@ -33,7 +33,7 @@ trait SupportStoppingConditions {
   def stopTime_=(time: Double) = { fixedStopTime = Some(time) }
   def stopTime: Double = fixedStopTime.get
 
-  /** Getting/setting a complex stopping condition. */
+  /** Getting/setting a complex stopping condition. See sub-classes of [[StoppingCondition]]. */
   def stopCondition_=(sc: StoppingCondition) = {
     require(!stoppingCondition.isDefined,
       "Stopping condition has already been defined as '" + stoppingCondition.get + "', found conflicting definition as '" + sc + "'")
@@ -65,13 +65,36 @@ trait StoppingCondition
 /** Never really stop the simulation run (it has to stop on its own).*/
 case object Never extends StoppingCondition
 
-/** Stop after a given amount of simulation time. */
+/**
+ * Stop after a given amount of simulation time.
+ *  @param time unit-less time, for custom time units (default is 0)
+ *  @param days (default is 0)
+ *  @param hours (default is 0)
+ *  @param minutes (default is 0)
+ *  @param seconds (default is 0)
+ *  @param milliseconds (default is 0)
+ */
 case class AfterSimTime(override val time: Double = .0, days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, milliseconds: Int = 0) extends StoppingCondition with AbstractDuration
 
-/** Stop after a given amount of wall-clock time. */
+/**
+ * Stop after a given amount of wall-clock time.
+ *  @param days (default is 0)
+ *  @param hours (default is 0)
+ *  @param minutes (default is 0)
+ *  @param seconds (default is 0)
+ *  @param milliseconds (default is 0)
+ */
 case class AfterWallClockTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, milliseconds: Int = 0) extends StoppingCondition with AbstractDuration
 
-case class AfterCPUTime()
+/**
+ * Stop after a given amount of CPU time.
+ *  @param days (default is 0)
+ *  @param hours (default is 0)
+ *  @param minutes (default is 0)
+ *  @param seconds (default is 0)
+ *  @param milliseconds (default is 0)
+ */
+case class AfterCPUTime(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, milliseconds: Int = 0) extends StoppingCondition with AbstractDuration
 
 /**
  * Stop after a given number of simulation steps.
@@ -79,10 +102,18 @@ case class AfterCPUTime()
  */
 case class AfterSimSteps(steps: Long) extends StoppingCondition
 
-/** Stop if both given conditions are fulfilled. */
+/**
+ * Stop if both given conditions are fulfilled.
+ *  @param left the left stopping condition
+ *  @param right the right stopping condition
+ */
 case class ConjunctiveStoppingCondition(left: StoppingCondition, right: StoppingCondition) extends StoppingCondition
 
-/** Stop if any of the given conditions is fulfilled. */
+/**
+ * Stop if any of the given conditions is fulfilled.
+ *  @param left the left stopping condition
+ *  @param right the right stopping condition
+ */
 case class DisjunctiveStoppingCondition(left: StoppingCondition, right: StoppingCondition) extends StoppingCondition
 
 /**

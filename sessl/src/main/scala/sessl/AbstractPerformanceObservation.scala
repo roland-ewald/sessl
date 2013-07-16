@@ -1,24 +1,27 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl
 
 import sessl.util.AlgorithmSet
 import sessl.util.MiscUtils
 
-/** Support for performance observation and storage.
+/**
+ * Support for performance observation and performance measurement storage.
  *  @author Roland Ewald
  */
 trait AbstractPerformanceObservation extends ExperimentConfiguration {
@@ -70,7 +73,8 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
     addExperimentResultsAspect(new PerfObsExperimentResultsAspect())
   }
 
-  /** Collects the performance results of the indicated run. If the removeData flag is set to true,
+  /**
+   * Collects the performance results of the indicated run. If the removeData flag is set to true,
    *  the performance observation sub-system may regard the data as read-out (and hence delete it).
    *
    *  @param runID the ID of the run

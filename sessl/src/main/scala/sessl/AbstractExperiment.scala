@@ -1,18 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl
 
 import scala.collection.mutable.ListBuffer
@@ -22,7 +24,12 @@ import sessl.util.Logging
 
 /**
  * Super class for all fundamental experiment classes.
- *  It handles the execution of the event handlers and checks whether other traits that may be mixed in by the user have properly called their super methods.
+ * It handles the execution of the event handlers and checks whether other traits that may be mixed in by the user have properly called their super methods.
+ *
+ * Most additional functionality is implemented separately in different traits, for example the model setup is handled by [[SupportModelConfiguration]],
+ * the simulator setup is handled by [[SupportSimulatorConfiguration]], the setup of random number generators is handled by [[SupportRNGSetup]], and the
+ * replication and stopping conditions are handled by [[SupportReplicationConditions]] and [[SupportStoppingConditions]], respectively.
+ *
  *  @author Roland Ewald
  */
 abstract class AbstractExperiment extends BasicExperimentConfiguration with SupportModelConfiguration
@@ -68,7 +75,7 @@ object AbstractExperiment {
    *  @param experiments
    *            the experiments
    */
-  def execute(exps: AbstractExperiment*):Unit = for (exp <- exps) {
+  def execute(exps: AbstractExperiment*): Unit = for (exp <- exps) {
     try {
       exp.prepare()
       exp.executeExperiment()

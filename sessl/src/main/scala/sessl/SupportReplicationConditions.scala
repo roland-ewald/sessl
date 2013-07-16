@@ -72,7 +72,7 @@ case class FixedNumber(replications: Int) extends ReplicationCondition
 
 /**
  * Replicate until a certain confidence in the mean value of a variable is reached.
- *  @param varName the (sessl) name of the variable under scrutiny
+ *  @param varName the name of the variable under scrutiny
  *  @param  relativeHalfWidth the desired relative half-width of the confidence interval
  *  @param confidence the confidence in the interval
  */
