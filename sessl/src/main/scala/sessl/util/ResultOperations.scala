@@ -67,7 +67,7 @@ trait ResultOperations {
   private def aggregate(name: String, startVal: Double, aggregator: (Double, Double) => Double): Double = {
     val vals = getValuesFor(name)
     require(vals.head.isInstanceOf[Number], "This operation is only available for numeric types, but at least one value of '" + name + "' is of type " + vals.head.getClass())
-    val numbers = vals.asInstanceOf[List[Number]]
+    val numbers = vals.asInstanceOf[Iterable[Number]]
     (startVal /: numbers)((x, y) => aggregator(x, y.doubleValue()))
   }
 }
