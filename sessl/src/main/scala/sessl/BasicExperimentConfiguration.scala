@@ -36,7 +36,7 @@ import sessl.util.MiscUtils
  *
  *
  *  @see sessl.ExperimentResults
- *  @see sessl.Experiment
+ *  @see sessl.AbstractExperiment
  *  @see sessl.RunResultsAspect
  *  @see sessl.ReplicationsResultsAspect
  *  @see sessl.ExperimentResultsAspect

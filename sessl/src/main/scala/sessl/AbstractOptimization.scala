@@ -27,6 +27,7 @@ import sessl.optimization.Optimizer
  *  @author Roland Ewald
  *
  */
+@deprecated("Made obsolete by generic optimization interface in package sessl.optimization", "0.8")
 trait AbstractOptimization extends ExperimentConfiguration {
   this: AbstractExperiment with AbstractObservation =>
 
