@@ -28,6 +28,8 @@ import sessl.Variable
 /**
  * A trait to create sets of case class instances from a set of specified variables.
  *
+ * Should be included by all [[Algorithm]] implementations with parameters.
+ *
  *  If the case class has other case classes as parameters, which are also of this type, this functionality
  *  can even be used to create nested sets of case class instances.
  *
@@ -54,8 +56,19 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
   lazy val fieldNamesSet = fieldNames.toSet
 
   /**
-   * Create instance of class from list of parameters.
-   *  @param parameters the parameter list
+   * Create new instances of current type from list of variables.
+   * This is intended to work just as the `scan` method of [[SupportModelConfiguration]].
+   * @param variablesToScan the variables to scan
+   *
+   * @example {{{
+   *    MyAlgo(y = 12) scan ("x" <~ range(0,2,4)) // results in MyAlgo(x=0,y=12), MyAlgo(x=2,y=12), MyAlgo(x=4,y=12)
+   *  }}}
+   *  @example {{{
+   *    MyAlgo() scan ("x" <~ range(1,1,10), "y" <~ range(2,2,20)) // results in MyAlgo(1,2), ..., MyAlgo(1,20), MyAlgo(2,2), ... MyAlgo(10,20)
+   *  }}}
+   *  @example {{{
+   *    MyAlgo() scan ("x" <~ range(1,1,10) and "y" <~ range(2,2,20)) // results in MyAlgo(1,2), MyAlgo(2,4), ..., MyAlgo(9,18), MyAlgo(10,20)
+   *  }}}
    */
   def scan(variablesToScan: Variable*): Seq[T] = {
     variablesToScan.filter(!_.isInstanceOf[MultipleVars]).foreach(v => require(fieldNamesSet(v.name), "No variable with name '" + v.name + "' is defined in class."))

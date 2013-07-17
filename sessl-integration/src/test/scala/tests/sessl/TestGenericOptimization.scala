@@ -48,8 +48,6 @@ import sessl.james._
     SimulatedAnnealing(iterations = 20),
     RandomSearch(iterations = 20, batchsize = 1))
 
-    
-
   /** Test execution with a simple optimization problem. */
   @Test def testSimpleOptScheme() = {
 
@@ -152,6 +150,22 @@ import sessl.james._
     assertEquals("First iteration is ignored, so per-iteration event handling should be called n-1 times.", iterationCount - 1, iterationCounter)
     assertEquals(iterationCounter, iterationResults.length)
     assertEquals((iterationCount - 1) * evalsPerIteration, evaluationCounter)
+
+    maximize {
+      (params, objective) =>
+        execute {
+          new Experiment with Observation {
+            //... configure SESSL experiment, e.g.:
+            set("modelParam" <~ params("optParam"))
+            withRunResult { result =>
+              objective <~ result.mean("errors")
+            }
+          }
+        }
+    } using new Opt4JSetup {
+      //Optimizer setup, e.g.:
+      param("optParam", 1, 1000)
+    }
   }
 
   @Test def testGenericOptimizationBibExperiment() {

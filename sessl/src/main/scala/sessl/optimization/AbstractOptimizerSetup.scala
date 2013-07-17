@@ -21,6 +21,15 @@ import scala.collection.mutable.ListBuffer
 
 /**
  * Super class for all optimizer bindings.
+ *
+ * @example {{{
+ * minimize {
+ * //...
+ * } using SomeOptSetup { //<- Sub-class of this class
+ * // Configuration
+ * }
+ * }}}
+ *
  * @author Roland Ewald
  */
 abstract class AbstractOptimizerSetup {
@@ -49,7 +58,7 @@ abstract class AbstractOptimizerSetup {
   /** The actions to be done with the best results, after the optimization. */
   private[this] val resultsOfOptimizationActions = ListBuffer[MultipleSolutionsAction]()
 
-  //TODO: add pre/post-constraints?
+  //TODO: add pre/post-constraints
 
   /** The objective function. */
   def objectiveFunction = objFunction.get
@@ -75,13 +84,23 @@ abstract class AbstractOptimizerSetup {
   /** Executes the optimization task.*/
   def execute()
 
-  /** Add parameter with a name and additional values. */
+  /**
+   * Add parameter with a name and additional values.
+   *  @param name parameter name
+   *  @param values set of values the parameter can take (any type)
+   */
   def param[X](name: String, values: Iterable[X]) = {
     checkParamName(name)
     searchSpaceDims += GeneralSearchSpaceDimension[X](name, values)
   }
 
-  /** Add numerical parameter with a name, bounds, and a step size. */
+  /**
+   * Add numerical parameter with a name, bounds, and a step size.
+   *  @param name parameter name
+   *  @param lowerBound the lower bound
+   *  @param stepSize the step size
+   *  @param upperBound the upper bound
+   */
   def param[X <: AnyVal](name: String, lowerBound: X, stepSize: X, upperBound: X)(implicit n: Numeric[X]) = {
     checkParamName(name)
     searchSpaceDims += BoundedSearchSpaceDimension[X](name, lowerBound, stepSize, upperBound)
@@ -99,7 +118,10 @@ abstract class AbstractOptimizerSetup {
    */
   protected def afterEvaluationActions = evaluationDoneActions.toList
 
-  /** The actions to be done after an iteration of the optimization algorithm is done. */
+  /**
+   * Execute a given function after an iteration of the optimization algorithm is done.
+   *  @param f the function
+   */
   def afterIteration(f: MultipleSolutionsAction) = { iterationDoneActions += f }
 
   /**
@@ -108,7 +130,7 @@ abstract class AbstractOptimizerSetup {
    */
   protected def afterIterationActions = iterationDoneActions.toList
 
-  /** The actions to be done after the optimization algorithm is finished. */
+  /** Execute a given function after the optimization algorithm is finished. */
   def afterOptimization(f: MultipleSolutionsAction) = { optimizationDoneActions += f }
 
   /**
@@ -117,7 +139,10 @@ abstract class AbstractOptimizerSetup {
    */
   protected def afterOptimizationActions = optimizationDoneActions.toList
 
-  /** The actions to be done after regarding the best results, after each iteration. */
+  /**
+   * Execute a given function on the best results, after each iteration.
+   *  @param f the function
+   */
   def withIterationResults(f: MultipleSolutionsAction) = { resultsOfIterationActions += f }
 
   /**
@@ -126,7 +151,10 @@ abstract class AbstractOptimizerSetup {
    */
   protected def iterationResultActions = resultsOfIterationActions.toList
 
-  /** The actions to be done after regarding the best results, after the whole optimization is finished. */
+  /**
+   * Execute a function on the best results, after the whole optimization is finished.
+   *  @param f the function
+   */
   def withOptimizationResults(f: MultipleSolutionsAction) = { resultsOfOptimizationActions += f }
 
   /**

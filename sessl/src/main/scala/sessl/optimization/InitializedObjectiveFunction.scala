@@ -18,12 +18,17 @@
 package sessl.optimization
 
 /**
- * Syntactic sugar to glue together the definition of the objective function and the configuration of the optimization tool to be used.
+ * Provides the syntactic sugar (the `using(...)` method) to glue together the definition of the
+ * objective function and the configuration of the optimization tool.
+ *
  * @author Roland Ewald
  */
 case class InitializedObjectiveFunction[X <: Objective](o: X, f: ObjectiveFunction[X]) {
 
-  /** configures the given optimizer setup with the objective function, then executes it. */
+  /**
+   * Configures the given optimizer setup with the objective function, then executes it.
+   *  @param setup the optimizer setup
+   */
   def using(setup: AbstractOptimizerSetup) = {
     setup.setObjective(o)
     setup.setObjectiveFunction(f)
