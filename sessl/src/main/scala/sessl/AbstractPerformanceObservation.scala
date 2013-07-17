@@ -22,6 +22,13 @@ import sessl.util.MiscUtils
 
 /**
  * Support for performance observation and performance measurement storage.
+ *
+ * @example {{{
+ * new Experiment with PerformanceObservation {
+ * 	//...
+ * }
+ * }}}
+ *
  *  @author Roland Ewald
  */
 trait AbstractPerformanceObservation extends ExperimentConfiguration {
@@ -34,21 +41,42 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
   def performanceDataSink_=(pds: PerformanceDataSinkSpecification) = { performanceDataSinkSpecication = Some(pds) }
   def performanceDataSink: PerformanceDataSinkSpecification = { performanceDataSinkSpecication.get }
 
-  /** Adds event handler to analyze the performance of a single run. */
+  /**
+   * Handler performance results of a single run. The result is a [[PerfObsRunResultsAspect]].
+   *  @example {{{
+   *  	withRunPerformance { result =>
+   *   		println(result)
+   *    }
+   *  }}}
+   */
   def withRunPerformance(f: PerfObsRunResultsAspect => Unit) = {
     afterRun {
       r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).get.asInstanceOf[PerfObsRunResultsAspect])
     }
   }
 
-  /** Adds event handler to analyze the performance for a set of replications. */
+  /**
+   * Handle performance results of a set of replications. The result is a [[PerfObsReplicationsResultsAspect]].
+   * @example {{{
+   *  	withReplicationsPerformance { result =>
+   *   		println(result)
+   *    }
+   *  }}}
+   */
   def withReplicationsPerformance(f: PerfObsReplicationsResultsAspect => Unit) = {
     afterReplications {
       r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).get.asInstanceOf[PerfObsReplicationsResultsAspect])
     }
   }
 
-  /** Adds event handler to analyze the performance for the whole experiment. */
+  /**
+   * Handle performance results for the whole experiment. The result is a [[PerfObsExperimentResultsAspect]].
+   * @example {{{
+   *  	withExperimentPerformance { result =>
+   *   		println(result)
+   *    }
+   *  }}}
+   */
   def withExperimentPerformance(f: PerfObsExperimentResultsAspect => Unit) = {
     afterExperiment {
       r => MiscUtils.saveApply(f, r.aspectFor(classOf[AbstractPerformanceObservation]).get.asInstanceOf[PerfObsExperimentResultsAspect])
@@ -88,8 +116,14 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
 /** Super type of all performance data sink specifications. */
 trait PerformanceDataSinkSpecification
 
-/** Database performance data sinks. */
-case class PerformanceDatabaseDataSink(url: String = "not://specified", user: String = "username", password: String = "", driver: String = "unknown driver")
+/**
+ * Database performance data sinks.
+ *  @param url the database URL (default is empty)
+ *  @param user the user name (default is empty)
+ *  @param password the password (default is empty)
+ *  @param driver the class name of the JDBC driver (default is 'com.mysql.jdbc.Driver')
+ */
+case class PerformanceDatabaseDataSink(url: String = "", user: String = "", password: String = "", driver: String = "com.mysql.jdbc.Driver")
   extends DataSinkSpecification
 
 /** Provides operations for aggregated performance results (collecting all run times, filtering by setups). */
@@ -103,22 +137,41 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
   /** The set of all setups, each used by at least one run. */
   lazy val allSetups = runsResultsMap.mapValues(_.asInstanceOf[PerfObsRunResultsAspect].setup).values.toSet
 
-  /** Retrieves all run times for a set of results executed with certain setups. */
-  def runtimes(algorithms: Any): Iterable[Double] = runtimesFor(retrieveAlgorithmSet(algorithms))
+  /**
+   * Retrieves all run times for a set of results executed with certain setups.
+   *  @param algorithms single simulator setup (or sequence thereof)
+   *  @return run times
+   */
+  def runtimes(setups: Any): Iterable[Double] = runtimesFor(retrieveAlgorithmSet(setups))
 
-  /** Retrieve the run times for all setups, sorted alphabetically by the string representation of the setup. */
-  def runtimesForAll: Seq[(String, List[Double])] = runtimesFor(allSetups.toSeq)
+  /**
+   * Retrieve the run times for all setups, sorted alphabetically by the string representation of the setup.
+   * @return tuples (setup name, list of run times)
+   */
+  def runtimesForAll: Seq[(String, Iterable[Double])] = runtimesFor(allSetups.toSeq)
 
-  /** Retrieve runtimes for single setup.*/
-  def runtimesFor(algo: Simulator): Seq[(String, List[Double])] = runtimesFor(Seq(algo))
+  /**
+   * Retrieve run times for single setup.
+   *  @param s the the simulation setup
+   *  @return one-element sequence containing a tuple (setup name, list of run times)
+   */
+  def runtimesFor(setup: Simulator): Seq[(String, Iterable[Double])] = runtimesFor(Seq(setup))
 
-  /** Retrieve the run times for some setups, sorted alphabetically by the string representation of the setup. */
-  def runtimesFor(setups: Seq[Simulator]): Seq[(String, List[Double])] =
-    setups.map(setup => (setup.toString, runtimesFor(AlgorithmSet[Simulator](setup)).toList)).toSeq.sortBy(_._1)
+  /**
+   * Retrieve the run times for some setups, sorted alphabetically by the string representation of the setup.
+   *  @param setups the simulation setups of interest
+   *  @return tuples (setup name, list of run times)
+   */
+  def runtimesFor(setups: Seq[Simulator]): Seq[(String, Iterable[Double])] =
+    setups.map(setup => (setup.toString, runtimesFor(AlgorithmSet[Simulator](setup)))).sortBy(_._1)
 
-  /** Gets general results for certain setups. */
-  def forSetups(algorithms: Any) =
-    filterBySetups(retrieveAlgorithmSet(algorithms)).map(_._2.results)
+  /**
+   * Gets general results for certain setups.
+   *  @param setups the simulation setups of interest
+   *  @return result aspect restricted to those setups
+   */
+  def forSetups(setups: Any) =
+    filterBySetups(retrieveAlgorithmSet(setups)).map(_._2.results)
 
   /** Retrieve runtime results for all runs having used a setup that is contained in the given set. */
   private[this] def runtimesFor(setups: AlgorithmSet[Simulator]) = retrieveRuntimes(filterBySetups(setups))
@@ -142,7 +195,11 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
   }
 }
 
-/** The performance aspects of a single simulation run. */
+/**
+ * The performance aspects of a single simulation run.
+ *  @param setup the simulation algorithm
+ *  @param runtime the execution time of this run
+ */
 class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Double) extends RunResultsAspect(classOf[AbstractPerformanceObservation]) {
   /** Method to request a certain performance metric. If possible, use Scala 2.10's reflection API here in future. */
   def apply(name: String) = name match {
@@ -151,7 +208,7 @@ class PerfObsRunResultsAspect(val setup: Simulator, val runtime: Double) extends
   }
 }
 
-/** The performance aspects of a set of simulation runs, all computing the same variable assignment. */
+/** The performance aspects of a set of simulation runs, all computing the same variable assignment. Implements [[AggregatedPerformanceOperations]].*/
 class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf[AbstractPerformanceObservation])
   with AggregatedPerformanceOperations[PerfObsReplicationsResultsAspect] {
 
@@ -166,14 +223,29 @@ class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf
   }
 }
 
-/** The performance aspects of all simulation runs executed during the experiment. */
+/**
+ * The performance aspects of all simulation runs executed during the experiment. Implements [[AggregatedPerformanceOperations]] and [[PartialExperimentResults]].
+ *  @example {{{
+ *  withExperimentPerformance { result =>
+ *    reportSection("Result") {
+ *      histogram(result.having("x" <~ 1).runtimes)(title="All simulator runtimes for those replication sets where model parameter "x" is assigned to 1")
+ *    }
+ *  }
+ *  }}}
+ */
 class PerfObsExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractPerformanceObservation])
   with AggregatedPerformanceOperations[PerfObsExperimentResultsAspect] with PartialExperimentResults[PerfObsExperimentResultsAspect] {
 
-  /** Get the last sample for the given variable from all runs. */
+  /**
+   * Get the last sample for the given variable from all runs.
+   * @param name result name (e.g. 'runtime')
+   */
   def apply(name: String) = runsResults.mapValues(_.asInstanceOf[PerfObsRunResultsAspect](name)).values.toList
 
-  /** Apply name to the result, combine results in *named* tuple.*/
+  /**
+   * Apply name to the result, combine results in _named_ tuple.
+   *  @param name result name (e.g. 'runtime')
+   */
   def ~(name: String) = (name, apply(name))
 
   override protected def getValuesFor(name: String) = apply(name)
