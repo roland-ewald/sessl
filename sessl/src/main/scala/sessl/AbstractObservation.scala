@@ -236,7 +236,7 @@ final case class DataElemName(override val sesslName: String) extends DataElemBi
 }
 
 /**
- * The [[RunResultsAspect]] for [[AbstractObservation]]. Additional methods to work on values are provided by trait [[ResultOperations]].
+ * The [[RunResultsAspect]] for [[AbstractObservation]]. Additional methods to work on values are provided by trait [[util.ResultOperations]].
  *
  *  @param data the data recorded for a single run: variable name (in SESSL) => trajectory.
  */
@@ -371,7 +371,7 @@ class ObservationReplicationsResultsAspect extends ReplicationsResultsAspect(cla
 }
 
 /**
- * [[ExperimentResultsAspect]] for [[AbstractObservation]]. Additional methods are provided by [[ResultOperations]] and [[PartialExperimentResults]].
+ * [[ExperimentResultsAspect]] for [[AbstractObservation]]. Additional methods are provided by [[util.ResultOperations]] and [[PartialExperimentResults]].
  */
 class ObservationExperimentResultsAspect extends ExperimentResultsAspect(classOf[AbstractObservation]) with ResultOperations
   with PartialExperimentResults[ObservationExperimentResultsAspect] {
