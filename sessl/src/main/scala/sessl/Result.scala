@@ -1,43 +1,51 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl
 
 import scala.collection.mutable.Map
 import sessl.util.ResultOperations
 
-/** Type hierarchy to represent results of the experiment.
+/**
+ * Type hierarchy to represent results of the experiment.
  *
  *  @author Roland Ewald
  *
  */
 
-/** Super type of all results. */
+/** Super type of all data structures representing results. */
 trait Result
 
-/** The results of a single simulation run. Each experiment configuration
+/**
+ * The results of a single simulation run. Each experiment configuration
  *  aspect may yield own results, this class just ties them together and defines the run ID.
  *  It also has a current owner, which defines to what aspect of the run results the calls to
  *  the API are forwarded.
  *
  *  @param id
  *          the (system-specific) id of the run
+ *  @param assignment the variable assignment used for this run
  */
 class RunResults(val id: Int, val assignment: VariableAssignment) extends Result with ResultAspectManagement[RunResults, RunResultsAspect]
 
-/** The results of all runs on a specific assignment. */
+/**
+ * The results of all runs on a specific assignment.
+ *  @param id the id of the replication set
+ */
 class ReplicationsResults(val id: Int) extends Result with ResultAspectManagement[ReplicationsResults, ReplicationsResultsAspect] {
 
   /** The actual results, maps run ID (sim-system specific!) => results of the run. */
@@ -91,12 +99,15 @@ class ExperimentResults extends Result with ResultAspectManagement[ExperimentRes
   def addAspectForReplications(assignmentId: Int, replicationsAspect: ReplicationsResultsAspect) = { replicationsResults(assignmentId).addAspect(replicationsAspect) }
 }
 
-/** Represents a certain sub-set of experiment results.*/
+/** Represents a certain sub-set experiment results.*/
 trait PartialExperimentResults[T <: PartialExperimentResults[T]] extends ResultOperations {
   this: ExperimentResultsAspect =>
 
-  /** Returns partial experiment results, which contains all runs where the assignments correspond to the specified variable values.
-   *  Note that unknown variables in the given list will be ignored.
+  /**
+   * Returns partial set of results that contains all runs where the assignments correspond to the specified variable values.
+   *  Note that unknown variables in the given list will be ignored (match to anything).
+   *  @param variables list of [[Variable]] instances to characterize result sub-set
+   *  @return sub-set of results
    */
   def having(variables: Variable*): T = {
 
@@ -126,7 +137,8 @@ trait PartialExperimentResults[T <: PartialExperimentResults[T]] extends ResultO
 /** Auxiliary methods. */
 object Result {
 
-  /** Check assignment equality.
+  /**
+   * Check assignment equality.
    *
    *  @param varAssignment1
    *          the first variable assignment to be compared
@@ -137,7 +149,8 @@ object Result {
     require(varAssignment1 == varAssignment2, "Assignments of run results do not match: '" + varAssignment1.mkString(",") + "' vs. '" + varAssignment2.mkString(",") + "'")
   }
 
-  /** Checks equality of IDs.
+  /**
+   * Checks equality of IDs.
    *
    *  @param id1
    *          the first id
