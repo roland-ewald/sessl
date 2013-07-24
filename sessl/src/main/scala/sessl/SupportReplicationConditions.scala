@@ -1,18 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright 2012 Roland Ewald
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package sessl
 
 import sessl.util.Logging
@@ -93,10 +95,20 @@ case class ConjunctiveReplicationCondition(left: ReplicationCondition, right: Re
 case class DisjunctiveReplicationCondition(left: ReplicationCondition, right: ReplicationCondition) extends ReplicationCondition
 
 /**
- * Combines two replication conditions (either with OR or with AND).
+ * Combines two [[ReplicationCondition]] entities (either with OR or with AND).
  *  @param left the first replication condition
  */
 case class CombinedReplicationCondition(left: ReplicationCondition) extends ReplicationCondition {
+
+  /**
+   * Disjunction.
+   * @param right the second replication condition
+   */
   def or(right: ReplicationCondition) = new DisjunctiveReplicationCondition(left, right)
+
+  /**
+   * Conjunction.
+   * @param right the second replication condition
+   */
   def and(right: ReplicationCondition) = new ConjunctiveReplicationCondition(left, right)
 }

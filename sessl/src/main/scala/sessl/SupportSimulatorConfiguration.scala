@@ -56,6 +56,8 @@ trait SupportSimulatorConfiguration {
 /** A type hierarchy for execution options regarding the specified algorithms. */
 sealed trait SimulatorExecutionOption
 
+/** The [[SimulatorExecutionOption]] that specifies to use any of the specified simulation algorithms for a given experiment. */
 case object AnySimulator extends SimulatorExecutionOption
 
+/** The [[SimulatorExecutionOption]] that specifies to use all of the specified simulation algorithms for a given experiment. */
 case object AllSimulators extends SimulatorExecutionOption
