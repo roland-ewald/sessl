@@ -99,7 +99,7 @@ class ExperimentResults extends Result with ResultAspectManagement[ExperimentRes
   def addAspectForReplications(assignmentId: Int, replicationsAspect: ReplicationsResultsAspect) = { replicationsResults(assignmentId).addAspect(replicationsAspect) }
 }
 
-/** Represents a certain sub-set experiment results.*/
+/** Represents a certain sub-set of experiment results.*/
 trait PartialExperimentResults[T <: PartialExperimentResults[T]] extends ResultOperations {
   this: ExperimentResultsAspect =>
 

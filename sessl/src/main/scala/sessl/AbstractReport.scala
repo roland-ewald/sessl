@@ -247,7 +247,7 @@ protected case class ReportSectionNode(name: String, description: String, parent
 
 //Data views
 
-/** The general data view. */
+/** The super type of all data views. */
 trait DataView extends ReportNode
 
 /** Display a scatter plot. */

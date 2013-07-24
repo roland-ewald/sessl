@@ -43,7 +43,7 @@ trait AbstractDataSink extends ExperimentConfiguration {
   def dataSink: DataSinkSpecification = { dataSinkSpecification.get }
 }
 
-/** The super class of all data sink specifications.*/
+/** The super type of all data sink specifications.*/
 trait DataSinkSpecification
 
 /**
@@ -64,7 +64,7 @@ case class DatabaseDataSink(url: String = "not://specified", user: String = "use
 /**
  * File-based data sink specification.
  * @example {{{
- * dataSink = FileDataSink("output.dat")
+ * dataSink = FileDataSink("output.dat") // Write to 'output.dat'
  * }}}
  *  @param file the file name
  */
@@ -73,8 +73,8 @@ case class FileDataSink(file: String = "./unspecified.dat") extends DataSinkSpec
 /**
  * In-memory data sink.
  * @example {{{
- * dataSink = MemoryDataSink
+ * dataSink = MemoryDataSink()
  * }}}
  */
-case object MemoryDataSink extends DataSinkSpecification
+case class MemoryDataSink() extends DataSinkSpecification
 

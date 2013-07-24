@@ -69,6 +69,9 @@ trait ReplicationCondition
 /**
  * Replicate a fixed number of times.
  *  @param replications the number of replications
+ * @example {{{
+ * replicationCondition = FixedNumber(100) // 100 replications
+ * }}}
  */
 case class FixedNumber(replications: Int) extends ReplicationCondition
 
