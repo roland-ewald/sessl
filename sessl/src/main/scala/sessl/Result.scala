@@ -27,7 +27,7 @@ import sessl.util.ResultOperations
  *
  */
 
-/** Super type of all data structures representing results. */
+/** Super type for all data structures representing results. */
 trait Result
 
 /**

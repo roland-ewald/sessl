@@ -130,7 +130,10 @@ abstract class AbstractOptimizerSetup {
    */
   protected def afterIterationActions = iterationDoneActions.toList
 
-  /** Execute a given function after the optimization algorithm is finished. */
+  /**
+   * Execute a given function after the optimization algorithm is finished.
+   *  @param f the function
+   */
   def afterOptimization(f: MultipleSolutionsAction) = { optimizationDoneActions += f }
 
   /**
@@ -142,6 +145,11 @@ abstract class AbstractOptimizerSetup {
   /**
    * Execute a given function on the best results, after each iteration.
    *  @param f the function
+   *  @example{{{
+   *  withIterationResults { optResults =>
+   *   println(optResults)
+   *  }
+   *  }}}
    */
   def withIterationResults(f: MultipleSolutionsAction) = { resultsOfIterationActions += f }
 
@@ -154,6 +162,11 @@ abstract class AbstractOptimizerSetup {
   /**
    * Execute a function on the best results, after the whole optimization is finished.
    *  @param f the function
+   *  @example{{{
+   *  withOptimizationResults { optResults =>
+   *   println(optResults)
+   *  }
+   *  }}}
    */
   def withOptimizationResults(f: MultipleSolutionsAction) = { resultsOfOptimizationActions += f }
 

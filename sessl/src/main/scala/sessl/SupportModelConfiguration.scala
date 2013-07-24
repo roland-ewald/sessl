@@ -39,16 +39,16 @@ trait SupportModelConfiguration {
    *  @param variablesToScan a list of variables to scan, concatenate with 'and' to make them change values in unison (but only if the same number of values shall be scanned for them)
    *
    *  @example {{{
-   *    scan ("x" <~ range(0,2,8)) // models gets simulated for x = 0, 2, 4, 6, 8
+   *    scan ("x" <~ range(0,2,8)) // model runs with x = 0, 2, 4, 6, 8
    *  }}}
    *  @example {{{
-   *    scan ("x" <~ range(1,1,10), "y" <~ range(2,2,20)) // models runs with (x,y) = (1,2), (1,4), ..., (1,20), (2,2), (2,4), ... (10,20)
+   *    scan ("x" <~ range(1,1,10), "y" <~ range(2,2,20)) // model runs with (x,y) = (1,2), (1,4), ..., (1,20), (2,2), (2,4), ... (10,20)
    *  }}}
    *  @example {{{
-   *    scan ("x" <~ range(1,1,10) and "y" <~ range(2,2,20)) // models runs with (x,y) = (1,2), (2,4), ..., (9,18), (10,20)
+   *    scan ("x" <~ range(1,1,10) and "y" <~ range(2,2,20)) // model runs with (x,y) = (1,2), (2,4), ..., (9,18), (10,20)
    *  }}}
    *  @example {{{
-   *    scan ("x" <~ (1,2,3) and "y" <~ ("a", "b", "c"), "z" <~ range(1,1,100)) // models runs with (x,y,z) = (1,"a", 1), ..., (1,"a", 100), (2, "b", 1), ... (2,"b", 100), ... etc.
+   *    scan ("x" <~ (1,2,3) and "y" <~ ("a", "b", "c"), "z" <~ range(1,1,100)) // model runs with (x,y,z) = (1,"a", 1), ..., (1,"a", 100), (2, "b", 1), ... (2,"b", 100), ... etc.
    *  }}}
    */
   def scan(variablesToScan: Variable*) = {
@@ -89,7 +89,9 @@ trait SupportModelConfiguration {
   /** Allow to specify a model URI. */
   def model_=(modelURI: URI) = { modelLocation = Some(modelURI.toString()) }
 
-  /** Default getters and setters. */
+  /** Set string identifying the model to be simulated. */
   protected def model_=(modelString: String) = { modelLocation = Some(modelString) }
+  
+  /** Get string identifying the model to be simulated. */
   def model: String = modelLocation.get
 }

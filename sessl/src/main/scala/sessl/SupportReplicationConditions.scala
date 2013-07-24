@@ -31,17 +31,21 @@ trait SupportReplicationConditions extends Logging {
   /** Stores a more complex replication condition (if one is set). */
   protected[sessl] var repCondition: Option[ReplicationCondition] = None
 
-  /** Getting/setting the number of replications. */
+  /** Set a fixed number of replications. */
   def replications_=(reps: Int) = { fixedReplications = Some(reps) }
+  
+  /** Get the fixed number of replications. */
   def replications: Int = fixedReplications.get
 
-  /** Getting/setting a complex replication condition. */
+  /** Set a [[ReplicationCondition]]. */
   def replicationCondition_=(rc: ReplicationCondition) = {
     if (repCondition.isDefined)
       logger.warn("Replication condition has already been defined as '" +
         repCondition.get + "' - this will now be changed to '" + rc + "'")
     repCondition = Some(rc)
   }
+  
+  /** Get the [[ReplicationCondition]]. */
   def replicationCondition: ReplicationCondition = repCondition.get
 
   /**

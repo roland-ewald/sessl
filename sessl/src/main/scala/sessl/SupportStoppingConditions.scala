@@ -29,16 +29,20 @@ trait SupportStoppingConditions {
   /** Stores a more complex stopping condition (if one is set). */
   protected[sessl] var stoppingCondition: Option[StoppingCondition] = None
 
-  /** Getting/setting the stop time. */
+  /** Set a fixed stop time. */
   def stopTime_=(time: Double) = { fixedStopTime = Some(time) }
+  
+  /** Get the fixed stop time. */
   def stopTime: Double = fixedStopTime.get
 
-  /** Getting/setting a complex stopping condition. See sub-classes of [[StoppingCondition]]. */
+  /** Specify stopping condition. See sub-classes of [[StoppingCondition]]. */
   def stopCondition_=(sc: StoppingCondition) = {
     require(!stoppingCondition.isDefined,
       "Stopping condition has already been defined as '" + stoppingCondition.get + "', found conflicting definition as '" + sc + "'")
     stoppingCondition = Some(sc)
   }
+  
+  /** Get the specified [[StoppingCondition]]. */
   def stopCondition: StoppingCondition = stoppingCondition.get
 
   /**

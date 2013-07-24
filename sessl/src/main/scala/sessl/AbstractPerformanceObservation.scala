@@ -120,12 +120,12 @@ trait PerformanceDataSinkSpecification
 
 /**
  * Database performance data sinks.
- *  @param url the database URL (default is empty)
+ *  @param url the database URL
  *  @param user the user name (default is empty)
  *  @param password the password (default is empty)
  *  @param driver the class name of the JDBC driver (default is 'com.mysql.jdbc.Driver')
  */
-case class PerformanceDatabaseDataSink(url: String = "", user: String = "", password: String = "", driver: String = "com.mysql.jdbc.Driver")
+case class PerformanceDatabaseDataSink(url: String, user: String = "", password: String = "", driver: String = "com.mysql.jdbc.Driver")
   extends DataSinkSpecification
 
 /** Provides operations for aggregated performance results (collecting all run times, filtering by setups). */
@@ -230,7 +230,7 @@ class PerfObsReplicationsResultsAspect extends ReplicationsResultsAspect(classOf
  *  @example {{{
  *  withExperimentPerformance { result =>
  *    reportSection("Result") {
- *      histogram(result.having("x" <~ 1).runtimes)(title="All simulator runtimes for those replication sets where model parameter "x" is assigned to 1")
+ *      histogram(result.having("x" <~ 1).runtimes)(title="All simulator runtimes for those replication sets where model parameter 'x' is assigned to 1")
  *    }
  *  }
  *  }}}
@@ -240,13 +240,13 @@ class PerfObsExperimentResultsAspect extends ExperimentResultsAspect(classOf[Abs
 
   /**
    * Get the last sample for the given variable from all runs.
-   * @param name result name (e.g. 'runtime')
+   * @param name result name (for example, 'runtime')
    */
   def apply(name: String) = runsResults.mapValues(_.asInstanceOf[PerfObsRunResultsAspect](name)).values.toList
 
   /**
    * Apply name to the result, combine results in _named_ tuple.
-   *  @param name result name (e.g. 'runtime')
+   *  @param name result name (for example, 'runtime')
    */
   def ~(name: String) = (name, apply(name))
 

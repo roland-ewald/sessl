@@ -86,6 +86,11 @@ object Variable {
 
 /** Class that represents a semi-defined variable (only variable name is given so far). */
 case class VarName(name: String) {
+
+  /**
+   * Assign values to variable name.
+   *  @param values one or more values
+   */
   def <~[T](values: T*) = {
     if (values.size == 1) {
       values(0) match {
@@ -136,21 +141,60 @@ case class ValueRange[T <: AnyVal](from: T, step: T, to: T) {
 
 }
 
-/** Provides syntactic sugar for declaration of value ranges.  */
+/**
+ * Provides syntax for creation of [[ValueRange]] instances. It is an alternative to the built-in type [[Range]],
+ * which orders its parameters differently (from, to, stepSize).
+ */
 object range {
 
-  /** Specify a range of values. */
+  /**
+   * Specify a range of values.
+   *  @param from the lower boundary
+   *  @param step the step size
+   *  @param to the upper boundary (inclusive)
+   *
+   *  @example{{{
+   *  range(10,2,100) //ValueRange containing 10, 12, ..., 100
+   *  }}}
+   */
   def apply[T <: AnyVal](from: T, step: T, to: T) = ValueRange(from, step, to)
 
-  /** Simplifying constructor, sets step size to one. */
+  /**
+   * Simplifies the construction of ranges with step size one.
+   *  @param from the lower boundary
+   *  @param to the upper boundary (inclusive)
+   *
+   *  @example{{{
+   *  range(10,100) //ValueRange containing 10, 11, ..., 100
+   *  }}}
+   */
   def apply[T <: AnyVal](from: T, to: T)(implicit n: Numeric[T]) = ValueRange(from, n.one, to)
 
-  /** Special factory method to create string sequences for a range of values. For the string argument, the printf syntax applies. */
+  /**
+   * Special factory method to create string sequences for a range of values. For the string argument, the `printf` syntax applies.
+   *  @param printString the string to be printed
+   *  @param from the lower boundary
+   *  @param step the step size
+   *  @param to the upper boundary (inclusive)
+   *
+   *  @example{{{
+   *  range("%ds", 2, 2, 8) //List of strings containing 2s, 4s, 6s, 8s
+   *  }}}
+   */
   def apply[T <: AnyVal](printString: String, from: T, step: T, to: T): Seq[String] = {
     VarRange.toList(VarRange("", from, step, to)).map(v => printString.format(v))
   }
 
-  /** Simplifying constructor, sets step size to one. */
+  /**
+   * Simplifies the construction of string sequences with step size one.
+   *  @param printString the string with the `printf` syntax
+   *  @param from the lower boundary
+   *  @param to the upper boundary (inclusive)
+   *
+   *  @example{{{
+   *  range("%ds", 2, 4) //List of strings containing 2s, 3s, 4s
+   *  }}}
+   */
   def apply[T <: AnyVal](printString: String, from: T, to: T)(implicit n: Numeric[T]): Seq[String] = range(printString, from, n.one, to)
 }
 

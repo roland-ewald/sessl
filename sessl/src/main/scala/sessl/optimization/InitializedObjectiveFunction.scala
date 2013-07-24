@@ -18,8 +18,8 @@
 package sessl.optimization
 
 /**
- * Provides the syntactic sugar (the `using(...)` method) to glue together the definition of the
- * objective function and the configuration of the optimization tool.
+ * Provides the `using(...)` method to glue together the definition of the
+ * objective function and the configuration of the optimization tool. See [[AbstractOptimizerSetup]].
  *
  * @author Roland Ewald
  */

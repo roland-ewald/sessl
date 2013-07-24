@@ -80,8 +80,8 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   }
 
   /**
-   * Add event handler that processes observed model output from a single run. The result is an [[ObservationRunResultsAspect]].
-   *  @param f event handler
+   * Add result handler that processes observed model output from a single run. The result is an [[ObservationRunResultsAspect]].
+   *  @param f result handler
    *  @example {{{
    *  	withRunResult { result =>
    *   		println(result)
@@ -96,9 +96,9 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   }
 
   /**
-   * Add event handler that processes observed model output from a set of replications.
+   * Add result handler that processes observed model output from a set of replications.
    * The result is an [[ObservationReplicationsResultsAspect]].
-   * @param f event handler
+   * @param f result handler
    * @example {{{
    *  	withReplicationsResult { result=>
    *   		println(result)
@@ -113,9 +113,9 @@ abstract trait AbstractObservation extends ExperimentConfiguration {
   }
 
   /**
-   * Add event handler that processes observed model output from the whole experiment.
+   * Add result handler that processes observed model output from the whole experiment.
    *  The result is an [[ObservationExperimentResultsAspect]].
-   * @param f event handler
+   * @param f result handler
    * @example {{{
    *  	withExperimentResult { result =>
    *   		println(result)

@@ -23,8 +23,10 @@ trait SupportRNGSetup {
   /** The random number generator to be used (if set).*/
   protected[sessl] var randomNumberGenerator: Option[RNG] = None
 
-  /** Getting/setting the RNG. */
+  /** Set the random-number generator. */
   def rng_=(rand: RNG) = { randomNumberGenerator = Some(rand) }
+  
+  /** Get the random-number generator. */
   def rng: RNG = { randomNumberGenerator.get }
 
 }
