@@ -11,7 +11,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<scala.version>2.10.1</scala.version>
-		<sessl.source.repository>https://bitbucket.org/roland_ewald/sessl</sessl.source.repository>
+		<sessl.source.repository>https://bitbucket.org/alesia/sessl</sessl.source.repository>
 	</properties>
 
 	<repositories>
@@ -35,7 +35,7 @@
 
 	<issueManagement>
 		<system>Bitbucket</system>
-		<url>https://bitbucket.org/roland_ewald/sessl/issues</url>
+		<url>https://bitbucket.org/alesia/sessl/issues</url>
 	</issueManagement>
 
 	<licenses>
