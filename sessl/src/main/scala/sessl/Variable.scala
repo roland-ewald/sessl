@@ -113,7 +113,6 @@ case class ValueRange[T <: AnyVal](from: T, step: T, to: T) {
    * Converts a range to a list of values.
    *
    *  @param <T> the generic type
-   *  @param r the range
    *  @param n the numeric aspect of T
    *  @return the list of concrete values
    */

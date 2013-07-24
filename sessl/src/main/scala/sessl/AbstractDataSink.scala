@@ -36,10 +36,10 @@ trait AbstractDataSink extends ExperimentConfiguration {
   /** The data sink to be used. */
   protected[sessl] var dataSinkSpecification: Option[DataSinkSpecification] = None
 
-  /** Set the data sink. */
+  /** Set the [[DataSinkSpecification]]. */
   def dataSink_=(ds: DataSinkSpecification) = { dataSinkSpecification = Some(ds) }
 
-  /** Get the data sink.*/
+  /** Get the [[DataSinkSpecification]].*/
   def dataSink: DataSinkSpecification = { dataSinkSpecification.get }
 }
 

@@ -67,7 +67,11 @@ trait AbstractReport extends ExperimentConfiguration {
   /** The section to be currently filled with content. */
   private var currentSection: ReportSection = rootSection
 
-  /** Defines a new report section. */
+  /** Defines a new report section. 
+   *  @param name the name of the section
+   *  @param description the description of the section (default: empty)
+   *  @param contentSpecification the function defining the content of the section
+   */
   def reportSection(name: String, description: String = "")(contenSpecification: => Unit) {
     currentSection = ReportSectionNode(name, description, currentSection)
     contenSpecification

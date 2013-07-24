@@ -21,7 +21,7 @@ package sessl
  * Trait to create an event log file for each simulation run, which contains each _single_ event from the execution.
  * This should be used for debugging only.
  *
- * In contrast to [[AbstractObservation]], the (potentially huge amount of) data is not held in memory and cannot be further process in SESSL.
+ * In contrast to [[AbstractObservation]], the (potentially huge amount of) data is not held in memory and cannot be further processed in SESSL.
  *
  * @example {{{
  * new Experiment with EventLogRecording {

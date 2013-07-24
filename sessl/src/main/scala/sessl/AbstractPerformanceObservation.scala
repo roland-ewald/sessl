@@ -37,8 +37,10 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
   /** Specifies where to store the data. */
   protected[sessl] var performanceDataSinkSpecication: Option[PerformanceDataSinkSpecification] = None
 
-  /** Getting/setting the performance data sink. */
+  /** Set the [[PerformanceDataSinkSpecification]]. */
   def performanceDataSink_=(pds: PerformanceDataSinkSpecification) = { performanceDataSinkSpecication = Some(pds) }
+  
+  /** Get the [[PerformanceDataSinkSpecification]]. */
   def performanceDataSink: PerformanceDataSinkSpecification = { performanceDataSinkSpecication.get }
 
   /**
@@ -139,7 +141,7 @@ trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunRes
 
   /**
    * Retrieves all run times for a set of results executed with certain setups.
-   *  @param algorithms single simulator setup (or sequence thereof)
+   *  @param setups single simulator setup (or sequence thereof)
    *  @return run times
    */
   def runtimes(setups: Any): Iterable[Double] = runtimesFor(retrieveAlgorithmSet(setups))

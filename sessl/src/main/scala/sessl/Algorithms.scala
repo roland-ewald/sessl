@@ -23,7 +23,10 @@ package sessl
  */
 
 // This could work like an 'ontology' or 'taxonomy' (additional information/relations can be expressed via traits)
+
+/** Super type of all user-configurable algorithms. Marker trait. */
 abstract trait Algorithm
+
 abstract trait Approximation
 
 //Random Number Generation
