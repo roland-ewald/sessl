@@ -53,10 +53,9 @@ object ScalaToJava {
   def toDoubleArray(values: Iterable[Double]): Array[java.lang.Double] = values.map(_.asInstanceOf[java.lang.Double]).toArray
 
   /** Convert list to (transposed) nested array. */
-  def to2DTransposedJavaStringArray(valueLists: List[String]*): Array[Array[java.lang.String]] = {
+  def to2DTransposedJavaStringArray(valueLists: Seq[String]*): Array[Array[java.lang.String]] = {
     if (valueLists.length == 0)
       return Array.ofDim(0)
-
     val rv: Array[Array[java.lang.String]] = Array.ofDim(valueLists.head.length)
     for (i <- valueLists.head.indices)
       rv(i) = Array.ofDim(valueLists.length)
@@ -66,7 +65,7 @@ object ScalaToJava {
   }
 
   /** Convert list to nested array. */
-  def to2DJavaDoubleArray(valueLists: List[Double]*) = {
+  def to2DJavaDoubleArray(valueLists: Iterable[Double]*) = {
     val rv: Array[Array[java.lang.Double]] = Array.ofDim(valueLists.length)
     for (i <- valueLists.indices)
       rv(i) = toDoubleArray(valueLists(i))

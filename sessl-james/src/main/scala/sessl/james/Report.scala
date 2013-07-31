@@ -107,10 +107,10 @@ trait Report extends AbstractReport {
       case v: ScatterPlotView => new ScatterPlotDataView(to2DJavaDoubleArray(v.xData, v.yData),
         v.caption, v.title, Array[String](v.xLabel, v.yLabel))
       case v: HistogramView => new HistogramDataView(toDoubleArray(v.data), v.caption, v.title, v.xLabel, v.yLabel)
-      case v: BoxPlotView => new BoxPlotDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
-        v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1): _*))
-      case v: LinePlotView => new LineChartDataView(to2DJavaDoubleArray(v.data.map(_._2): _*),
-        v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.map(x => x._1).tail: _*))
+      case v: BoxPlotView => new BoxPlotDataView(to2DJavaDoubleArray(v.data.toSeq.map(_._2): _*),
+        v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.toSeq.map(x => x._1): _*))
+      case v: LinePlotView => new LineChartDataView(to2DJavaDoubleArray(v.data.toSeq.map(_._2): _*),
+        v.caption, v.title, Array(v.xLabel, v.yLabel), Array(v.data.toSeq.map(x => x._1).tail: _*))
       case v: StatisticalTestView =>
         val dataPair = new org.jamesii.core.util.misc.Pair[Array[java.lang.Double], Array[java.lang.Double]](toDoubleArray(v.firstData._2), toDoubleArray(v.secondData._2))
         new StatisticalTestDataView(dataPair, v.caption, v.firstData._1, v.secondData._1, true, true, StatisticalTestDefinition.KOLMOGOROV_SMIRNOV)
