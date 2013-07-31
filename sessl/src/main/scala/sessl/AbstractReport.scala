@@ -67,7 +67,8 @@ trait AbstractReport extends ExperimentConfiguration {
   /** The section to be currently filled with content. */
   private var currentSection: ReportSection = rootSection
 
-  /** Defines a new report section. 
+  /**
+   * Defines a new report section.
    *  @param name the name of the section
    *  @param description the description of the section (default: empty)
    *  @param contentSpecification the function defining the content of the section
@@ -149,7 +150,17 @@ trait AbstractReport extends ExperimentConfiguration {
   /** Converts data items to a common format that can be used for line plots. */
   private[this] def convertToLinePlotData(data: Iterable[Any]): Seq[(String, Iterable[_])] = data.head match {
     case tuple: (_, _) => ("Time", tuple._2.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
-    case trajectory: Iterable[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
+    case multipleData: Iterable[_] => multipleData.head match {
+      case tuple: (_, _) =>
+        tuple._1 match {
+          case s: String => {
+            require(data.size == 1, "Expecting just another nesting layer if data does not consist of (name, trajectory) tuples.")
+            convertToLinePlotData(multipleData)
+          }
+          case _ => throw new IllegalArgumentException
+        }
+      case _ => throw new IllegalArgumentException
+    }
     case _ => data.toList.flatMap(toNamedList)
   }
 
