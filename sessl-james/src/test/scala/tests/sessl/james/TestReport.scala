@@ -78,7 +78,7 @@ import org.junit.Assert._
     val files = new File(exp.reportName).list.toSet
     assertTrue("The directory for raw data, the auxiliary plotting methods, and the report itself should be there", files("raw") && files("plotting.R") && files("report.Rtex"))
     val dataFiles = rawDataDir.listFiles
-    assertTrue("There should be 28 files containing the raw data, and none of them should be empty.", dataFiles.length == 28 && dataFiles.forall(_.length > 0))
+    assertEquals("There should be non-empty raw data files", 28, dataFiles.filter(_.length > 0).length)
   }
 
 }

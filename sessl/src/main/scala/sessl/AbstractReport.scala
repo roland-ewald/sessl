@@ -147,9 +147,9 @@ trait AbstractReport extends ExperimentConfiguration {
   }
 
   /** Converts data items to a common format that can be used for line plots. */
-  private[this] def convertToLinePlotData(data: Iterable[Any]): List[(String, List[_])] = data.head match {
+  private[this] def convertToLinePlotData(data: Iterable[Any]): Seq[(String, Iterable[_])] = data.head match {
     case tuple: (_, _) => ("Time", tuple._2.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
-    case trajectory: List[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
+    case trajectory: Iterable[_] => ("Time", trajectory.asInstanceOf[Trajectory].map(_._1)) :: data.toList.flatMap(toNamedList)
     case _ => data.toList.flatMap(toNamedList)
   }
 
@@ -175,22 +175,22 @@ trait AbstractReport extends ExperimentConfiguration {
    */
   def reportTable(data: Any*)(caption: String = "") = {
     val namedData = data.flatMap(toNamedList)
-    val tableData = namedData.map(x => x._1 :: x._2.map(_.toString))
-    currentSection.childs += TableView(tableData.toList, caption, currentSection)
+    val tableData = namedData.map(x => x._1 :: x._2.map(_.toString).toList)
+    currentSection.childs += TableView(tableData, caption, currentSection)
   }
 
   /** Converts an object of a suitable type into a tuple (name, list of values)*/
-  private[this] def toNamedList(data: Any): Seq[(String, List[_])] = {
+  private[this] def toNamedList(data: Any): Seq[(String, Iterable[_])] = {
     data match {
       //Because of type erasure, we have to match the types of the list content separately
-      case tuple: (_, _) => tuple._2.asInstanceOf[List[_]].head match {
+      case tuple: (_, _) => tuple._2.asInstanceOf[Iterable[_]].head match {
         case t: (_, _) => Seq((tuple._1.toString, tuple._2.asInstanceOf[Trajectory].map(_._2)))
-        case _ => Seq((tuple._1.toString, tuple._2.asInstanceOf[List[_]]))
+        case _ => Seq((tuple._1.toString, tuple._2.asInstanceOf[Iterable[_]]))
       }
       case seq: Seq[_] => seq.head match {
-        case t: (_, _) => seq.asInstanceOf[Seq[(_, List[Double])]].map(tuple => (tuple._1.toString, tuple._2))
-        case nestedSeq: Seq[_] => seq.asInstanceOf[Seq[Seq[Double]]].map(rawData => ("", rawData.toList))
-        case n: Number => Seq(("", seq.asInstanceOf[Seq[Number]].map(_.doubleValue()).toList))
+        case t: (_, _) => seq.asInstanceOf[Seq[(_, Iterable[Double])]].map(tuple => (tuple._1.toString, tuple._2))
+        case nestedSeq: Seq[_] => seq.asInstanceOf[Seq[Iterable[_]]].map(rawData => ("", rawData))
+        case n: Number => Seq(("", seq.asInstanceOf[Iterable[Number]].map(_.doubleValue()).toList))
       }
       case _ => throw new IllegalArgumentException("Entity '" + data + "' cannot be converted to a tuple (name, list of values).")
     }
@@ -205,7 +205,7 @@ trait AbstractReport extends ExperimentConfiguration {
   protected def topmostElements = rootSection.children
 
   /** Checks whether the elements in the list are numeric. */
-  private def dataIsNumeric(values: List[_]): Boolean = {
+  private def dataIsNumeric(values: Iterable[_]): Boolean = {
     val typesOK = typesConform(classOf[Number], values)
     if (!typesOK)
       logger.warn("Some elements to be plotted are not numbers, hence this plot view is skipped: " + values)
@@ -213,10 +213,10 @@ trait AbstractReport extends ExperimentConfiguration {
   }
 
   /** Checks whether the elements in all given lists are numeric. */
-  private def dataAreNumeric(data: List[_]*): Boolean = data.forall(dataIsNumeric)
+  private def dataAreNumeric(data: Iterable[_]*): Boolean = data.forall(dataIsNumeric)
 
   /** Converts a list of Any into a list of Double.*/
-  private def toDoubleList(values: List[_]) = values.asInstanceOf[List[Number]].map(_.doubleValue())
+  private def toDoubleList(values: Iterable[_]) = values.asInstanceOf[Iterable[Number]].map(_.doubleValue()).toSeq
 
   /** Needs to be realized by concrete implementations*/
   def generateReport(results: ExperimentResults): Unit
@@ -251,19 +251,19 @@ protected case class ReportSectionNode(name: String, description: String, parent
 trait DataView extends ReportNode
 
 /** Display a scatter plot. */
-case class ScatterPlotView(xData: List[Double], yData: List[Double], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
+case class ScatterPlotView(xData: Iterable[Double], yData: Iterable[Double], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
 
 /** Display a histogram. */
-case class HistogramView(data: List[Double], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
+case class HistogramView(data: Iterable[Double], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
 
 /** Display a box plot. */
-case class BoxPlotView(data: List[(String, List[Double])], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
+case class BoxPlotView(data: Iterable[(String, Iterable[Double])], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
 
 /** Display a line plot. */
-case class LinePlotView(data: List[(String, List[Double])], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
+case class LinePlotView(data: Iterable[(String, Iterable[Double])], title: String, caption: String, xLabel: String, yLabel: String, parent: ReportSection) extends DataView
 
 /** Display the results of a statistical test. */
-case class StatisticalTestView(firstData: (String, List[Double]), secondData: (String, List[Double]), caption: String, testMethod: Option[TwoPairedStatisticalTest], parent: ReportSection) extends DataView
+case class StatisticalTestView(firstData: (String, Iterable[Double]), secondData: (String, Iterable[Double]), caption: String, testMethod: Option[TwoPairedStatisticalTest], parent: ReportSection) extends DataView
 
 /** Display the results in a table. */
-case class TableView(data: List[List[String]], caption: String, parent: ReportSection) extends DataView
+case class TableView(data: Seq[Seq[String]], caption: String, parent: ReportSection) extends DataView

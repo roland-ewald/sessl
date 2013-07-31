@@ -66,7 +66,7 @@ object MiscUtils extends Logging {
    *          the values
    *  @return true, if all elements in the sequence are of this kind
    */
-  def typesConform(clazz: java.lang.Class[_], values: Seq[Any]): Boolean =
+  def typesConform(clazz: java.lang.Class[_], values: Iterable[Any]): Boolean =
     filterByConformantType(clazz, values).isEmpty
 
   /** Filters a list by the type of its elements.
@@ -87,7 +87,7 @@ object MiscUtils extends Logging {
    *          the values
    *  @return the sequence of elements with non-conforming types
    */
-  def filterByConformantType(clazz: java.lang.Class[_], values: Seq[Any]) = values.filter(x => !clazz.isAssignableFrom(x.getClass))
+  def filterByConformantType(clazz: java.lang.Class[_], values: Iterable[Any]) = values.filter(x => !clazz.isAssignableFrom(x.getClass))
 
   /** Gets the value or, if it is empty, gets default instead.
    *
