@@ -40,6 +40,26 @@
       <includes>
         <include>org.sessl:*</include>
       </includes>
+      <excludes>
+			<exclude>org.sessl:*:jar:sources</exclude>
+			<exclude>org.sessl:*:jar:tests</exclude>
+			<exclude>org.sessl:*:jar:test-sources</exclude>
+	  </excludes>
+    </dependencySet>
+
+    <dependencySet>
+      <outputDirectory>src</outputDirectory>
+      <includes>
+        <include>org.sessl:*:jar:sources</include>
+        <include>org.sessl:*:jar:test-sources</include>
+      </includes>
+    </dependencySet>
+    
+    <dependencySet>
+      <outputDirectory>tests</outputDirectory>
+      <includes>
+        <include>org.sessl:*:jar:tests</include>
+      </includes>
     </dependencySet>
 
   </dependencySets>

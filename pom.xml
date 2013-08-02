@@ -104,6 +104,11 @@
 				<artifactId>sessl-opt4j</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.sessl</groupId>
+				<artifactId>sessl-integration</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- External dependencies: -->
 
