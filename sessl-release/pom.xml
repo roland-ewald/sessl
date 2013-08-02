@@ -1,57 +1,175 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>sessl-release</artifactId>
-  <name>SESSL Release</name>
-  <packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sessl-release</artifactId>
+	<name>SESSL Release</name>
+	<packaging>pom</packaging>
 
- <parent>
-    <groupId>org.sessl</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>0.8</version>
-    <relativePath>../.</relativePath>
- </parent>
+	<parent>
+		<groupId>org.sessl</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>0.8</version>
+		<relativePath>../.</relativePath>
+	</parent>
 
-  <dependencies>
+	<dependencies>
+
+		<!-- SESSL core -->
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl</artifactId>
+			<version>${project.version}</version>
+			<classifier>test-sources</classifier>
+		</dependency>
+
+		<!-- SESSL binding for JAMES II -->
+		<dependency>
+			<groupId>org.sessl</groupId>
 			<artifactId>sessl-james</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-james</artifactId>
+			<version>${project.version}</version>
+			<classifier>test-sources</classifier>
+		</dependency>
+
+		<!-- SESSL binding for SBMLsimulator -->
 		<dependency>
 			<groupId>org.sessl</groupId>
 			<artifactId>sessl-sbmlsim</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.sessl</groupId>
-			<artifactId>sessl-omnetpp</artifactId>
-		</dependency>		
-  </dependencies>
+			<artifactId>sessl-sbmlsim</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-sbmlsim</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-sbmlsim</artifactId>
+			<version>${project.version}</version>
+			<classifier>test-sources</classifier>
+		</dependency>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2.1</version>
-        <configuration>
-          <descriptors>
-            <descriptor>release.xml</descriptor>
-          </descriptors>
-          <finalName>SESSL-${project.version}</finalName>
-        </configuration>
-        <executions>
-          <execution>
-            <id>dist-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+
+		<!-- SESSL binding for OMNeT++ -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-omnetpp</artifactId>
+			<version>${project.version}</version>
+			<classifier>test-sources</classifier>
+		</dependency>
+
+		<!-- SESSL binding for Opt4J -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-opt4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-opt4j</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+
+		<!-- SESSL integration tests -->
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-integration</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-integration</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-integration</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.sessl</groupId>
+			<artifactId>sessl-integration</artifactId>
+			<version>${project.version}</version>
+			<classifier>test-sources</classifier>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>release.xml</descriptor>
+					</descriptors>
+					<finalName>SESSL-${project.version}</finalName>
+				</configuration>
+				<executions>
+					<execution>
+						<id>dist-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
