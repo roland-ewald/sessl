@@ -5,7 +5,7 @@ Open source, licensed under Apache 2.0 (see LICENSE.txt).
 
 This software is based on several open-source projects:
 
-- Scala 2.10.1 (http://scala-lang.org), a programming language
+- Scala 2.10.2 (http://scala-lang.org), a programming language
 
 - JAMES II 0.9.1 (http://jamesii.org), a modeling and simulation framework available under a custom open-source license (see libs/licenses/james2). JAMES II is based on several other open source libraries that are included here as well (e.g. Hibernate, Apache Commons, etc.).
 
