@@ -2,29 +2,31 @@ package sessl.sbw
 
 import org.junit.Test
 import edu.caltech.sbw.SBW
-import org.junit.Assume
+import org.junit.Assume._
 import org.junit.Before
 import org.junit.Assert._
+import org.junit.After
+import sessl.sbw.util.SBWModuleDirectory
 
-class TestSBWFunctionality {
+trait Analysis {
+  def doAnalysis(sbml: String): Unit
+}
 
-  /** Checks whether there is an SBW installation to use. */
-  val connectionSuccessful =
-    try {
-      SBW.connect
-      true
-    } catch {
-      case _: Throwable => false
-    }
+class TestSBWFunctionality extends SBWTest {
 
-  @Before def setUp() = {
-    Assume.assumeTrue(connectionSuccessful);
-  }
+  val targetService = "General Simulation Tool"
+  val targetModuleInstance = SBW.findServices("Analysis", false).filter(_.getDisplayName() == targetService).headOption
 
   @Test def testSimpleSBWLookup() = {
     assertTrue("There are modules.", SBW.getExistingModuleInstances().length > 0)
-    for (m <- SBW.getExistingModuleInstances())
-      println(m.getDescriptor().getName())
+    assumeTrue(targetModuleInstance.isDefined)
+
+    val sbwDir = new SBWModuleDirectory()
+
+    // From documentation:
+    val service = targetModuleInstance.get.getServiceInModuleInstance()
+    val analysis = service.getServiceObject(classOf[Analysis]).asInstanceOf[Analysis]
+    analysis.doAnalysis("<test></test>")
   }
 
 }

@@ -25,7 +25,7 @@
 
 		<dependency>
 			<groupId>edu.caltech.sbw</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>core</artifactId> <!-- TODO: use 'core' for release, core-debug for testing -->
 			<version>2.9.0</version>
 		</dependency>
 
