@@ -59,12 +59,13 @@
 
 	<modules>
 		<module>sessl</module>
+		<module>sessl-integration</module>
 		<module>sessl-james</module>
-		<module>sessl-sbmlsim</module>
 		<module>sessl-omnetpp</module>
 		<module>sessl-opt4j</module>
-		<module>sessl-integration</module>
 		<module>sessl-release</module>
+		<module>sessl-sbmlsim</module>
+		<module>sessl-sbw</module>
 	</modules>
 
 	<pluginRepositories>
