@@ -15,10 +15,12 @@ trait Analysis {
 class TestSBWFunctionality extends SBWTest {
 
   val targetService = "General Simulation Tool"
-  val targetModuleInstance = SBW.findServices("Analysis", false).filter(_.getDisplayName() == targetService).headOption
 
   @Test def testSimpleSBWLookup() = {
     assertTrue("There are modules.", SBW.getExistingModuleInstances().length > 0)
+
+    val targetModuleInstance = SBW.findServices("Analysis", false).filter(_.getDisplayName() == targetService).headOption
+
     assumeTrue(targetModuleInstance.isDefined)
 
     val sbwDir = new SBWModuleDirectory()
