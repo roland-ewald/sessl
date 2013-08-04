@@ -18,7 +18,7 @@ class TestSBWFunctionality extends SBWTest {
 
   @Test def testSimpleSBWLookup() = {
     assertTrue("There are modules.", SBW.getExistingModuleInstances().length > 0)
-
+    
     val targetModuleInstance = SBW.findServices("Analysis", false).filter(_.getDisplayName() == targetService).headOption
 
     assumeTrue(targetModuleInstance.isDefined)
@@ -27,6 +27,10 @@ class TestSBWFunctionality extends SBWTest {
 
     // From documentation:
     val service = targetModuleInstance.get.getServiceInModuleInstance()
+    
+    for (m <- service.getMethods())
+      println(m.getSignatureString())
+    
     val analysis = service.getServiceObject(classOf[Analysis]).asInstanceOf[Analysis]
     analysis.doAnalysis("<test></test>")
   }
