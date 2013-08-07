@@ -130,21 +130,21 @@
 				<version>${scala.version}</version>
 			</dependency>
 
-			<!-- SLF4J for Scala -->
+			<!-- ScalaLogging -->
 			<dependency>
-				<groupId>com.weiglewilczek.slf4s</groupId>
-				<artifactId>slf4s_2.10</artifactId>
-				<version>1.0.7</version>
+				<groupId>com.typesafe</groupId>
+				<artifactId>scalalogging-slf4j_2.10</artifactId>
+				<version>1.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.6.6</version>
+				<version>1.7.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
-				<version>1.6.6</version>
+				<version>1.7.2</version>
 				<scope>runtime</scope>
 			</dependency>
 
