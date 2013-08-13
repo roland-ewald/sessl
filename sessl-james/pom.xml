@@ -12,7 +12,7 @@
 	</parent>
 	
 	<properties>
-		<james.version>0.9.1</james.version>
+		<james.version>0.9.3-SNAPSHOT</james.version>
 	</properties>
 
 	<dependencies>
@@ -27,44 +27,44 @@
 		<!-- To support performance observation and all/any-simulator execution 
 			modes: -->
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>sasf</artifactId>
 			<version>${james.version}</version>
 		</dependency>
 		<!-- To support modeling formalisms: -->
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>sr</artifactId>
 			<version>${james.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>srs</artifactId>
 			<version>${james.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>pi-calculus</artifactId>
 			<version>${james.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>pdevs</artifactId>
 			<version>${james.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>mlrules</artifactId>
 			<version>${james.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>mlrules-unreleased</artifactId>
 			<version>${james.version}</version>
 		</dependency>
 		<!-- To support report generation: -->
 		<dependency>
-			<groupId>org.jamesii</groupId>
+			<groupId>org.jamesii.private</groupId>
 			<artifactId>resultreports</artifactId>
 			<version>${james.version}</version>
 		</dependency>
