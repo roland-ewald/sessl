@@ -34,6 +34,8 @@ import sessl.util.SimpleObserverHelper
 import org.jamesii.core.observe.IObservable
 import sessl.james.util.SimpleJAMESIIObserverHelper
 import sessl.util.Logging
+import org.jamesii.model.mlrules.observation.mosan.MLRulesMosanInstrumenter
+import org.jamesii.model.mlrules.observation.aggregation.SpeciesHierarchyAttributeAwareCountAggregator
 
 /**
  * Handles the instrumentation for ml-rules models.
@@ -44,7 +46,7 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler with Logging 
 
   override def applicable(task: IComputationTask): Boolean = task.getModel().isInstanceOf[IMLRulesModel]
 
-  override def configureObserver(task: IComputationTask, instrumenter: SESSLInstrumenter): IResponseObserver[_ <: IObservable] = {
+  override def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir: String): Seq[IResponseObserver[_ <: IObservable]] = {
 
     val model = task.getModel().asInstanceOf[IMLRulesModel]
     val varsToBeObserved = instrumenter.instrConfig.varsToBeObserved
@@ -108,8 +110,12 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler with Logging 
 
     }
 
+    val mosanInstrumenter = new MLRulesMosanInstrumenter(outputDir: String, interval, new SpeciesHierarchyAttributeAwareCountAggregator)
+    mosanInstrumenter.instrumentModel(model, task.getConfig)
+    val mosanObserver = mosanInstrumenter.getInstantiatedObservers().get(0)
+    //TODO: needs a wrapper, this does not hold: mosanObserver.isInstanceOf[IResponseObserver[_ <: IObservable]]    
     Mediator.create(model)
-    model.registerObserver(observer)
-    observer
+    model.registerObserver(observer)    			 
+    Seq(observer) 
   }
 }

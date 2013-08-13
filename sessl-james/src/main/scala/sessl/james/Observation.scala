@@ -18,6 +18,7 @@
 package sessl.james
 
 import java.util.HashMap
+import sessl.james.formalismspecific.InstrumentationHandler
 import org.jamesii.core.experiments.instrumentation.computation.IComputationInstrumenter
 import org.jamesii.core.experiments.instrumentation.computation.plugintype.ComputationInstrumenterFactory
 import org.jamesii.core.experiments.optimization.parameter.IResponseObserver
@@ -31,7 +32,6 @@ import sessl.james.formalismspecific.MLRulesInstrumentationHandler
 import sessl.james.formalismspecific.SRInstrumentationHandler
 import sessl.util.SimpleObservation
 import sessl.util.SimpleObserverHelper
-import sessl.james.formalismspecific.InstrumentationHandler
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -42,6 +42,8 @@ import scala.collection.mutable.ListBuffer
  */
 trait Observation extends SimpleObservation {
   this: Experiment =>
+
+  var observationOutputDirectory = "./observations"
 
   abstract override def configure() {
     super.configure()
@@ -57,13 +59,13 @@ object Observation {
 //The James II code for the custom instrumentation plug-in
 
 /** Factory for the computation task instrumenter. */
-case class SESSLCompInstrFactory(val instrConfig: SimpleObservation) extends ComputationInstrumenterFactory {
+case class SESSLCompInstrFactory(val instrConfig: Observation) extends ComputationInstrumenterFactory {
   override def create(parameters: ParameterBlock): IComputationInstrumenter = new SESSLInstrumenter(instrConfig)
   override def supportsParameters(parameters: ParameterBlock) = 1
 }
 
 /** The computation task instrumenter. */
-class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObsSimInstrumenter {
+class SESSLInstrumenter(val instrConfig: Observation) extends IResponseObsSimInstrumenter {
 
   val observers = new java.util.ArrayList[IResponseObserver[_ <: IObservable]]()
 
@@ -92,8 +94,11 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
     val handler = SESSLInstrumenter.instrumentationHandlers.find(h => h.applicable(computation))
     require(handler.isDefined, "Instrumentation of this kind of model " + computation.getModel() + "is not yet supported so far!")
     //TODO: Manage parameters explicitly: computation.getConfig().getParameters()
-    val observer = handler.get.configureObserver(computation, this)
-    observers.add(observer)
+
+    val myHandler = handler.get
+    val obs = myHandler.configureObservers(computation, this, instrConfig.observationOutputDirectory)
+    for (o <- obs)
+      observers.add(o)
   }
 }
 
@@ -102,9 +107,9 @@ class SESSLInstrumenter(val instrConfig: SimpleObservation) extends IResponseObs
  */
 object SESSLInstrumenter {
 
-  val instrHandlers = ListBuffer(new SRInstrumentationHandler(), new MLRulesInstrumentationHandler())
+  val instrHandlers = ListBuffer[InstrumentationHandler](new SRInstrumentationHandler(), new MLRulesInstrumentationHandler())
 
   def instrumentationHandlers = instrHandlers.toList
 
-  def registerInstrumentationHandler(i: InstrumentationHandler): Unit = {instrHandlers += i}
+  def registerInstrumentationHandler(i: InstrumentationHandler): Unit = { instrHandlers += i }
 }

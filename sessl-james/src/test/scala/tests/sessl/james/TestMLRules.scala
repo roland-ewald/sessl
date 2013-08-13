@@ -21,6 +21,7 @@ import org.junit.Assert._
         stopTime = 0.1
         observe("A", "B")
         observeAt(range(0.0, 0.001, 0.095))
+        observationOutputDirectory = "myOutputDir"
         withRunResult(results => {
           logger.info("Results of A:" + results.trajectory("A"))
           trajectoryB = Some(results.trajectory("B"))

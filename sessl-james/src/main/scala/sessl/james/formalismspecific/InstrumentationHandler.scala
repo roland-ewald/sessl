@@ -30,11 +30,11 @@ import sessl.james.SESSLInstrumenter
  * @author Roland Ewald
  */
 trait InstrumentationHandler {
-
+  
   /** Returns true if the handler can be applied to the given computation task. */
   def applicable(task: IComputationTask): Boolean
 
   /** Configure the observation of this computation task and return the observer. */
-  def configureObserver(task: IComputationTask, instrumenter: SESSLInstrumenter): IResponseObserver[_ <: IObservable]
+  def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir:String): Seq[IResponseObserver[_ <: IObservable]]
 
 }
