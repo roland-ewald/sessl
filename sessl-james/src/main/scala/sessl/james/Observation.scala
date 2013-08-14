@@ -43,7 +43,17 @@ import scala.collection.mutable.ListBuffer
 trait Observation extends SimpleObservation {
   this: Experiment =>
 
-  var observationOutputDirectory = "./observations"
+  protected[james] var obsOutputDirectory: Option[String] = None
+
+  def observationOutputDirectory: String = obsOutputDirectory.getOrElse("undefined")
+
+  /**
+   * Some custom JAMES II observers write data to files on their own.
+   * Setting this variable signalizes to that these observers shall be used, if applicable.
+   */
+  def observationOutputDirectory_=(s: String): Unit = {
+    obsOutputDirectory = Some(s)
+  }
 
   abstract override def configure() {
     super.configure()
@@ -96,7 +106,7 @@ class SESSLInstrumenter(val instrConfig: Observation) extends IResponseObsSimIns
     //TODO: Manage parameters explicitly: computation.getConfig().getParameters()
 
     val myHandler = handler.get
-    val obs = myHandler.configureObservers(computation, this, instrConfig.observationOutputDirectory)
+    val obs = myHandler.configureObservers(computation, this, instrConfig.obsOutputDirectory)
     for (o <- obs)
       observers.add(o)
   }

@@ -41,7 +41,7 @@ class SRInstrumentationHandler extends InstrumentationHandler {
 
   override def applicable(task: IComputationTask): Boolean = task.getModel().isInstanceOf[ISRModel]
 
-  override def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir:String): Seq[IResponseObserver[_ <: IObservable]] = {
+  override def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir:Option[String]): Seq[IResponseObserver[_ <: IObservable]] = {
 
     val model = task.getModel().asInstanceOf[ISRModel]
     val obsTimes = ScalaToJava.toDoubleArray(instrumenter.instrConfig.observationTimes)

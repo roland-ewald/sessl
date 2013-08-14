@@ -36,9 +36,13 @@ import sessl.james.util.SimpleJAMESIIObserverHelper
 import sessl.util.Logging
 import org.jamesii.model.mlrules.observation.mosan.MLRulesMosanInstrumenter
 import org.jamesii.model.mlrules.observation.aggregation.SpeciesHierarchyAttributeAwareCountAggregator
+import org.jamesii.model.mlrules.observation.aggregation.AbstractDataAggregator
 
 /**
- * Handles the instrumentation for ml-rules models.
+ * Handles the instrumentation for ML-Rules models.
+ *
+ * It uses different [[org.jamesii.model.mlrules.observation.aggregation.IDataAggregator]] instances,
+ * depending on the format in which the variables to be observed are defined.
  *
  * @author Roland Ewald
  */
@@ -46,7 +50,7 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler with Logging 
 
   override def applicable(task: IComputationTask): Boolean = task.getModel().isInstanceOf[IMLRulesModel]
 
-  override def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir: String): Seq[IResponseObserver[_ <: IObservable]] = {
+  override def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir: Option[String]): Seq[IResponseObserver[_ <: IObservable]] = {
 
     val model = task.getModel().asInstanceOf[IMLRulesModel]
     val varsToBeObserved = instrumenter.instrConfig.varsToBeObserved
@@ -62,7 +66,7 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler with Logging 
     if (wrongInterval.isDefined)
       logger.warn("It seems you do not use a range of time points to observe, but ml-rules instrumentation is based on intervals. Using interval:" + interval)
 
-    val aggregator = new SpeciesCountAggregator()
+    val aggregator = selectAggregator(varsToBeObserved)
     val observer = new TimeStepObserver(model, simStopTime, interval, aggregator) with SimpleJAMESIIObserverHelper[SimpleObservation] with IResponseObserver[IEntity] {
 
       private[this] var nextTime = getModel().getTime
@@ -77,9 +81,9 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler with Logging 
       /** Stores the data as aggregated. */
       def store(time: Double) = {
         aggregator.updateData()
-        for (varToBeObserved <- sesslObsConfig.varsToBeObserved) {
-          val timeAmountPair = aggregator.getCurrentData(varToBeObserved)
-          addValueFor(varToBeObserved, (time, timeAmountPair.getSecondValue()))
+        for (v <- varsToBeObserved) {
+          val timeAmountPair = aggregator.getCurrentData(v)
+          addValueFor(v, (time, timeAmountPair.getSecondValue()))
         }
       }
 
@@ -107,15 +111,26 @@ class MLRulesInstrumentationHandler extends InstrumentationHandler with Logging 
       }
 
       override def getResponseList(): java.util.Map[String, BaseVariable[_]] = throw new NotSupportedException
-
     }
 
-    val mosanInstrumenter = new MLRulesMosanInstrumenter(outputDir: String, interval, new SpeciesHierarchyAttributeAwareCountAggregator)
-    mosanInstrumenter.instrumentModel(model, task.getConfig)
-    val mosanObserver = mosanInstrumenter.getInstantiatedObservers().get(0)
-    //TODO: needs a wrapper, this does not hold: mosanObserver.isInstanceOf[IResponseObserver[_ <: IObservable]]    
+    //Also use Mosan observer if necessary 
+    if (outputDir.isDefined) {
+      val mosanInstrumenter = new MLRulesMosanInstrumenter(outputDir.get, interval, new SpeciesHierarchyAttributeAwareCountAggregator)
+      mosanInstrumenter.instrumentModel(model, task.getConfig)
+    }
+
     Mediator.create(model)
-    model.registerObserver(observer)    			 
-    Seq(observer) 
+    model.registerObserver(observer)
+    Seq(observer)
+  }
+
+  /** Selects aggregator depending on the declared elements. */
+  def selectAggregator(obsVariables: Iterable[String]): AbstractDataAggregator = {
+    def attributeSyntax(s: String) = s.endsWith(")")
+    if (obsVariables.exists(attributeSyntax)) {
+      require(obsVariables.forall(attributeSyntax),
+        "Some observables are defined with an attribute-aware syntax (e.g. \"A()\") but others miss parentheses.\n Observables: " + obsVariables.mkString(", "))
+      new SpeciesHierarchyAttributeAwareCountAggregator
+    } else new SpeciesCountAggregator
   }
 }

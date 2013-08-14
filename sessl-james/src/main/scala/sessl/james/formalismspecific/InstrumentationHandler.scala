@@ -35,6 +35,6 @@ trait InstrumentationHandler {
   def applicable(task: IComputationTask): Boolean
 
   /** Configure the observation of this computation task and return the observer. */
-  def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir:String): Seq[IResponseObserver[_ <: IObservable]]
+  def configureObservers(task: IComputationTask, instrumenter: SESSLInstrumenter, outputDir:Option[String]): Seq[IResponseObserver[_ <: IObservable]]
 
 }
