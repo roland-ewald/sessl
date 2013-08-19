@@ -91,6 +91,20 @@ trait ResultOperations {
   }
 
   /**
+   * Calculate RMSE of results compared to specific sequence of values.
+   * @param name variable name
+   * @param comaprisonData the sequence of comparison data, must be same size
+   */
+  def mse(name: String, comparisonData: Seq[Double]): Double = math.Misc.mse(getNumericValues(name).map(_.doubleValue).toSeq, comparisonData)
+
+  /**
+   * Calculate MSE of results compared to specific sequence of values.
+   * @param name variable name
+   * @param comaprisonData the sequence of comparison data, must be same size
+   */
+  def rmse(name: String, comparisonData: Seq[Double]): Double = Math.sqrt(mse(name, comparisonData))
+
+  /**
    * Aggregates variable values by a given function.
    *
    *  @param name
@@ -102,9 +116,19 @@ trait ResultOperations {
    *  @return the aggregated result
    */
   private def aggregate(name: String, startVal: Double, aggregator: (Double, Double) => Double): Double = {
+    val numbers = getNumericValues(name)
+    (startVal /: numbers)((x, y) => aggregator(x, y.doubleValue()))
+  }
+
+  /**
+   * Get data as numeric values.
+   *
+   *  @param name
+   *          the name of the results
+   */
+  private def getNumericValues(name: String): Iterable[Number] = {
     val vals = getValuesFor(name)
     require(vals.head.isInstanceOf[Number], "This operation is only available for numeric types, but at least one value of '" + name + "' is of type " + vals.head.getClass())
-    val numbers = vals.asInstanceOf[Iterable[Number]]
-    (startVal /: numbers)((x, y) => aggregator(x, y.doubleValue()))
+    vals.asInstanceOf[Iterable[Number]]
   }
 }
