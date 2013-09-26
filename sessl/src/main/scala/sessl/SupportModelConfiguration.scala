@@ -90,7 +90,7 @@ trait SupportModelConfiguration {
   def model_=(modelURI: URI) = { modelLocation = Some(modelURI.toString()) }
 
   /** Set string identifying the model to be simulated. */
-  protected def model_=(modelString: String) = { modelLocation = Some(modelString) }
+  def model_=(modelString: String) = { modelLocation = Some(modelString) }
   
   /** Get string identifying the model to be simulated. */
   def model: String = modelLocation.get
