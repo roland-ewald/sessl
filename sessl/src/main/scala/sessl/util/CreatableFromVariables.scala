@@ -43,7 +43,7 @@ import sessl.Variable
  *
  *  @author Roland Ewald
  */
-trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
+trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] extends Logging {
   this: T =>
 
   /** The copy(...) method is used to create new instances. */
@@ -113,7 +113,7 @@ trait CreatableFromVariables[T <: CreatableFromVariables[T] with Product] {
    */
   private[this] def getCopy(parameters: Seq[Any]) = {
     try {
-      println("Invoking copy with params: " + parameters.mkString(","))
+      logger.info("Invoking copy with params: " + parameters.mkString(","))
       copyMethod.invoke(this, parameters.map(_.asInstanceOf[AnyRef]): _*).asInstanceOf[T]
     } catch {
       case ex: IllegalArgumentException => throw new IllegalArgumentException("Have you used parentheses to specify *all* allgorithms and subalgorithms? E.g. \"algo1\" <~ Algo() etc.", ex)
