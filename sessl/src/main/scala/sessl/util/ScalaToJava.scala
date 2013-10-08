@@ -18,36 +18,36 @@
 package sessl.util
 
 import java.util.ArrayList
-import java.util.HashMap
 
+import scala.collection.JavaConversions._
+
+/**
+ * Helper functions for some often-used Scala-to-Java conversions.
+ *
+ * Most of the time, you should instead use [[scala.collection.JavaConversions]] directly; these are just helpers with
+ * more specific signatures, and for some special cases.
+ */
 object ScalaToJava {
 
   /** Creates an array list of java Double objects.*/
-  def toDoubleList(values: Iterable[Double]): ArrayList[java.lang.Double] = {
+  def toDoubleList(values: Iterable[Double]): java.util.List[java.lang.Double] = {
     val rv = new ArrayList[java.lang.Double]()
     values.foreach(v => rv.add(v))
     rv
   }
 
   /** Creates an array list of java Integer objects.*/
-  def toIntegerList(values: Iterable[Int]): ArrayList[java.lang.Integer] = {
+  def toIntegerList(values: Iterable[Int]): java.util.List[java.lang.Integer] = {
     val rv = new ArrayList[java.lang.Integer]()
     values.foreach(v => rv.add(v))
     rv
   }
 
   /** Creates an array list.*/
-  def toList[X](values: Iterable[X]): ArrayList[X] = {
-    val rv = new ArrayList[X]()
-    values.foreach(v => rv.add(v))
-    rv
-  }
+  def toList[X](values: Iterable[X]): java.util.List[X] = seqAsJavaList(values.toSeq)
 
-  def toMap[X, Y](map: Map[X, Y]): HashMap[X, Y] = {
-    val rv = new HashMap[X, Y]()
-    map.foreach(v => rv.put(v._1, v._2))
-    rv
-  }
+  /** Convert map. */
+  def toMap[X, Y](map: Map[X, Y]): java.util.Map[X, Y] = mapAsJavaMap(map)
 
   /** Convert list to double array. */
   def toDoubleArray(values: Iterable[Double]): Array[java.lang.Double] = values.map(_.asInstanceOf[java.lang.Double]).toArray
