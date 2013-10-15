@@ -18,13 +18,12 @@
 package sessl
 
 import java.util.logging.Level
-
 import scala.collection.mutable.ListBuffer
 import scala.language.implicitConversions
-
 import org.jamesii.SimSystem
 import org.jamesii.core.experiments.tasks.ComputationTaskIDObject
 import org.jamesii.core.parameters.ParameterBlock
+import org.jamesii.core.experiments.BaseExperiment
 
 package object james {
 
@@ -100,4 +99,10 @@ package object james {
 
   /** Conversion from computation task IDs to run IDs. */
   implicit def compTaskIDObjToRunID(compTaskID: ComputationTaskIDObject): Int = compTaskID.toString.hashCode
+
+  /**
+   * Convert experiment back to JAMES II-compatible experiment (makes it easier to use other parts of JAMES II that
+   * rely on BaseExperiment from scripts etc.).
+   */
+  implicit def toBaseExperiment(e: Experiment): BaseExperiment = { e.prepare(); e.james2Experiment }
 }

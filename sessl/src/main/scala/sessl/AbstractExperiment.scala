@@ -57,7 +57,7 @@ abstract class AbstractExperiment extends BasicExperimentConfiguration with Supp
   override def configure() = { configureCalled = true }
 
   /** Prepares the experiment for execution. */
-  private final def prepare() = {
+  protected[sessl] final def prepare() = {
     require(modelLocation.isDefined, "No model is given. Use model = ... to set one.")
     basicConfiguration()
     configure()
