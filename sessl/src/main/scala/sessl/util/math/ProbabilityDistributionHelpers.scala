@@ -24,12 +24,22 @@ trait ProbabilityDistributionHelpers {
 
   /**
    * Calculate quantiles of the chi-square function.
-   * Implementations should behave similar to R's qchisq function.
+   * Implementations should behave similar to R's {{{qchisq}}} function.
    *
    * @param prob the probability
    * @param prob the degrees of freedom
    * @param tail whether P(X <= x) is calculated (default) or P(X > x)
    */
   def chiSquareQuantiles(prob: Double, degOfFreedom: Double, tail: Boolean = true): Double
-
+  
+  /**
+   * Calculate quantiles of Student's t-Distribution.
+   * Implementations should behave similar to R's {{{qt}}} function.
+   *
+   * @param prob the probability
+   * @param prob the degrees of freedom
+   * @param tail whether P(X <= x) is calculated (default) or P(X > x)
+   */
+  def tQuantiles(prob: Double, degOfFreedom: Double, tail: Boolean = true): Double
+  
 }
