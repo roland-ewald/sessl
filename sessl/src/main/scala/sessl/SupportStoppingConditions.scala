@@ -29,7 +29,7 @@ trait SupportStoppingConditions {
   /** Stores a more complex stopping condition (if one is set). */
   protected[sessl] var stoppingCondition: Option[StoppingCondition] = None
 
-  /** Set a fixed stop time. */
+  /** Specify a fixed stop time. */
   def stopTime_=(time: Double) = { fixedStopTime = Some(time) }
   
   /** Get the fixed stop time. */

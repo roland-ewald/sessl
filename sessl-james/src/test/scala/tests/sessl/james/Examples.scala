@@ -47,10 +47,8 @@ import sessl.util.Logging
         }
         withExperimentResult {
           result =>
-            {
               logger.info("Overall variance:" + result.variance("y"))
               logger.info("Variance on subset:" + result.having("numOfSpecies" <~ 10).variance("y"))
-            }
         }
       }
     }

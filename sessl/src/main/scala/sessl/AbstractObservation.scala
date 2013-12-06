@@ -293,7 +293,7 @@ class ObservationRunResultsAspect(private var data: Map[String, Trajectory]) ext
    *  @example {{{
    *  	withRunResult { result =>
    *      reportSection("Example") {
-   *   		linePlot(result ~ ("x"))(title = "Example line plot")
+   *   		linePlot(result ~ "x")(title = "Example line plot")
    *     }
    *    }
    *  }}}

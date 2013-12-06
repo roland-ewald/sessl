@@ -18,8 +18,11 @@
 package sessl.optimization
 
 /**
- * Provides the `using(...)` method to glue together the definition of the
- * objective function and the configuration of the optimization tool. See [[AbstractOptimizerSetup]].
+ * Provides the `using(...)` method to combine the definition of the
+ * objective function ([[ObjectiveFunction]]) and the configuration of the
+ * optimization tool ([[AbstractOptimizerSetup]]).
+ *
+ * See [[AbstractOptimizerSetup]].
  *
  * @author Roland Ewald
  */

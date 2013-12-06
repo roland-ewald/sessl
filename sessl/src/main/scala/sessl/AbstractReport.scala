@@ -126,8 +126,7 @@ trait AbstractReport extends ExperimentConfiguration {
   }
 
   /**
-   * Define a line plot with variable names.
-   * The first value list defines the time points (if it is a trajectory, both values and times are taken from it).
+   * Define a line plot with variable names. Time points are taken from the first trajectory in the list.
    *  @param data list of [[Trajectory]] or (variable name, [[Trajectory]]) tuples
    *  @param title title of the plot (default: empty)
    *  @param caption the caption (default: empty)

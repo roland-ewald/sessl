@@ -21,18 +21,19 @@ import sessl.util.Logging
 import sessl.util.ParallelExecutionConfiguration
 
 /**
- * Support for parallel execution. How the parallel execution is achieved (e.g. fine/coarse-grained in what aspect
- *  is largely up to the simulation system at hand - and to the user specifying the usage of specific algorithms).
+ * Support for parallel execution. How the parallel execution is achieved (e.g. fine- or coarse-grained), and
+ * for which task, is largely up to the simulation system at hand --- and to the user specifying the 
+ * configuration of the available algorithms). 
  *
- *  The single variable here, the number of parallel threads that shall be employed, just hints at the available resources
- *  that shall be used.
+ *  The single variable here, the number of parallel threads that shall be employed, just controls the 
+ *  available resources to be used.
  *
  *  @example {{{
  *   new Experiment with ParallelExecution {
  *      //...
  *      parallelThreads = 5  // Use exactly five threads
  *      parallelThreads = 0  // Use one thread per available core (default)
- *      parallelThreads = -2 // Keep two threads idle
+ *      parallelThreads = -2 // Keep two cores idle
  *   }
  *  }}}
  *

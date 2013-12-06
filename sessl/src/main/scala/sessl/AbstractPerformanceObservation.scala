@@ -132,7 +132,7 @@ case class PerformanceDatabaseDataSink(url: String, user: String = "", password:
 trait AggregatedPerformanceOperations[T <: { def runsResultsMap: Map[Int, RunResultsAspect] }] {
   this: T =>
 
-  /** Retrieves all run times for a set of results. */
+  /** Retrieves all run times. */
   def runtimes =
     retrieveRuntimes(runsResultsMap)
 
