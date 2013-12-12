@@ -107,7 +107,7 @@ class Experiment extends AbstractExperiment {
 
   /** Base experiment for access within binding. */
   protected[james] def exp = baseExp
-  
+
   /** Base experiment for access from within other experiments. */
   def james2Experiment = baseExp
 
@@ -175,20 +175,22 @@ class Experiment extends AbstractExperiment {
 
   /** Configure stopping. */
   def configureStopping() = {
-    exp.setComputationTaskStopPolicyFactory(createParamStopFactory(checkAndGetStoppingCondition()))
+    val (factory, params) = createParamStopFactory(checkAndGetStoppingCondition())
+    exp.setComputationTaskStopPolicyFactory(factory)
+    exp.setComputationTaskStopPolicyParameters(params)
   }
 
   /** Create parameterized stop factory. */
-  def createParamStopFactory(s: StoppingCondition): ParameterizedFactory[StopFactory] = s match {
-    case Never => new ParamFactory[StopFactory](new EmptyStopConditionStopPolicyFactory(), Param())
-    case st: AfterSimTime => { checkSimTimeValidity(st); new ParamFactory[StopFactory](new SimTimeStopFactory(), Param() :/ (SimTimeStopFactory.SIMEND ~>> st.time)) }
-    case ssteps: AfterSimSteps => new ParamFactory[StopFactory](new StepCountStopFactory(), Param() :/ (StepCountStopFactory.TASKEND ~>> ssteps.steps))
-    case w: AfterWallClockTime => new ParamFactory[StopFactory](new WallClockTimeStopFactory(), Param() :/ (WallClockTimeStopFactory.SIMEND ~>> w.toMilliSeconds))
+  def createParamStopFactory(s: StoppingCondition): (StopFactory, ParamBlock) = s match {
+    case Never => (new EmptyStopConditionStopPolicyFactory(), Param())
+    case st: AfterSimTime => { checkSimTimeValidity(st); (new SimTimeStopFactory(), Param() :/ (SimTimeStopFactory.SIMEND ~>> st.time)) }
+    case ssteps: AfterSimSteps => (new StepCountStopFactory(), Param() :/ (StepCountStopFactory.TASKEND ~>> ssteps.steps))
+    case w: AfterWallClockTime => (new WallClockTimeStopFactory(), Param() :/ (WallClockTimeStopFactory.SIMEND ~>> w.toMilliSeconds))
     case c: ConjunctiveStoppingCondition =>
-      new ParamFactory[StopFactory](new ConjunctiveSimRunStopPolicyFactory(), Param() :/
+      (new ConjunctiveSimRunStopPolicyFactory(), Param() :/
         (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~>> listParamStopFactories(createParamStopFactory(c.left), createParamStopFactory(c.right))))
     case d: DisjunctiveStoppingCondition =>
-      new ParamFactory[StopFactory](new DisjunctiveSimRunStopPolicyFactory(), Param() :/
+      (new DisjunctiveSimRunStopPolicyFactory(), Param() :/
         (CompositeCompTaskStopPolicyFactory.POLICY_FACTORY_LIST ~>> listParamStopFactories(createParamStopFactory(d.left), createParamStopFactory(d.right))))
     case x => throw new IllegalArgumentException("Stopping criterion '" + s + "' not supported.")
   }
@@ -201,9 +203,9 @@ class Experiment extends AbstractExperiment {
   }
 
   /** Creates a list of Java objects containing the given parameterized factories. */
-  private def listParamStopFactories(factories: ParameterizedFactory[ComputationTaskStopPolicyFactory]*) = {
+  private def listParamStopFactories(factories: (ComputationTaskStopPolicyFactory, ParamBlock)*) = {
     val rv = new java.util.ArrayList[JamesPair[ComputationTaskStopPolicyFactory, ParamBlock]]()
-    factories.foreach(f => rv.add(new JamesPair[ComputationTaskStopPolicyFactory, ParamBlock](f.getFactory(), f.getParameters())))
+    factories.foreach(f => rv.add(new JamesPair[ComputationTaskStopPolicyFactory, ParamBlock](f._1, f._2)))
     rv
   }
 

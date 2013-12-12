@@ -15,16 +15,6 @@
  ******************************************************************************/
 package sessl.james
 import java.io.File
-import james.resultreport.dataview.BoxPlotDataView
-import james.resultreport.dataview.HistogramDataView
-import james.resultreport.dataview.LineChartDataView
-import james.resultreport.dataview.ScatterPlotDataView
-import james.resultreport.dataview.StatisticalTestDataView
-import james.resultreport.dataview.StatisticalTestDefinition
-import james.resultreport.renderer.rtex.RTexResultReportRenderer
-import james.resultreport.ResultReport
-import james.resultreport.ResultReportGenerator
-import james.resultreport.ResultReportSection
 import sessl.AbstractObservation
 import sessl.AbstractReport
 import sessl.BoxPlotView
@@ -38,8 +28,18 @@ import sessl.ReportSection
 import sessl.ReportSectionNode
 import sessl.ScatterPlotView
 import sessl.StatisticalTestView
-import james.resultreport.dataview.TableDataView
 import sessl.TableView
+import org.jamesii.resultreport.ResultReportGenerator
+import org.jamesii.resultreport.dataview.ScatterPlotDataView
+import org.jamesii.resultreport.dataview.StatisticalTestDataView
+import org.jamesii.resultreport.dataview.TableDataView
+import org.jamesii.resultreport.ResultReportSection
+import org.jamesii.resultreport.dataview.HistogramDataView
+import org.jamesii.resultreport.dataview.BoxPlotDataView
+import org.jamesii.resultreport.ResultReport
+import org.jamesii.resultreport.dataview.LineChartDataView
+import org.jamesii.resultreport.dataview.StatisticalTestDefinition
+import org.jamesii.resultreport.renderer.rtex.RTexResultReportRenderer
 
 /** Support for James II report generation.
  *
@@ -50,7 +50,7 @@ trait Report extends AbstractReport {
   this: AbstractExperiment =>
 
   /** The result data views used in James II. */
-  private type JDataView[D] = james.resultreport.dataview.ResultDataView[D]
+  private type JDataView[D] = org.jamesii.resultreport.dataview.ResultDataView[D]
 
   override def generateReport(results: ExperimentResults) = {
 
