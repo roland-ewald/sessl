@@ -5,3 +5,4 @@ glob:.classpath
 glob:.checkstyle
 glob:.cache
 glob:.regdata
+glob:.worksheet

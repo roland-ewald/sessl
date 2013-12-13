@@ -81,6 +81,8 @@ import org.jamesii.core.model.IModel
 import org.jamesii.core.experiments.replication.plugintype.RepCriterionFactory
 import org.jamesii.core.experiments.replication.RepNumberCriterionFactory
 
+import scala.language.existentials
+
 /**
  * Encapsulates the BaseExperiment.
  *
@@ -176,8 +178,7 @@ class Experiment extends AbstractExperiment {
   /** Configure stopping. */
   def configureStopping() = {
     val (factory, params) = createParamStopFactory(checkAndGetStoppingCondition())
-    exp.setComputationTaskStopPolicyFactory(factory)
-    exp.setComputationTaskStopPolicyParameters(params)
+    exp.setComputationTaskStopPolicyFactory(new ParameterizedFactory[StopFactory](factory, params))
   }
 
   /** Create parameterized stop factory. */
@@ -203,9 +204,9 @@ class Experiment extends AbstractExperiment {
   }
 
   /** Creates a list of Java objects containing the given parameterized factories. */
-  private def listParamStopFactories(factories: (ComputationTaskStopPolicyFactory, ParamBlock)*) = {
-    val rv = new java.util.ArrayList[JamesPair[ComputationTaskStopPolicyFactory, ParamBlock]]()
-    factories.foreach(f => rv.add(new JamesPair[ComputationTaskStopPolicyFactory, ParamBlock](f._1, f._2)))
+  private def listParamStopFactories(factories: (ComputationTaskStopPolicyFactory[_], ParamBlock)*) = {
+    val rv = new java.util.ArrayList[JamesPair[ComputationTaskStopPolicyFactory[_], ParamBlock]]()
+    factories.foreach(f => rv.add(new JamesPair[ComputationTaskStopPolicyFactory[_], ParamBlock](f._1, f._2)))
     rv
   }
 
