@@ -22,6 +22,8 @@ import sessl.util.MiscUtils
 
 /**
  * Support for performance observation and performance measurement storage.
+ * So far only the (wall-clock) run times are recorded. Other performance metrics, e.g. CPU time or memory usage,
+ * can be added in a similar way.
  *
  * @example {{{
  * new Experiment with PerformanceObservation {
@@ -39,7 +41,7 @@ trait AbstractPerformanceObservation extends ExperimentConfiguration {
 
   /** Set the [[PerformanceDataSinkSpecification]]. */
   def performanceDataSink_=(pds: PerformanceDataSinkSpecification) = { performanceDataSinkSpecication = Some(pds) }
-  
+
   /** Get the [[PerformanceDataSinkSpecification]]. */
   def performanceDataSink: PerformanceDataSinkSpecification = { performanceDataSinkSpecication.get }
 
