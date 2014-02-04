@@ -55,7 +55,6 @@ import simulator.srs.ssa.nsm.NSMProcessorFactory
 import simulator.pdevsflatsequential.FlatSequentialProcessorFactory
 import org.jamesii.simulator.mlrules.population.reference.MLRulesPopulationProcessorFactory
 import org.jamesii.core.processor.IProcessor
-import simulator.mlrules.population.revised.processor.tau.TauProcessorFactory
 
 /**
  * Defines all James II algorithms that are accessible via sessl.
@@ -157,8 +156,4 @@ case class PDEVSFlatSequential(val eventqueue: String = Heap().factory.getClass(
 //ML-Rules
 case class MLRulesReference() extends BasicJamesIISimulator {
   override def factory = new MLRulesPopulationProcessorFactory
-}
-
-case class MLRulesTauLeaping(val bogusVariable: Double = 0.01) extends CreatableFromVariables[MLRulesTauLeaping] with _TauLeaping with BasicJamesIISimulator {
-  override def factory = new TauProcessorFactory
 }

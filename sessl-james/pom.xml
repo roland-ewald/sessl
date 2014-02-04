@@ -57,11 +57,6 @@
 			<artifactId>mlrules</artifactId>
 			<version>${james.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.jamesii.private</groupId>
-			<artifactId>mlrules-unreleased</artifactId>
-			<version>${james.version}</version>
-		</dependency>
 		<!-- To support report generation: -->
 		<dependency>
 			<groupId>org.jamesii</groupId>
