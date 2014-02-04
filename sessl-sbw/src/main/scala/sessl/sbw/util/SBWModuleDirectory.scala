@@ -5,6 +5,8 @@ import edu.caltech.sbw.ServiceDescriptor
 import edu.caltech.sbw.ModuleDescriptor
 
 /**
+ * Stub for SBW integration / playground.
+ *
  * @author Roland Ewald
  */
 class SBWModuleDirectory {
@@ -45,10 +47,10 @@ class SBWModuleDirectory {
   }
 
   def methodsOfService(sd: ServiceDescriptor): String = {
-	val service = sd.getServiceInModuleInstance
-	(for (m <- service.getMethods) yield {
-	  //TODO
-	}).foldLeft("")(_ + _)
+    val service = sd.getServiceInModuleInstance
+    (for (m <- service.getMethods) yield {
+      //TODO
+    }).foldLeft("")(_ + _)
   }
 
 }
