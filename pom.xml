@@ -3,7 +3,7 @@
 	<groupId>org.sessl</groupId>
 	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9</version>
 	<name>SESSL</name>
 	<url>http://sessl.org</url>
 
@@ -30,7 +30,8 @@
 	<scm>
 		<connection>scm:hg:${sessl.source.repository}</connection>
 		<url>${sessl.source.repository}</url>
-	</scm>
+	  <tag>sessl-0.9</tag>
+  </scm>
 
 	<issueManagement>
 		<system>Bitbucket</system>
@@ -297,7 +298,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
