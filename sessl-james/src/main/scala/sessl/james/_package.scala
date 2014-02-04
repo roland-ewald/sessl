@@ -42,7 +42,7 @@ package object james {
   type ParamFactory[X <: Factory] = org.jamesii.core.parameters.ParameterizedFactory[X]
 
   /** The stop policy factory. */
-  type StopFactory = org.jamesii.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory
+  type StopFactory = org.jamesii.core.experiments.tasks.stoppolicy.plugintype.ComputationTaskStopPolicyFactory[_]
   
   /** The pair type in James II (there is a pre-defined pair type in Scala).*/
   type JamesPair[X, Y] = org.jamesii.core.util.misc.Pair[X, Y]

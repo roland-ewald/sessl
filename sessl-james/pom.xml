@@ -12,7 +12,7 @@
 	</parent>
 	
 	<properties>
-		<james.version>0.9.4</james.version>
+		<james.version>0.9.5-SNAPSHOT</james.version>
 	</properties>
 
 	<dependencies>
