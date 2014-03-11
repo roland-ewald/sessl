@@ -10,13 +10,17 @@ import sessl._
   @Test def testSBWExecution() = {
     execute(
       {
-        new Experiment {
+        new Experiment with Observation with ParallelExecution {
 //          model = "C:/Users/Stefan/Repositories/SESSL/sessl-sbmlsim/src/test/resources/BIOMD0000000002.xml"
-          set("Lambda" <~ 0.1)
+//          set(" kf_0" <~ 3200.0)
           replications = 1
-          model = "C:/Users/Stefan/Repositories/SESSL/sessl-sbw/src/test/resources/dsmts-001-01.xml"
-          stopTime = 10000.0
-          //...
+//          model = "C:/Users/Stefan/Repositories/SESSL/sessl-sbw/src/test/resources/dsmts-001-01.xml"
+//          model = "C:/Users/Stefan/Repositories/SESSL/sessl-sbw/src/test/resources/BIOMD0000000001_SBML-L2V1.xml"
+//          model = "C:/Users/Stefan/Repositories/SESSL/sessl-sbw/src/test/resources/BIOMD0000000008_SBML-L2V1.xml"
+          model = "C:/Users/Stefan/Repositories/SESSL/sessl-sbw/src/test/resources/BIOMD0000000010_SBML-L2V3.xml"
+          stopTime = 100000.0
+          observe("x" ~ "MKKK")
+          observeAt(range(0, 1e-04, 1e-02))
         }
       })
   }
