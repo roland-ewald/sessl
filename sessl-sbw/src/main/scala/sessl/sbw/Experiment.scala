@@ -1,11 +1,13 @@
 package sessl.sbw
 
-import sessl.AbstractExperiment
-import edu.caltech.sbw._
-import sessl.sbw.util._
-import scala.io.Source
 import scala.collection.mutable.SynchronizedMap
-import sessl.sbw.algorithms.GillespieDescription
+import scala.io.Source
+import edu.caltech.sbw._
+import sessl.AbstractExperiment
+import sessl.sbw.algorithms.BiospiceSimDescription
+import sessl.sbw.algorithms.RoadRunnerSimDescription
+import sessl.sbw.algorithms.JarnacSimDescription
+import sessl.sbw.algorithms.BiospiceSimDescription
 
 /**
  * Stub for SBW integration. 
@@ -36,7 +38,8 @@ class Experiment extends AbstractExperiment with SBWResultHandling {
     /* Configure simulator setup. */
     require(fixedStopTime.isDefined, "No stop time is given. Use stopTime =... to set it.")
     if (simulators.isEmpty)
-      simulators <+ GillespieDescription(1000)
+//      simulators <+ new JarnacSimDescription(true)
+      simulators <+ new BiospiceSimDescription
     simulators.algorithms.foreach(s => require(s.isInstanceOf[SBWSimulatorDescription], "Simulator '" + s + "' is not supported."))
   }
  

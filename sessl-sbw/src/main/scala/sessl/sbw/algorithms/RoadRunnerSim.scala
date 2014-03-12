@@ -1,23 +1,23 @@
 package sessl.sbw.algorithms
 
-import edu.caltech.sbw._
 import sessl.sbw.BasicSBWSimulator
-import sessl.sbw.ModuleHandler
 import sessl.sbw.SBWSimulatorDescription
+import edu.caltech.sbw.Service
+import sessl.sbw.ModuleHandler
 import java.util.List
 
-case class JarnacSimDescription(gillespie:Boolean) extends SBWSimulatorDescription {
+case class RoadRunnerSimDescription extends SBWSimulatorDescription {
   
-  override def create() = new JarnacSimRef(gillespie)
+  override def create() = new RoadRunnerSimRef
 }
 
-case class JarnacSimRef(gillespie:Boolean) extends BasicSBWSimulator {
+case class RoadRunnerSimRef extends BasicSBWSimulator {
   
-  val module = ModuleHandler.getModule("Jarnac")
+  val module = ModuleHandler.getModule("edu.kgi.roadRunner")
   
   val service:Service = module.findServiceByName("sim")
   
-  val simulator: JarnacSimProxy = service.getServiceObject(classOf[JarnacSimProxy]).asInstanceOf[JarnacSimProxy]
+  val simulator: RoadRunnerSimProxy = service.getServiceObject(classOf[RoadRunnerSimProxy]).asInstanceOf[RoadRunnerSimProxy]
   
   override def setParameter(name:String, value:Double) {
     simulator.setValue(name, value)
@@ -35,14 +35,11 @@ case class JarnacSimRef(gillespie:Boolean) extends BasicSBWSimulator {
   override def simulate(endTime:Double):Array[Array[Double]] = {
     simulator.setTimeStart(0.0)
     simulator.setTimeEnd(endTime)
-    if (gillespie) {
-      return simulator.gillespie
-    }
     return simulator.simulate()
   }
 }
 
-trait JarnacSimProxy {
+trait RoadRunnerSimProxy {
 
   def loadSBML(sbml: String)
 	
@@ -55,6 +52,4 @@ trait JarnacSimProxy {
   def setTimeEnd (time:Double)
 	
   def simulate():Array[Array[Double]]
-  
-  def gillespie():Array[Array[Double]]
 }
