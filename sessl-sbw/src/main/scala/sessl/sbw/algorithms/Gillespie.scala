@@ -30,8 +30,8 @@ case class GillespieRef(numOfRows:Integer) extends BasicSBWSimulator {
     return simulator.getNamesOfVariables;
   }
   
-  override def simulate(endTime:Double):Array[Array[Double]] = {
-    return simulator.simulate(0.0, endTime, numOfRows)
+  override def simulate(startTime:Double, endTime:Double):Array[Array[Double]] = {
+    return simulator.simulate(startTime, endTime, numOfRows)
   }
 }
 

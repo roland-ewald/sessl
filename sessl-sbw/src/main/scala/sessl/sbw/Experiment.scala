@@ -8,13 +8,14 @@ import sessl.sbw.algorithms.BiospiceSimDescription
 import sessl.sbw.algorithms.RoadRunnerSimDescription
 import sessl.sbw.algorithms.JarnacSimDescription
 import sessl.sbw.algorithms.BiospiceSimDescription
+import sessl.sbw.algorithms.RoadRunnerSimDescription
 
 /**
  * Stub for SBW integration. 
  * 
  * @author Stefan Leye
  */
-class Experiment extends AbstractExperiment with SBWResultHandling {
+class Experiment extends AbstractExperiment with SBWResultHandling with SBWAnalysis {
   
   /** Describes a variable assignment (first element) and its id (second element). */
   type AssignmentDescription = (Map[String, Any], Int)
@@ -39,7 +40,7 @@ class Experiment extends AbstractExperiment with SBWResultHandling {
     require(fixedStopTime.isDefined, "No stop time is given. Use stopTime =... to set it.")
     if (simulators.isEmpty)
 //      simulators <+ new JarnacSimDescription(true)
-      simulators <+ new BiospiceSimDescription
+      simulators <+ new RoadRunnerSimDescription
     simulators.algorithms.foreach(s => require(s.isInstanceOf[SBWSimulatorDescription], "Simulator '" + s + "' is not supported."))
   }
  
@@ -90,9 +91,14 @@ class Experiment extends AbstractExperiment with SBWResultHandling {
         engine.setParameter(variable._1, variable._2.asInstanceOf[Double])
       }
       logger.info("Run ID: " + runId + ": execute simulation")
-      val results = engine.simulate(stopTime)
+      var start, end = 0.0;
+      while ({end += getNextTimeInterval(runId, stopTime); end > start}) {
+        val results = engine.simulate(start, end)
+        considerResults(runId, assignmentId, species, results)
+        start = end;
+      }
 //      println(results.length)
-      considerResults(runId, assignmentId, species, results)
+      
     } catch {
       case e : SBWException => e.printStackTrace()
     } finally {

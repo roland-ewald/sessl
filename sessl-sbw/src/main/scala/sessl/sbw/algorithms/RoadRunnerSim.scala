@@ -32,8 +32,8 @@ case class RoadRunnerSimRef extends BasicSBWSimulator {
     return simulator.getFloatingSpeciesNames.toArray(result)
   }
   
-  override def simulate(endTime:Double):Array[Array[Double]] = {
-    simulator.setTimeStart(0.0)
+  override def simulate(startTime:Double, endTime:Double):Array[Array[Double]] = {
+    simulator.setTimeStart(startTime)
     simulator.setTimeEnd(endTime)
     return simulator.simulate()
   }

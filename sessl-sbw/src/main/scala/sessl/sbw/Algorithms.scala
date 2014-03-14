@@ -31,6 +31,6 @@ trait BasicSBWSimulator extends Simulator {
   
   def getVariableNames():Array[String]
   
-  def simulate(endTime:Double):Array[Array[Double]]
+  def simulate(startTime:Double, endTime:Double):Array[Array[Double]]
 }
 

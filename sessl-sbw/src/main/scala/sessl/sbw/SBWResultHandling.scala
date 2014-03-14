@@ -10,4 +10,6 @@ trait SBWResultHandling extends ResultHandling {
    */
   protected[sbw] def considerResults(runId: Int, assignmentId: Int, 
       species: Array[String], results: Array[Array[Double]]) = { resultsHandlingIsCalled() }
+  
+  
 }
